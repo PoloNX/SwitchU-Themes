@@ -1,0 +1,15 @@
+{
+  "id": "sakura",
+  "name": "Sakura",
+  "author": "PoloNX",
+  "version": "1.0.0",
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "accent": [0.94, 0.75, 0.70],
+      "background": [0.97, 0.30, 0.94],
+      "backgroundAccent": [0.94, 0.40, 0.88],
+      "shapes": [0.94, 0.35, 0.70]
+    }
+  }
+}

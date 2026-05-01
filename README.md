@@ -51,19 +51,20 @@ Example:
       "author": "PoloNX",
       "version": "1.0.0",
       "path": "themes/wiiu-clean",
-      "manifest": "themes/wiiu-clean/theme.json",
-      "cover": "themes/wiiu-clean/media/screenshots/01.webp"
+      "manifest": "themes/wiiu-clean/theme.json"
     }
   ]
 }
 ```
+
+`cover` is optional. Add it when preview assets are available.
 
 ## Theme folder rules
 
 - The folder name must match the theme `id`.
 - The manifest file must be named `theme.json`.
 - Screenshot filenames are numbered: `01`, `02`, `03`, and so on.
-- The first screenshot is the default cover used by the catalog entry.
+- If screenshots exist, the first one can be used as the default catalog cover.
 - `sounds/music` and `sounds/sfx` are optional and can be omitted if the theme does not ship audio.
 
 ## Manifest format
@@ -125,7 +126,7 @@ That means the repository layout is already close to the installed layout, which
 1. Copy `templates/theme-template`.
 2. Rename the folder to the final theme `id`.
 3. Fill in `theme.json`.
-4. Add at least one screenshot in `media/screenshots`.
+4. Add screenshots in `media/screenshots` when preview assets are ready.
 5. Add optional audio in `sounds/music` and `sounds/sfx`.
 6. Add a new entry to `index.json`.
 

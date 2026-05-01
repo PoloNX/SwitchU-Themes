@@ -1,4 +1,37 @@
 {
   "schemaVersion": 1,
-  "themes": []
+  "themes": [
+    {
+      "id": "forest",
+      "name": "Forest",
+      "author": "PoloNX",
+      "version": "1.0.0",
+      "path": "themes/forest",
+      "manifest": "themes/forest/theme.json"
+    },
+    {
+      "id": "ocean",
+      "name": "Ocean",
+      "author": "PoloNX",
+      "version": "1.0.0",
+      "path": "themes/ocean",
+      "manifest": "themes/ocean/theme.json"
+    },
+    {
+      "id": "sakura",
+      "name": "Sakura",
+      "author": "PoloNX",
+      "version": "1.0.0",
+      "path": "themes/sakura",
+      "manifest": "themes/sakura/theme.json"
+    },
+    {
+      "id": "sunset",
+      "name": "Sunset",
+      "author": "PoloNX",
+      "version": "1.0.0",
+      "path": "themes/sunset",
+      "manifest": "themes/sunset/theme.json"
+    }
+  ]
 }
