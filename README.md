@@ -14,8 +14,8 @@ SwitchU-Themes/
 │       ├── theme.json
 │       ├── media/
 │       │   └── screenshots/
-│       │       ├── 01.webp
-│       │       ├── 02.webp
+│       │       ├── 01.png
+│       │       ├── 02.png
 │       │       └── ...
 │       └── sounds/
 │           ├── music/
@@ -58,12 +58,15 @@ Example:
 ```
 
 `cover` is optional. Add it when preview assets are available.
+If `cover` is omitted, the client can fall back to the first entry in `preview.screenshots` from the theme manifest.
 
 ## Theme folder rules
 
 - The folder name must match the theme `id`.
 - The manifest file must be named `theme.json`.
 - Screenshot filenames are numbered: `01`, `02`, `03`, and so on.
+- Recommended screenshot format: `.png`.
+- Supported screenshot formats for the client: `.png`, `.jpg`, `.jpeg`, `.webp`.
 - If screenshots exist, the first one can be used as the default catalog cover.
 - `sounds/music` and `sounds/sfx` are optional and can be omitted if the theme does not ship audio.
 
@@ -92,8 +95,8 @@ Recommended manifest:
   "version": "1.0.0",
   "preview": {
     "screenshots": [
-      "media/screenshots/01.webp",
-      "media/screenshots/02.webp"
+      "media/screenshots/01.png",
+      "media/screenshots/02.png"
     ]
   },
   "theme": {
@@ -126,7 +129,7 @@ That means the repository layout is already close to the installed layout, which
 1. Copy `templates/theme-template`.
 2. Rename the folder to the final theme `id`.
 3. Fill in `theme.json`.
-4. Add screenshots in `media/screenshots` when preview assets are ready.
+4. Add screenshots in `media/screenshots` when preview assets are ready, preferably as `.png` files.
 5. Add optional audio in `sounds/music` and `sounds/sfx`.
 6. Add a new entry to `index.json`.
 
