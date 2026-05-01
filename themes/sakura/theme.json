@@ -3,6 +3,12 @@
   "name": "Sakura",
   "author": "PoloNX",
   "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png",
+      "media/screenshots/01.png"
+    ]
+  },
   "theme": {
     "mode": "light",
     "colors": {
