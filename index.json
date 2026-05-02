@@ -10,6 +10,14 @@
       "manifest": "themes/forest/theme.json"
     },
     {
+      "id": "iisu",
+      "name": "iiSU",
+      "author": "PoloNX",
+      "version": "1.0.0",
+      "path": "themes/iisu",
+      "manifest": "themes/iisu/theme.json"
+    },
+    {
       "id": "ocean",
       "name": "Ocean",
       "author": "PoloNX",

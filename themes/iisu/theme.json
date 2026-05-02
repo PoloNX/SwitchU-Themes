@@ -1,0 +1,45 @@
+{
+  "id": "iisu",
+  "name": "iiSU",
+  "author": "iiSU Team",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "accent": [0.53, 0.78, 0.90],
+      "background": [0.55, 0.10, 0.96],
+      "backgroundAccent": [0.55, 0.16, 0.90],
+      "shapes": [0.54, 0.28, 0.78]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "circle",
+      "symmetry": "quad",
+      "count": 448,
+      "grid": {
+        "columns": 28,
+        "rows": 16,
+        "spacing": [46, 45]
+      },
+      "size": [2, 4],
+      "speed": [0, 0],
+      "rotationSpeed": 0.0,
+      "opacity": 0.34
+    },
+    "fonts": {
+      "regular": "fonts/Digital-Serial-Bold.ttf",
+      "small": "fonts/Digital-Serial-Regular.ttf"
+    },
+    "icons": {
+      "path": "assets/icons"
+    }
+  },
+  "audio": {
+    "bundled": true
+  }
+}
