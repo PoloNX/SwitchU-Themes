@@ -2,7 +2,7 @@
   "id": "sakura",
   "name": "Sakura",
   "author": "PoloNX",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png",
@@ -16,6 +16,21 @@
       "background": [0.97, 0.30, 0.94],
       "backgroundAccent": [0.94, 0.40, 0.88],
       "shapes": [0.94, 0.35, 0.70]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "diamond",
+      "symmetry": "quad",
+      "count": 63,
+      "grid": {
+        "columns": 9,
+        "rows": 7,
+        "spacing": [118, 92]
+      },
+      "size": [16, 28],
+      "speed": [0, 0],
+      "rotationSpeed": 0.03,
+      "opacity": 0.52
     }
   }
 }

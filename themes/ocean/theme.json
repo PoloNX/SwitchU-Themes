@@ -2,7 +2,7 @@
   "id": "ocean",
   "name": "Ocean",
   "author": "PoloNX",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png",
@@ -16,6 +16,17 @@
       "background": [0.58, 0.50, 0.08],
       "backgroundAccent": [0.56, 0.55, 0.14],
       "shapes": [0.56, 0.40, 0.30]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "horizontal",
+      "count": 30,
+      "size": [20, 68],
+      "speed": [3, 10],
+      "wobble": 14,
+      "rotationSpeed": 0.08,
+      "opacity": 0.66
     }
   }
 }

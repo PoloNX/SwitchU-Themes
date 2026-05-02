@@ -2,7 +2,7 @@
   "id": "sunset",
   "name": "Sunset",
   "author": "PoloNX",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png",
@@ -16,6 +16,17 @@
       "background": [0.03, 0.45, 0.08],
       "backgroundAccent": [0.06, 0.50, 0.14],
       "shapes": [0.04, 0.40, 0.28]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "triangle",
+      "symmetry": "quad",
+      "count": 18,
+      "size": [26, 78],
+      "speed": [10, 24],
+      "wobble": 8,
+      "rotationSpeed": 0.18,
+      "opacity": 0.70
     }
   }
 }

@@ -15,6 +15,33 @@
       "background": [0.58, 0.50, 0.08],
       "backgroundAccent": [0.56, 0.55, 0.14],
       "shapes": [0.56, 0.40, 0.30]
+    },
+    "background": {
+      "image": {
+        "path": "media/backgrounds/hero.webp",
+        "opacity": 0.22,
+        "fit": "cover"
+      },
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 72,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [74, 74]
+      },
+      "size": [7, 12],
+      "speed": [0, 0],
+      "rotationSpeed": 0.04,
+      "opacity": 0.82
+    },
+    "fonts": {
+      "regular": "fonts/Sora-Regular.ttf",
+      "small": "fonts/Sora-Regular.ttf"
+    },
+    "icons": {
+      "path": "assets/icons"
     }
   },
   "audio": {
