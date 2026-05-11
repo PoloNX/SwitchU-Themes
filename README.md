@@ -112,6 +112,7 @@ Recommended manifest:
   "theme": {
     "mode": "dark",
     "colors": {
+      "cursor": [0.58, 0.90, 0.62],
       "accent": [0.53, 0.80, 0.55],
       "background": [0.58, 0.50, 0.08],
       "backgroundAccent": [0.56, 0.55, 0.14],
@@ -127,6 +128,9 @@ Recommended manifest:
       "shape": "square",
       "symmetry": "quad",
       "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
       "grid": {
         "columns": 16,
         "rows": 9,
@@ -155,9 +159,11 @@ Recommended manifest:
 
 Current SwitchU builds read these optional theme sections in addition to colors:
 
+- `theme.colors.cursor`: explicit cursor tint separate from the accent color.
 - `theme.background`: procedural background controls plus an optional background image.
 - `theme.fonts` or `theme.font`: custom UI fonts.
 - `theme.icons`: custom static and animated sidebar icons, plus the game card badge icon.
+- `audio`: bundled theme audio metadata.
 
 Unknown fields are still ignored, so themes can safely keep extra metadata for tooling.
 
@@ -175,6 +181,9 @@ Supported `theme.background` fields:
 - `speed`: `[min, max]` motion speed range.
 - `wobble`: side-to-side drift amount for floating layouts.
 - `rotationSpeed`: base spin speed.
+- `fixedOrientation`: when `true`, all shapes start from the same angle.
+- `orientation`: explicit starting angle in degrees. Setting this also locks the orientation.
+- `roundness`: square corner roundness from `0.0` to `1.0`.
 - `opacity`: multiplier for the procedural shape layer.
 
 Notes:
@@ -182,6 +191,19 @@ Notes:
 - `fit: "cover"` fills the screen. `fit: "contain"` keeps the whole image visible.
 - Background images are loaded at source resolution. Keep them reasonably sized for Switch memory budgets.
 - A static square grid can be authored by combining `layout: "grid"`, `shape: "square"`, and `speed: [0, 0]`.
+- `roundness` only affects square shapes.
+
+## Color settings
+
+Supported `theme.colors` fields:
+
+- `cursor`: explicit cursor HSL triplet.
+- `accent`: accent HSL triplet.
+- `background`: base background HSL triplet.
+- `backgroundAccent`: secondary background HSL triplet.
+- `shapes`: procedural shape tint HSL triplet.
+
+If `cursor` is omitted, SwitchU falls back to `accent` for cursor rendering.
 
 ## Font settings
 
@@ -217,6 +239,16 @@ Rules:
 - `.png` files replace the static icons.
 - `.webp` files replace the animated focus versions when present.
 - Custom icon assets currently affect the sidebar buttons and the game card badge only.
+
+## Audio settings
+
+`audio.bundled` marks a theme as shipping its own audio.
+
+Rules:
+
+- `sounds/music` is scanned for `.mp3` files.
+- `sounds/sfx` may override any subset of the built-in `.wav` UI sounds.
+- Missing SFX files automatically fall back to the built-in Wii U sound set.
 
 ## Installation mapping
 

@@ -2,7 +2,7 @@
   "id": "sunset",
   "name": "Sunset",
   "author": "PoloNX",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png",
@@ -12,6 +12,7 @@
   "theme": {
     "mode": "dark",
     "colors": {
+      "cursor": [0.08, 0.85, 0.60],
       "accent": [0.08, 0.85, 0.60],
       "background": [0.03, 0.45, 0.08],
       "backgroundAccent": [0.06, 0.50, 0.14],
@@ -25,8 +26,13 @@
       "size": [26, 78],
       "speed": [10, 24],
       "wobble": 8,
+      "fixedOrientation": false,
       "rotationSpeed": 0.18,
+      "roundness": 0.0,
       "opacity": 0.70
     }
+  },
+  "audio": {
+    "bundled": false
   }
 }

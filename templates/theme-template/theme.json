@@ -11,6 +11,7 @@
   "theme": {
     "mode": "dark",
     "colors": {
+      "cursor": [0.58, 0.90, 0.62],
       "accent": [0.53, 0.80, 0.55],
       "background": [0.58, 0.50, 0.08],
       "backgroundAccent": [0.56, 0.55, 0.14],
@@ -26,6 +27,9 @@
       "shape": "square",
       "symmetry": "quad",
       "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
       "grid": {
         "columns": 16,
         "rows": 9,
