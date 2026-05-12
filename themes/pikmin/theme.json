@@ -11,16 +11,16 @@
   "theme": {
     "mode": "dark",
     "colors": {
-      "cursor": [0.61, 0.67, 0.57],
-      "accent": [0.24, 0.63, 0.49],
-      "background": [0.26, 0.31, 0.11],
-      "backgroundAccent": [0.17, 0.55, 0.18],
-      "shapes": [0.15, 0.74, 0.61]
+      "cursor": [0.32, 0.68, 0.68],
+      "accent": [0.31, 0.58, 0.46],
+      "background": [0.32, 0.30, 0.10],
+      "backgroundAccent": [0.31, 0.45, 0.15],
+      "shapes": [0.33, 0.56, 0.53]
     },
     "background": {
       "image": {
         "path": "media/backgrounds/hero.jpg",
-        "opacity": 0.28,
+        "opacity": 0.75,
         "fit": "cover"
       },
       "layout": "floating",
