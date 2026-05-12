@@ -435,6 +435,31 @@ async function getContent(env: Env, token: string, path: string, branch: string)
   );
 }
 
+async function findContentSha(
+  env: Env,
+  token: string,
+  branch: string,
+  path: string,
+): Promise<string | undefined> {
+  const response = await githubRequest(
+    env,
+    token,
+    `${repoPath(env)}/contents/${sanitizeRelativePath(path)}?ref=${encodeURIComponent(branch)}`,
+  );
+
+  if (response.status === 404) {
+    return undefined;
+  }
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`GitHub API ${sanitizeRelativePath(path)} failed (${response.status}): ${text}`);
+  }
+
+  const content = await response.json() as GitHubContentResponse;
+  return content.sha;
+}
+
 async function putFile(
   env: Env,
   token: string,
@@ -458,6 +483,18 @@ async function putFile(
       }),
     },
   );
+}
+
+async function putFileEnsuringSha(
+  env: Env,
+  token: string,
+  branch: string,
+  path: string,
+  message: string,
+  contentBase64: string,
+): Promise<void> {
+  const sha = await findContentSha(env, token, branch, path);
+  await putFile(env, token, branch, path, message, contentBase64, sha);
 }
 
 async function updateJsonFile(
@@ -514,9 +551,15 @@ async function uploadBinaryFile(
   relativePath: string,
   file: File,
   message: string,
+  options: { ensureSha?: boolean } = {},
 ): Promise<void> {
   const repoFilePath = `${root}/${sanitizeRelativePath(relativePath)}`;
   const contentBase64 = arrayBufferToBase64(await file.arrayBuffer());
+  if (options.ensureSha) {
+    await putFileEnsuringSha(env, token, branch, repoFilePath, message, contentBase64);
+    return;
+  }
+
   await putFile(env, token, branch, repoFilePath, message, contentBase64);
 }
 
@@ -577,6 +620,7 @@ async function writeProposalDraftMetadata(
   token: string,
   branch: string,
   proposal: ProposalPayload,
+  options: { ensureSha?: boolean } = {},
 ): Promise<void> {
   const metadata: StoredProposalDraft = {
     schemaVersion: 1,
@@ -584,14 +628,14 @@ async function writeProposalDraftMetadata(
     draftSnapshot: proposal.draftSnapshot,
   };
 
-  await putFile(
-    env,
-    token,
-    branch,
-    proposalMetadataPath(proposal.id),
-    `Store editable draft snapshot for ${proposal.id}`,
-    textToBase64(`${JSON.stringify(metadata, null, 2)}\n`),
-  );
+  const path = proposalMetadataPath(proposal.id);
+  const contentBase64 = textToBase64(`${JSON.stringify(metadata, null, 2)}\n`);
+  if (options.ensureSha) {
+    await putFileEnsuringSha(env, token, branch, path, `Store editable draft snapshot for ${proposal.id}`, contentBase64);
+    return;
+  }
+
+  await putFile(env, token, branch, path, `Store editable draft snapshot for ${proposal.id}`, contentBase64);
 }
 
 async function readProposalDraftMetadata(
@@ -894,6 +938,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
     `${root}/theme.json`,
     `${commitPrefix}: update theme manifest`,
     textToBase64(manifestJson),
+    await findContentSha(env, token, branch, `${root}/theme.json`),
   );
 
   await uploadBinaryFile(
@@ -904,6 +949,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
     proposal.files.previewScreenshot,
     requireFile(formData, 'previewScreenshot'),
     `${commitPrefix}: update preview screenshot`,
+    { ensureSha: true },
   );
 
   const backgroundImage = optionalFile(formData, 'backgroundImage');
@@ -916,6 +962,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.backgroundImage,
       backgroundImage,
       `${commitPrefix}: update background image`,
+      { ensureSha: true },
     );
   }
 
@@ -929,6 +976,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.regularFont,
       regularFont,
       `${commitPrefix}: update regular font`,
+      { ensureSha: true },
     );
   }
 
@@ -942,6 +990,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.smallFont,
       smallFont,
       `${commitPrefix}: update small font`,
+      { ensureSha: true },
     );
   }
 
@@ -955,6 +1004,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.music,
       music,
       `${commitPrefix}: update background music`,
+      { ensureSha: true },
     );
   }
 
@@ -977,11 +1027,12 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
         relativePath,
         file,
         `${commitPrefix}: update ${name} sfx`,
+        { ensureSha: true },
       );
     }
   }
 
-  await writeProposalDraftMetadata(env, token, branch, proposal);
+  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: true });
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: update catalog entry`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
   });
