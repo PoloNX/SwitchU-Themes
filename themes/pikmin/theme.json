@@ -1,0 +1,42 @@
+{
+  "id": "pikmin",
+  "name": "Pikmin",
+  "author": "Charlie",
+  "version": "1.1.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [0.61, 0.67, 0.57],
+      "accent": [0.24, 0.63, 0.49],
+      "background": [0.26, 0.31, 0.11],
+      "backgroundAccent": [0.17, 0.55, 0.18],
+      "shapes": [0.15, 0.74, 0.61]
+    },
+    "background": {
+      "image": {
+        "path": "media/backgrounds/hero.jpg",
+        "opacity": 0.28,
+        "fit": "cover"
+      },
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 18,
+      "size": [18, 52],
+      "speed": [4, 10],
+      "wobble": 8,
+      "fixedOrientation": false,
+      "rotationSpeed": 0.04,
+      "roundness": 0.0,
+      "opacity": 0.14
+    }
+  },
+  "audio": {
+    "bundled": true
+  }
+}

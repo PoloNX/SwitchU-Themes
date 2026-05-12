@@ -26,6 +26,14 @@
       "manifest": "themes/ocean/theme.json"
     },
     {
+      "id": "pikmin",
+      "name": "Pikmin",
+      "author": "Charlie",
+      "version": "1.1.0",
+      "path": "themes/pikmin",
+      "manifest": "themes/pikmin/theme.json"
+    },
+    {
       "id": "sakura",
       "name": "Sakura",
       "author": "PoloNX",

@@ -120,7 +120,7 @@ Recommended manifest:
     },
     "background": {
       "image": {
-        "path": "media/backgrounds/hero.webp",
+        "path": "media/backgrounds/hero.jpg",
         "opacity": 0.24,
         "fit": "cover"
       },
@@ -190,6 +190,7 @@ Notes:
 
 - `fit: "cover"` fills the screen. `fit: "contain"` keeps the whole image visible.
 - Background images are loaded at source resolution. Keep them reasonably sized for Switch memory budgets.
+- Background images loaded by the current SwitchU runtime should use formats supported by `stbi_load`, such as `.png`, `.jpg`, or `.jpeg`.
 - A static square grid can be authored by combining `layout: "grid"`, `shape: "square"`, and `speed: [0, 0]`.
 - `roundness` only affects square shapes.
 

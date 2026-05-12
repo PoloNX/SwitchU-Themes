@@ -19,7 +19,7 @@
     },
     "background": {
       "image": {
-        "path": "media/backgrounds/hero.webp",
+        "path": "media/backgrounds/hero.jpg",
         "opacity": 0.22,
         "fit": "cover"
       },
