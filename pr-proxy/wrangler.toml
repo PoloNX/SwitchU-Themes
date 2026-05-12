@@ -2,6 +2,9 @@ name = "switchu-themes-pr-proxy"
 main = "src/index.ts"
 compatibility_date = "2025-05-12"
 
+# Configure the private edit secret separately:
+# wrangler secret put EDITOR_TOKEN
+
 [vars]
 GITHUB_APP_ID = "3691730"
 GITHUB_INSTALLATION_ID = "131794732"

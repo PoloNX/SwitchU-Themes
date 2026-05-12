@@ -3,18 +3,74 @@ import { toBlob } from 'html-to-image';
 import {
   DEFAULT_SFX_NAMES,
   buildManifestFromDraft,
+  draftFromSnapshot,
+  draftSnapshotFromDraft,
   type DefaultSfxName,
   type StudioAsset,
   type StudioDraft,
+  type StudioDraftSnapshot,
 } from '../theme/draft';
 
 export interface ProposalResult {
   pullRequestUrl: string;
   branchName: string;
+  previewUrl?: string;
+  editUrl?: string;
+}
+
+export type ProposalMode = 'preview' | 'edit';
+
+export interface ProposalRouteState {
+  proposalId: string;
+  branchName: string;
+  proposalMode: ProposalMode;
+}
+
+interface ProposalDraftResponse {
+  proposalId: string;
+  branchName: string;
+  draftSnapshot: StudioDraftSnapshot;
+}
+
+export interface ProposalDraftLoadResult {
+  proposalId: string;
+  branchName: string;
+  draft: StudioDraft;
+}
+
+export interface ProposalUpdateResult {
+  ok: boolean;
+  branchName: string;
+  previewUrl?: string;
+  editUrl?: string;
 }
 
 function themeRoot(id: string): string {
   return `themes/${id}`;
+}
+
+function proxyBaseUrl(): string {
+  const apiBase = import.meta.env.VITE_PR_PROXY_URL?.trim();
+  if (!apiBase) {
+    throw new Error('Missing VITE_PR_PROXY_URL. Configure the PR proxy before submitting a theme.');
+  }
+
+  return apiBase.replace(/\/$/, '');
+}
+
+function currentSiteBaseUrl(): string {
+  const url = new URL(import.meta.env.BASE_URL, window.location.href);
+  url.search = '';
+  url.hash = '';
+  return url.toString();
+}
+
+function buildProposalAssetUrl(branchName: string, proposalId: string, relativePath: string): string {
+  const url = new URL(`${proxyBaseUrl()}/api/proposals/asset`);
+  url.searchParams.set('branch', branchName);
+  url.searchParams.set('id', proposalId);
+  url.searchParams.set('path', relativePath);
+  return url.toString();
 }
 
 function buildProposalPayload(draft: StudioDraft) {
@@ -24,6 +80,8 @@ function buildProposalPayload(draft: StudioDraft) {
   return {
     id,
     name: manifest.name,
+    siteBaseUrl: currentSiteBaseUrl(),
+    draftSnapshot: draftSnapshotFromDraft(draft),
     manifest,
     catalogEntry: {
       id,
@@ -58,6 +116,12 @@ function buildProposalPayload(draft: StudioDraft) {
       ) as Partial<Record<DefaultSfxName, string>>,
     },
   };
+}
+
+function readProposalResponseError(response: Response, fallbackMessage: string): Promise<never> {
+  return response.text().then((text) => {
+    throw new Error(text || fallbackMessage);
+  });
 }
 
 function buildArchiveManifest(draft: StudioDraft) {
@@ -142,6 +206,37 @@ function triggerBrowserDownload(blob: Blob, fileName: string): void {
   }, 1_000);
 }
 
+async function buildProposalFormData(draft: StudioDraft, previewNode: HTMLElement): Promise<FormData> {
+  const previewBlob = await capturePreviewBlob(previewNode);
+  const payload = buildProposalPayload(draft);
+  const formData = new FormData();
+
+  formData.set('proposal', JSON.stringify(payload));
+  formData.set('previewScreenshot', new File([previewBlob], '00.png', { type: 'image/png' }));
+
+  if (draft.background.image?.proposalReady && draft.background.image.file) {
+    formData.set('backgroundImage', draft.background.image.file);
+  }
+  if (draft.fonts.regular?.proposalReady && draft.fonts.regular.file) {
+    formData.set('regularFont', draft.fonts.regular.file);
+  }
+  if (draft.fonts.small?.proposalReady && draft.fonts.small.file) {
+    formData.set('smallFont', draft.fonts.small.file);
+  }
+  if (draft.audio.music?.proposalReady && draft.audio.music.file) {
+    formData.set('music', draft.audio.music.file);
+  }
+
+  DEFAULT_SFX_NAMES.forEach((name) => {
+    const asset = draft.audio.sfx[name];
+    if (asset?.proposalReady && asset.file) {
+      formData.set(`sfx:${name}`, asset.file);
+    }
+  });
+
+  return formData;
+}
+
 export async function downloadDraftArchive(draft: StudioDraft, previewNode: HTMLElement): Promise<void> {
   const manifest = buildArchiveManifest(draft);
   const previewBlob = await capturePreviewBlob(previewNode);
@@ -168,47 +263,77 @@ export async function downloadDraftArchive(draft: StudioDraft, previewNode: HTML
 }
 
 export async function submitThemeProposal(draft: StudioDraft, previewNode: HTMLElement): Promise<ProposalResult> {
-  const apiBase = import.meta.env.VITE_PR_PROXY_URL?.trim();
-  if (!apiBase) {
-    throw new Error('Missing VITE_PR_PROXY_URL. Configure the PR proxy before submitting a theme.');
-  }
-
-  const previewBlob = await capturePreviewBlob(previewNode);
-
-  const payload = buildProposalPayload(draft);
-  const formData = new FormData();
-  formData.set('proposal', JSON.stringify(payload));
-  formData.set('previewScreenshot', new File([previewBlob], '00.png', { type: 'image/png' }));
-
-  if (draft.background.image?.proposalReady && draft.background.image.file) {
-    formData.set('backgroundImage', draft.background.image.file);
-  }
-  if (draft.fonts.regular?.proposalReady && draft.fonts.regular.file) {
-    formData.set('regularFont', draft.fonts.regular.file);
-  }
-  if (draft.fonts.small?.proposalReady && draft.fonts.small.file) {
-    formData.set('smallFont', draft.fonts.small.file);
-  }
-  if (draft.audio.music?.proposalReady && draft.audio.music.file) {
-    formData.set('music', draft.audio.music.file);
-  }
-
-  DEFAULT_SFX_NAMES.forEach((name) => {
-    const asset = draft.audio.sfx[name];
-    if (asset?.proposalReady && asset.file) {
-      formData.set(`sfx:${name}`, asset.file);
-    }
-  });
-
-  const response = await fetch(`${apiBase.replace(/\/$/, '')}/api/proposals`, {
+  const response = await fetch(`${proxyBaseUrl()}/api/proposals`, {
     method: 'POST',
-    body: formData,
+    body: await buildProposalFormData(draft, previewNode),
   });
 
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `Proposal submission failed with status ${response.status}`);
+    return readProposalResponseError(response, `Proposal submission failed with status ${response.status}`);
   }
 
   return response.json() as Promise<ProposalResult>;
+}
+
+export function readProposalRouteState(locationLike: Pick<Location, 'search'> = window.location): ProposalRouteState | null {
+  const params = new URLSearchParams(locationLike.search);
+  const proposalId = params.get('proposalId')?.trim();
+  const branchName = params.get('proposalBranch')?.trim();
+  const rawMode = params.get('proposalMode')?.trim();
+
+  if (!proposalId || !branchName) {
+    return null;
+  }
+
+  return {
+    proposalId,
+    branchName,
+    proposalMode: rawMode === 'edit' ? 'edit' : 'preview',
+  };
+}
+
+export async function loadProposalDraft(route: ProposalRouteState): Promise<ProposalDraftLoadResult> {
+  const url = new URL(`${proxyBaseUrl()}/api/proposals/draft`);
+  url.searchParams.set('branch', route.branchName);
+  url.searchParams.set('id', route.proposalId);
+
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) {
+    return readProposalResponseError(response, `Failed to load proposal draft (${response.status})`);
+  }
+
+  const payload = await response.json() as ProposalDraftResponse;
+  return {
+    proposalId: payload.proposalId,
+    branchName: payload.branchName,
+    draft: draftFromSnapshot(
+      payload.draftSnapshot,
+      (relativePath) => buildProposalAssetUrl(payload.branchName, payload.proposalId, relativePath),
+      { proposalReadyAssets: true },
+    ),
+  };
+}
+
+export async function updateThemeProposal(
+  draft: StudioDraft,
+  previewNode: HTMLElement,
+  branchName: string,
+  editorToken: string,
+): Promise<ProposalUpdateResult> {
+  const url = new URL(`${proxyBaseUrl()}/api/proposals/update`);
+  url.searchParams.set('branch', branchName);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'X-Editor-Token': editorToken,
+    },
+    body: await buildProposalFormData(draft, previewNode),
+  });
+
+  if (!response.ok) {
+    return readProposalResponseError(response, `Proposal update failed with status ${response.status}`);
+  }
+
+  return response.json() as Promise<ProposalUpdateResult>;
 }

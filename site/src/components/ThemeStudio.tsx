@@ -1,12 +1,13 @@
 import {
   Download,
+  LockKeyhole,
   Music4,
   Send,
   Sparkles,
   Upload,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { downloadDraftArchive, submitThemeProposal } from '../github/proposals';
+import { downloadDraftArchive, submitThemeProposal, type ProposalMode, type ProposalUpdateResult } from '../github/proposals';
 import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
 import {
@@ -27,6 +28,19 @@ interface ThemeStudioProps {
   onChange: (draft: StudioDraft) => void;
   onLoadTemplate: (record: ThemeCatalogRecord) => void;
   onReset: () => void;
+  linkedProposal?: {
+    proposalId: string;
+    branchName: string;
+    proposalMode: ProposalMode;
+  } | null;
+  editorUnlocked?: boolean;
+  onUnlockEditor?: () => Promise<boolean>;
+  onUpdateProposal?: (draft: StudioDraft, previewNode: HTMLElement) => Promise<ProposalUpdateResult>;
+}
+
+interface SubmitSuccessState {
+  message: string;
+  href?: string;
 }
 
 type StudioEditorTab = 'setup' | 'palette' | 'background' | 'audio' | 'publish';
@@ -259,15 +273,28 @@ function ColorEditor({
   );
 }
 
-export function ThemeStudio({ draft, records, selectedRecord, onChange, onLoadTemplate, onReset }: ThemeStudioProps) {
+export function ThemeStudio({
+  draft,
+  records,
+  selectedRecord,
+  onChange,
+  onLoadTemplate,
+  onReset,
+  linkedProposal = null,
+  editorUnlocked = false,
+  onUnlockEditor,
+  onUpdateProposal,
+}: ThemeStudioProps) {
   const previewRef = useRef<HTMLDivElement>(null);
   const [activeEditorTab, setActiveEditorTab] = useState<StudioEditorTab>('setup');
   const [downloadingArchive, setDownloadingArchive] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [updatingProposal, setUpdatingProposal] = useState(false);
   const [archiveError, setArchiveError] = useState<string | null>(null);
   const [archiveSuccess, setArchiveSuccess] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<SubmitSuccessState | null>(null);
+  const controlsLocked = Boolean(linkedProposal && (linkedProposal.proposalMode === 'preview' || !editorUnlocked));
 
   const hasProposalAssets = useMemo(() => {
     return Boolean(
@@ -285,6 +312,22 @@ export function ThemeStudio({ draft, records, selectedRecord, onChange, onLoadTe
     setArchiveSuccess(null);
     setSubmitError(null);
     setSubmitSuccess(null);
+  }
+
+  async function handleUnlockEditor() {
+    if (!onUnlockEditor) {
+      setSubmitError('Editor unlock is not available for this proposal.');
+      return false;
+    }
+
+    const unlocked = await onUnlockEditor();
+    if (!unlocked) {
+      setSubmitError('Editor token is required to update this linked proposal.');
+      return false;
+    }
+
+    setSubmitError(null);
+    return true;
   }
 
   function patch<K extends keyof StudioDraft>(key: K, value: StudioDraft[K]) {
@@ -381,12 +424,50 @@ export function ThemeStudio({ draft, records, selectedRecord, onChange, onLoadTe
       return;
     }
 
+    if (linkedProposal) {
+      if (linkedProposal.proposalMode !== 'edit') {
+        setSubmitError('This PR link is in preview mode only. Use the edit link from the PR to save changes.');
+        return;
+      }
+
+      if (!editorUnlocked) {
+        const unlocked = await handleUnlockEditor();
+        if (!unlocked) {
+          return;
+        }
+      }
+
+      if (!onUpdateProposal) {
+        setSubmitError('Proposal update is not available in this environment.');
+        return;
+      }
+
+      setUpdatingProposal(true);
+      setSubmitError(null);
+      setSubmitSuccess(null);
+      try {
+        const result = await onUpdateProposal(draft, previewRef.current);
+        setSubmitSuccess({
+          message: 'Linked proposal updated successfully.',
+          href: result.editUrl ?? result.previewUrl,
+        });
+      } catch (cause) {
+        setSubmitError(cause instanceof Error ? cause.message : 'Unknown proposal update error');
+      } finally {
+        setUpdatingProposal(false);
+      }
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
     try {
       const result = await submitThemeProposal(draft, previewRef.current);
-      setSubmitSuccess(result.pullRequestUrl);
+      setSubmitSuccess({
+        message: 'Pull request created.',
+        href: result.pullRequestUrl,
+      });
     } catch (cause) {
       setSubmitError(cause instanceof Error ? cause.message : 'Unknown submission error');
     } finally {
@@ -420,15 +501,17 @@ export function ThemeStudio({ draft, records, selectedRecord, onChange, onLoadTe
           <p className="panel__eyebrow">Theme creator</p>
           <h2>Live theme studio</h2>
           <p className="studio-shell__lede">
-            {selectedRecord
-              ? `Loaded from ${selectedRecord.entry.name}. Existing assets are previewable immediately; uploaded assets are the ones bundled into the generated proposal.`
-              : 'Start from a blank theme and tune the SwitchU preview in real time.'}
+            {linkedProposal
+              ? `Linked to ${linkedProposal.proposalId} on ${linkedProposal.branchName}. Preview mode is public; saving edits stays locked behind your private editor token.`
+              : selectedRecord
+                ? `Loaded from ${selectedRecord.entry.name}. Existing assets are previewable immediately; uploaded assets are the ones bundled into the generated proposal.`
+                : 'Start from a blank theme and tune the SwitchU preview in real time.'}
           </p>
         </div>
         <div className="studio-shell__status">
           <span><Sparkles size={16} /> live preview</span>
           <span><Upload size={16} /> background + fonts + audio</span>
-          <span><Send size={16} /> PR ready</span>
+          <span><Send size={16} /> {linkedProposal ? 'PR linked' : 'PR ready'}</span>
         </div>
       </div>
 
@@ -460,6 +543,24 @@ export function ThemeStudio({ draft, records, selectedRecord, onChange, onLoadTe
           </div>
 
           <div className="studio-editor-view">
+            {controlsLocked ? (
+              <div className="studio-lock-overlay">
+                <LockKeyhole size={22} />
+                <strong>{linkedProposal?.proposalMode === 'edit' ? 'Editing is locked' : 'Preview-only link'}</strong>
+                <span>
+                  {linkedProposal?.proposalMode === 'edit'
+                    ? 'Enter the private editor token to unlock changes and update the same PR branch.'
+                    : 'This PR link only loads the draft for inspection. Use the edit link from the PR if you need to save changes.'}
+                </span>
+                {linkedProposal?.proposalMode === 'edit' ? (
+                  <button className="submit-button submit-button--secondary" type="button" onClick={() => { void handleUnlockEditor(); }}>
+                    <LockKeyhole size={18} />
+                    <span>{editorUnlocked ? 'Editor unlocked' : 'Unlock editor'}</span>
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+
             {activeEditorTab === 'setup' ? (
               <>
                 <div className="studio-control-section">
@@ -673,25 +774,44 @@ export function ThemeStudio({ draft, records, selectedRecord, onChange, onLoadTe
                 <div className="studio-control-section__title">Submit</div>
                 <div className="submit-card">
                   <p>
-                    The PR payload will include `theme.json`, a generated preview screenshot, and every uploaded asset.
-                    Catalog assets loaded from an existing theme stay available in the preview, but only uploaded files are bundled into the proposal.
+                    {linkedProposal
+                      ? 'This linked PR keeps its editable draft snapshot on the proposal branch. Existing branch assets stay attached to the draft, and any new uploads replace the matching files when you save.'
+                      : 'The PR payload will include `theme.json`, a generated preview screenshot, and every uploaded asset. Catalog assets loaded from an existing theme stay available in the preview, but only uploaded files are bundled into the proposal.'}
                   </p>
                   <div className="submit-actions">
-                    <button className="submit-button" type="button" disabled={submitting || downloadingArchive} onClick={() => { void handleSubmit(); }}>
-                      <Send size={18} />
-                      <span>{submitting ? 'Creating pull request…' : 'Create pull request from this draft'}</span>
-                    </button>
+                    {linkedProposal?.proposalMode === 'preview' ? null : (
+                      <button className="submit-button" type="button" disabled={submitting || downloadingArchive || updatingProposal} onClick={() => { void handleSubmit(); }}>
+                        <Send size={18} />
+                        <span>
+                          {linkedProposal
+                            ? updatingProposal
+                              ? 'Updating linked proposal…'
+                              : editorUnlocked
+                                ? 'Update this linked proposal'
+                                : 'Unlock and update linked proposal'
+                            : submitting
+                              ? 'Creating pull request…'
+                              : 'Create pull request from this draft'}
+                        </span>
+                      </button>
+                    )}
                     <button className="submit-button submit-button--secondary" type="button" disabled={submitting || downloadingArchive} onClick={() => { void handleArchiveDownload(); }}>
                       <Download size={18} />
                       <span>{downloadingArchive ? 'Building local zip…' : 'Save this draft as a local zip'}</span>
                     </button>
                   </div>
+                  {linkedProposal?.proposalMode === 'preview' ? (
+                    <div className="submit-feedback submit-feedback--success">
+                      This PR link is preview-only. Open the edit link from the PR to unlock branch updates.
+                    </div>
+                  ) : null}
                   {archiveError ? <div className="submit-feedback submit-feedback--error">{archiveError}</div> : null}
                   {archiveSuccess ? <div className="submit-feedback submit-feedback--success">{archiveSuccess}</div> : null}
                   {submitError ? <div className="submit-feedback submit-feedback--error">{submitError}</div> : null}
                   {submitSuccess ? (
                     <div className="submit-feedback submit-feedback--success">
-                      Pull request created: <a href={submitSuccess} target="_blank" rel="noreferrer">{submitSuccess}</a>
+                      {submitSuccess.message}
+                      {submitSuccess.href ? <> <a href={submitSuccess.href} target="_blank" rel="noreferrer">{submitSuccess.href}</a></> : null}
                     </div>
                   ) : null}
                 </div>

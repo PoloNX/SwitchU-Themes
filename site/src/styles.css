@@ -631,8 +631,41 @@ select {
 }
 
 .studio-editor-view {
+  position: relative;
   display: grid;
   gap: 22px;
+}
+
+.studio-lock-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 28px;
+  text-align: center;
+  border-radius: 26px;
+  background: rgba(6, 16, 26, 0.9);
+  border: 1px solid rgba(173, 228, 214, 0.22);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(18px);
+}
+
+.studio-lock-overlay strong {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.02rem;
+}
+
+.studio-lock-overlay span {
+  max-width: 40ch;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.studio-lock-overlay .submit-button {
+  width: min(100%, 320px);
 }
 
 .studio-control-section {

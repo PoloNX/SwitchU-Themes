@@ -3,11 +3,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { downloadThemeArchive } from './catalog/download';
 import { ThemeStudio } from './components/ThemeStudio';
+import { loadProposalDraft, readProposalRouteState, updateThemeProposal, type ProposalRouteState } from './github/proposals';
 import { SwitchUPreview } from './preview/SwitchUPreview';
 import { createEmptyDraft, draftFromCatalogRecord, type StudioDraft } from './theme/draft';
 import type { ThemeCatalogRecord } from './theme/schema';
 
 type AppTab = 'explore' | 'create';
+const EDITOR_TOKEN_STORAGE_KEY = 'switchu-themes-editor-token';
 
 function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
@@ -107,6 +109,7 @@ function ThemeCard({
 }
 
 export default function App() {
+  const initialProposalRoute = useMemo(() => readProposalRouteState(), []);
   const [activeTab, setActiveTab] = useState<AppTab>('explore');
   const [records, setRecords] = useState<ThemeCatalogRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,6 +120,10 @@ export default function App() {
   const [search, setSearch] = useState('');
   const [downloadingThemeId, setDownloadingThemeId] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [linkedProposal, setLinkedProposal] = useState<ProposalRouteState | null>(initialProposalRoute);
+  const [proposalLoading, setProposalLoading] = useState(Boolean(initialProposalRoute));
+  const [proposalError, setProposalError] = useState<string | null>(null);
+  const [editorToken, setEditorToken] = useState(() => window.localStorage.getItem(EDITOR_TOKEN_STORAGE_KEY) ?? '');
 
   useEffect(() => {
     let cancelled = false;
@@ -142,6 +149,40 @@ export default function App() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!linkedProposal) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    setProposalLoading(true);
+    setProposalError(null);
+    setActiveTab('create');
+
+    void (async () => {
+      try {
+        const proposalDraft = await loadProposalDraft(linkedProposal);
+        if (!cancelled) {
+          setSelectedThemeId(null);
+          setPreviewThemeId(null);
+          setDraft(proposalDraft.draft);
+        }
+      } catch (cause) {
+        if (!cancelled) {
+          setProposalError(cause instanceof Error ? cause.message : 'Unknown proposal load error');
+        }
+      } finally {
+        if (!cancelled) {
+          setProposalLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [linkedProposal]);
 
   const stats = useMemo(() => {
     const withAudio = records.filter((record) => record.manifest.audio?.bundled).length;
@@ -202,11 +243,48 @@ export default function App() {
     };
   }, [previewRecord]);
 
+  function persistEditorToken(nextToken: string) {
+    setEditorToken(nextToken);
+    if (nextToken) {
+      window.localStorage.setItem(EDITOR_TOKEN_STORAGE_KEY, nextToken);
+      return;
+    }
+
+    window.localStorage.removeItem(EDITOR_TOKEN_STORAGE_KEY);
+  }
+
+  function clearProposalRoute() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('proposalId');
+    url.searchParams.delete('proposalBranch');
+    url.searchParams.delete('proposalMode');
+    window.history.replaceState({}, '', url);
+    setLinkedProposal(null);
+    setProposalLoading(false);
+    setProposalError(null);
+  }
+
+  function requestEditorToken(): string | null {
+    const existing = editorToken.trim() || window.localStorage.getItem(EDITOR_TOKEN_STORAGE_KEY)?.trim() || '';
+    if (existing) {
+      return existing;
+    }
+
+    const entered = window.prompt('Enter the private editor token configured on the PR proxy.')?.trim();
+    if (!entered) {
+      return null;
+    }
+
+    persistEditorToken(entered);
+    return entered;
+  }
+
   function showRecordPreview(record: ThemeCatalogRecord) {
     setPreviewThemeId(record.entry.id);
   }
 
   function loadRecordInStudio(record: ThemeCatalogRecord) {
+    clearProposalRoute();
     setSelectedThemeId(record.entry.id);
     setPreviewThemeId(null);
     setDraft(draftFromCatalogRecord(record));
@@ -214,6 +292,7 @@ export default function App() {
   }
 
   function resetStudio() {
+    clearProposalRoute();
     setSelectedThemeId(null);
     setDraft(createEmptyDraft());
     setActiveTab('create');
@@ -228,6 +307,26 @@ export default function App() {
       setDownloadError(cause instanceof Error ? cause.message : 'Unknown archive error');
     } finally {
       setDownloadingThemeId(null);
+    }
+  }
+
+  async function handleUpdateLinkedProposal(nextDraft: StudioDraft, previewNode: HTMLElement) {
+    if (!linkedProposal) {
+      throw new Error('No linked proposal is currently loaded.');
+    }
+
+    const token = requestEditorToken();
+    if (!token) {
+      throw new Error('Editor token is required to update this linked proposal.');
+    }
+
+    try {
+      return await updateThemeProposal(nextDraft, previewNode, linkedProposal.branchName, token);
+    } catch (cause) {
+      if (cause instanceof Error && cause.message.includes('Forbidden')) {
+        persistEditorToken('');
+      }
+      throw cause;
     }
   }
 
@@ -347,7 +446,7 @@ export default function App() {
               <div className="panel__header">
                 <div>
                   <p className="panel__eyebrow">Creator workspace</p>
-                  <h2>Build a theme from scratch or from a template</h2>
+                  <h2>{linkedProposal ? 'Open a PR-linked draft' : 'Build a theme from scratch or from a template'}</h2>
                 </div>
                 <button className="ghost-button" type="button" onClick={() => setActiveTab('explore')}>
                   Back to explore
@@ -355,19 +454,44 @@ export default function App() {
               </div>
               <div className="feature-list creator-overview">
                 <div className="feature-card">
-                  <strong>Current base</strong>
-                  <span>{selectedRecord ? `${selectedRecord.entry.name} by ${selectedRecord.entry.author}` : 'Blank draft with default SwitchU values.'}</span>
+                  <strong>{linkedProposal ? 'Linked proposal' : 'Current base'}</strong>
+                  <span>
+                    {linkedProposal
+                      ? `${linkedProposal.proposalId} on ${linkedProposal.branchName}`
+                      : selectedRecord
+                        ? `${selectedRecord.entry.name} by ${selectedRecord.entry.author}`
+                        : 'Blank draft with default SwitchU values.'}
+                  </span>
                 </div>
                 <div className="feature-card">
-                  <strong>Template-ready</strong>
-                  <span>Pick an existing theme in the creator to clone its palette, assets, and layout values.</span>
+                  <strong>{linkedProposal ? 'Access mode' : 'Template-ready'}</strong>
+                  <span>
+                    {linkedProposal
+                      ? linkedProposal.proposalMode === 'edit'
+                        ? 'This link opens the editor for the linked PR. Saving remains locked until you provide the private editor token.'
+                        : 'This link opens the linked PR in preview mode without write access.'
+                      : 'Pick an existing theme in the creator to clone its palette, assets, and layout values.'}
+                  </span>
                 </div>
                 <div className="feature-card">
-                  <strong>Better color picking</strong>
-                  <span>Use a native swatch picker plus readable hue, saturation, and lightness controls.</span>
+                  <strong>{linkedProposal ? 'Exit this link' : 'Better color picking'}</strong>
+                  <span>
+                    {linkedProposal
+                      ? 'Start a blank draft or load a catalog template to leave the PR-linked editing flow.'
+                      : 'Use a native swatch picker plus readable hue, saturation, and lightness controls.'}
+                  </span>
                 </div>
               </div>
             </section>
+
+            {proposalLoading ? (
+              <div className="loading-state">
+                <LoaderCircle className="loading-state__spinner" size={24} />
+                <span>Loading linked proposal draft…</span>
+              </div>
+            ) : null}
+
+            {proposalError ? <div className="submit-feedback submit-feedback--error">{proposalError}</div> : null}
 
             <ThemeStudio
               draft={draft}
@@ -376,6 +500,10 @@ export default function App() {
               onChange={setDraft}
               onLoadTemplate={loadRecordInStudio}
               onReset={resetStudio}
+              linkedProposal={linkedProposal}
+              editorUnlocked={Boolean(editorToken.trim())}
+              onUnlockEditor={async () => Boolean(requestEditorToken())}
+              onUpdateProposal={handleUpdateLinkedProposal}
             />
           </>
         )}

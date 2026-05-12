@@ -41,6 +41,11 @@ export interface StudioAsset {
   file?: File;
 }
 
+export interface StudioAssetSnapshot {
+  name: string;
+  relativePath: string;
+}
+
 export interface StudioDraft {
   basedOnThemeId?: string;
   id: string;
@@ -89,6 +94,31 @@ export interface StudioDraft {
     bundled: boolean;
     music?: StudioAsset;
     sfx: Partial<Record<DefaultSfxName, StudioAsset>>;
+  };
+}
+
+export interface StudioDraftSnapshot {
+  basedOnThemeId?: string;
+  id: string;
+  name: string;
+  author: string;
+  version: string;
+  summary: string;
+  notes: string;
+  contributor: string;
+  mode: ThemeMode;
+  colors: StudioDraft['colors'];
+  background: Omit<StudioDraft['background'], 'image'> & {
+    image?: StudioAssetSnapshot;
+  };
+  fonts: {
+    regular?: StudioAssetSnapshot;
+    small?: StudioAssetSnapshot;
+  };
+  audio: {
+    bundled: boolean;
+    music?: StudioAssetSnapshot;
+    sfx: Partial<Record<DefaultSfxName, StudioAssetSnapshot>>;
   };
 }
 
@@ -162,6 +192,35 @@ function cloneSfxRecord(source?: Partial<Record<DefaultSfxName, StudioAsset>>): 
   return { ...(source ?? {}) };
 }
 
+function snapshotAsset(asset: StudioAsset | undefined): StudioAssetSnapshot | undefined {
+  if (!asset) {
+    return undefined;
+  }
+
+  return {
+    name: asset.name,
+    relativePath: asset.relativePath,
+  };
+}
+
+function hydrateAsset(
+  asset: StudioAssetSnapshot | undefined,
+  resolveAssetUrl: (relativePath: string) => string,
+  proposalReady: boolean,
+): StudioAsset | undefined {
+  if (!asset) {
+    return undefined;
+  }
+
+  return {
+    source: 'catalog',
+    name: asset.name,
+    url: resolveAssetUrl(asset.relativePath),
+    relativePath: asset.relativePath,
+    proposalReady,
+  };
+}
+
 export function createEmptyDraft(): StudioDraft {
   return {
     id: 'my-theme',
@@ -217,6 +276,92 @@ export function createUploadAsset(file: File, relativePath: string): StudioAsset
     relativePath,
     proposalReady: true,
     file,
+  };
+}
+
+export function draftSnapshotFromDraft(draft: StudioDraft): StudioDraftSnapshot {
+  return {
+    basedOnThemeId: draft.basedOnThemeId,
+    id: draft.id,
+    name: draft.name,
+    author: draft.author,
+    version: draft.version,
+    summary: draft.summary,
+    notes: draft.notes,
+    contributor: draft.contributor,
+    mode: draft.mode,
+    colors: {
+      cursor: { ...draft.colors.cursor },
+      accent: { ...draft.colors.accent },
+      background: { ...draft.colors.background },
+      backgroundAccent: { ...draft.colors.backgroundAccent },
+      shapes: { ...draft.colors.shapes },
+    },
+    background: {
+      ...draft.background,
+      image: snapshotAsset(draft.background.image),
+    },
+    fonts: {
+      regular: snapshotAsset(draft.fonts.regular),
+      small: snapshotAsset(draft.fonts.small),
+    },
+    audio: {
+      bundled: draft.audio.bundled,
+      music: snapshotAsset(draft.audio.music),
+      sfx: Object.fromEntries(
+        DEFAULT_SFX_NAMES.flatMap((name) => {
+          const asset = snapshotAsset(draft.audio.sfx[name]);
+          return asset ? [[name, asset]] : [];
+        }),
+      ) as Partial<Record<DefaultSfxName, StudioAssetSnapshot>>,
+    },
+  };
+}
+
+export function draftFromSnapshot(
+  snapshot: StudioDraftSnapshot,
+  resolveAssetUrl: (relativePath: string) => string,
+  options: { proposalReadyAssets?: boolean } = {},
+): StudioDraft {
+  const base = createEmptyDraft();
+  const proposalReadyAssets = Boolean(options.proposalReadyAssets);
+
+  return {
+    basedOnThemeId: snapshot.basedOnThemeId,
+    id: snapshot.id,
+    name: snapshot.name,
+    author: snapshot.author,
+    version: snapshot.version,
+    summary: snapshot.summary,
+    notes: snapshot.notes,
+    contributor: snapshot.contributor,
+    mode: snapshot.mode,
+    colors: {
+      cursor: { ...snapshot.colors.cursor },
+      accent: { ...snapshot.colors.accent },
+      background: { ...snapshot.colors.background },
+      backgroundAccent: { ...snapshot.colors.backgroundAccent },
+      shapes: { ...snapshot.colors.shapes },
+    },
+    background: {
+      ...base.background,
+      ...snapshot.background,
+      image: hydrateAsset(snapshot.background.image, resolveAssetUrl, proposalReadyAssets),
+    },
+    fonts: {
+      regular: hydrateAsset(snapshot.fonts.regular, resolveAssetUrl, proposalReadyAssets),
+      small: hydrateAsset(snapshot.fonts.small, resolveAssetUrl, proposalReadyAssets),
+    },
+    audio: {
+      bundled: snapshot.audio.bundled,
+      music: hydrateAsset(snapshot.audio.music, resolveAssetUrl, proposalReadyAssets),
+      sfx: Object.fromEntries(
+        DEFAULT_SFX_NAMES.flatMap((name) => {
+          const asset = hydrateAsset(snapshot.audio.sfx[name], resolveAssetUrl, proposalReadyAssets);
+          return asset ? [[name, asset]] : [];
+        }),
+      ) as Partial<Record<DefaultSfxName, StudioAsset>>,
+    },
   };
 }
 

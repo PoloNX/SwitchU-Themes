@@ -8,6 +8,7 @@ interface Env {
   GITHUB_REPO_NAME: string;
   GITHUB_DEFAULT_BRANCH?: string;
   ALLOWED_ORIGIN?: string;
+  EDITOR_TOKEN?: string;
 }
 
 interface CatalogEntry {
@@ -27,6 +28,8 @@ interface ProposalPayload {
   catalogEntry: CatalogEntry;
   prTitle: string;
   prBody: string;
+  siteBaseUrl?: string;
+  draftSnapshot: ProposalDraftSnapshot;
   files: {
     previewScreenshot: string;
     backgroundImage?: string;
@@ -35,6 +38,79 @@ interface ProposalPayload {
     music?: string;
     sfx?: Record<string, string>;
   };
+}
+
+interface ProposalAssetSnapshot {
+  name: string;
+  relativePath: string;
+}
+
+interface ProposalColorSnapshot {
+  h: number;
+  s: number;
+  l: number;
+}
+
+interface ProposalDraftSnapshot {
+  basedOnThemeId?: string;
+  id: string;
+  name: string;
+  author: string;
+  version: string;
+  summary: string;
+  notes: string;
+  contributor: string;
+  mode: 'dark' | 'light';
+  colors: {
+    cursor: ProposalColorSnapshot;
+    accent: ProposalColorSnapshot;
+    background: ProposalColorSnapshot;
+    backgroundAccent: ProposalColorSnapshot;
+    shapes: ProposalColorSnapshot;
+  };
+  background: {
+    layout: 'floating' | 'grid';
+    shape: 'mixed' | 'circle' | 'triangle' | 'square' | 'diamond' | 'hexagon';
+    symmetry: 'none' | 'horizontal' | 'vertical' | 'quad';
+    count: number;
+    fixedOrientation: boolean;
+    orientation: number;
+    roundness: number;
+    columns: number;
+    rows: number;
+    spacingX: number;
+    spacingY: number;
+    sizeMin: number;
+    sizeMax: number;
+    speedMin: number;
+    speedMax: number;
+    wobble: number;
+    rotationSpeed: number;
+    opacity: number;
+    imageOpacity: number;
+    imageFit: 'cover' | 'contain';
+    image?: ProposalAssetSnapshot;
+  };
+  fonts: {
+    regular?: ProposalAssetSnapshot;
+    small?: ProposalAssetSnapshot;
+  };
+  audio: {
+    bundled: boolean;
+    music?: ProposalAssetSnapshot;
+    sfx: Record<string, ProposalAssetSnapshot>;
+  };
+}
+
+interface StoredProposalDraft {
+  schemaVersion: number;
+  branchName: string;
+  draftSnapshot: ProposalDraftSnapshot;
+}
+
+interface ProposalLinks {
+  previewUrl: string;
+  editUrl: string;
 }
 
 interface GitHubRepoResponse {
@@ -64,7 +140,7 @@ function corsHeaders(request: Request, env: Env): HeadersInit {
   return {
     'access-control-allow-origin': finalOrigin,
     'access-control-allow-methods': 'GET,POST,OPTIONS',
-    'access-control-allow-headers': 'Content-Type',
+    'access-control-allow-headers': 'Content-Type, X-Editor-Token',
   };
 }
 
@@ -90,8 +166,137 @@ function sanitizeRelativePath(path: string): string {
   return normalized;
 }
 
+function sanitizeBranchName(value: string): string {
+  const branch = value.trim();
+  if (!branch || branch.startsWith('/') || branch.endsWith('/') || branch.includes('..') || !/^[A-Za-z0-9._/-]+$/.test(branch)) {
+    throw new Error(`Invalid branch name: ${value}`);
+  }
+  return branch;
+}
+
+function sanitizeSiteBaseUrl(value: string | undefined): string | undefined {
+  if (!value?.trim()) {
+    return undefined;
+  }
+
+  const url = new URL(value.trim());
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    throw new Error('Invalid site base URL');
+  }
+
+  url.search = '';
+  url.hash = '';
+  return url.toString();
+}
+
+function sanitizeAssetSnapshot(input: ProposalAssetSnapshot | undefined): ProposalAssetSnapshot | undefined {
+  if (!input) {
+    return undefined;
+  }
+
+  return {
+    name: String(input.name ?? '').trim(),
+    relativePath: sanitizeRelativePath(String(input.relativePath ?? '')),
+  };
+}
+
+function sanitizeDraftSnapshot(input: ProposalDraftSnapshot): ProposalDraftSnapshot {
+  return {
+    ...input,
+    basedOnThemeId: input.basedOnThemeId?.trim() || undefined,
+    id: sanitizeThemeId(input.id),
+    name: String(input.name ?? '').trim(),
+    author: String(input.author ?? '').trim(),
+    version: String(input.version ?? '').trim(),
+    summary: String(input.summary ?? '').trim(),
+    notes: String(input.notes ?? ''),
+    contributor: String(input.contributor ?? '').trim(),
+    background: {
+      ...input.background,
+      image: sanitizeAssetSnapshot(input.background.image),
+    },
+    fonts: {
+      regular: sanitizeAssetSnapshot(input.fonts.regular),
+      small: sanitizeAssetSnapshot(input.fonts.small),
+    },
+    audio: {
+      bundled: Boolean(input.audio.bundled),
+      music: sanitizeAssetSnapshot(input.audio.music),
+      sfx: Object.fromEntries(
+        Object.entries(input.audio.sfx ?? {}).flatMap(([key, asset]) => {
+          const sanitized = sanitizeAssetSnapshot(asset);
+          return sanitized ? [[key, sanitized]] : [];
+        }),
+      ),
+    },
+  };
+}
+
 function normalizePrivateKey(value: string): string {
-  return value.replace(/\\n/g, '\n').trim();
+  const normalized = value.replace(/\\n/g, '\n').trim();
+  if (normalized.includes('BEGIN RSA PRIVATE KEY')) {
+    return convertPkcs1PemToPkcs8(normalized);
+  }
+  return normalized;
+}
+
+function concatBytes(...chunks: Uint8Array[]): Uint8Array {
+  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const output = new Uint8Array(totalLength);
+  let offset = 0;
+
+  chunks.forEach((chunk) => {
+    output.set(chunk, offset);
+    offset += chunk.length;
+  });
+
+  return output;
+}
+
+function encodeDerLength(length: number): Uint8Array {
+  if (length < 0x80) {
+    return Uint8Array.of(length);
+  }
+
+  const bytes: number[] = [];
+  let value = length;
+  while (value > 0) {
+    bytes.unshift(value & 0xff);
+    value >>= 8;
+  }
+
+  return Uint8Array.of(0x80 | bytes.length, ...bytes);
+}
+
+function encodeDerNode(tag: number, content: Uint8Array): Uint8Array {
+  return concatBytes(Uint8Array.of(tag), encodeDerLength(content.length), content);
+}
+
+function pemBodyToBytes(pem: string): Uint8Array {
+  const base64 = pem
+    .replace(/-----BEGIN [^-]+-----/g, '')
+    .replace(/-----END [^-]+-----/g, '')
+    .replace(/\s+/g, '');
+
+  return Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
+}
+
+function bytesToPem(label: string, bytes: Uint8Array): string {
+  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+  const base64 = btoa(binary).replace(/(.{64})/g, '$1\n');
+  return `-----BEGIN ${label}-----\n${base64.trim()}\n-----END ${label}-----`;
+}
+
+function convertPkcs1PemToPkcs8(pem: string): string {
+  const rsaPrivateKey = pemBodyToBytes(pem);
+  const version = Uint8Array.of(0x02, 0x01, 0x00);
+  const rsaEncryptionOid = Uint8Array.of(0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01);
+  const nullParameters = Uint8Array.of(0x05, 0x00);
+  const algorithmIdentifier = encodeDerNode(0x30, concatBytes(rsaEncryptionOid, nullParameters));
+  const privateKey = encodeDerNode(0x04, rsaPrivateKey);
+  const privateKeyInfo = encodeDerNode(0x30, concatBytes(version, algorithmIdentifier, privateKey));
+
+  return bytesToPem('PRIVATE KEY', privateKeyInfo);
 }
 
 function textToBase64(value: string): string {
@@ -128,13 +333,13 @@ async function createGitHubAppJwt(env: Env): Promise<string> {
     .sign(privateKey);
 }
 
-async function githubFetch<T>(
+async function githubRequest(
   env: Env,
   token: string,
   path: string,
   init: RequestInit = {},
-): Promise<T> {
-  const response = await fetch(`https://api.github.com${path}`, {
+): Promise<Response> {
+  return fetch(`https://api.github.com${path}`, {
     ...init,
     headers: {
       Accept: 'application/vnd.github+json',
@@ -144,6 +349,15 @@ async function githubFetch<T>(
       ...(init.headers ?? {}),
     },
   });
+}
+
+async function githubFetch<T>(
+  env: Env,
+  token: string,
+  path: string,
+  init: RequestInit = {},
+): Promise<T> {
+  const response = await githubRequest(env, token, path, init);
 
   if (!response.ok) {
     const text = await response.text();
@@ -170,6 +384,14 @@ async function getInstallationToken(env: Env): Promise<string> {
 
 function repoPath(env: Env): string {
   return `/repos/${env.GITHUB_REPO_OWNER}/${env.GITHUB_REPO_NAME}`;
+}
+
+function themeRoot(themeId: string): string {
+  return `themes/${sanitizeThemeId(themeId)}`;
+}
+
+function proposalMetadataPath(themeId: string): string {
+  return `${themeRoot(themeId)}/.switchu-studio.json`;
 }
 
 async function getDefaultBranch(env: Env, token: string): Promise<string> {
@@ -298,17 +520,132 @@ async function uploadBinaryFile(
   await putFile(env, token, branch, repoFilePath, message, contentBase64);
 }
 
+function upsertCatalogEntry(current: unknown, entry: CatalogEntry): { schemaVersion: number; themes: CatalogEntry[] } {
+  const catalog = current && typeof current === 'object' && 'themes' in current
+    ? current as { schemaVersion?: number; themes?: CatalogEntry[] }
+    : {};
+
+  const themes = Array.isArray(catalog.themes) ? catalog.themes.filter((item) => item.id !== entry.id) : [];
+  themes.push(entry);
+  themes.sort((left, right) => left.name.localeCompare(right.name));
+
+  return {
+    schemaVersion: typeof catalog.schemaVersion === 'number' ? catalog.schemaVersion : 1,
+    themes,
+  };
+}
+
+function buildProposalLinks(siteBaseUrl: string | undefined, themeId: string, branchName: string): ProposalLinks | undefined {
+  if (!siteBaseUrl) {
+    return undefined;
+  }
+
+  const build = (proposalMode: 'preview' | 'edit') => {
+    const url = new URL(siteBaseUrl);
+    url.searchParams.set('proposalId', themeId);
+    url.searchParams.set('proposalBranch', branchName);
+    url.searchParams.set('proposalMode', proposalMode);
+    return url.toString();
+  };
+
+  return {
+    previewUrl: build('preview'),
+    editUrl: build('edit'),
+  };
+}
+
+function buildPullRequestBody(baseBody: string, links: ProposalLinks | undefined): string {
+  if (!links) {
+    return baseBody;
+  }
+
+  return [
+    baseBody.trim(),
+    '',
+    'Preview this proposal:',
+    links.previewUrl,
+    '',
+    'Edit this proposal:',
+    links.editUrl,
+    '',
+    'The edit link only saves changes when the private editor token is configured in the proxy and provided from the site.',
+  ].filter(Boolean).join('\n');
+}
+
+async function writeProposalDraftMetadata(
+  env: Env,
+  token: string,
+  branch: string,
+  proposal: ProposalPayload,
+): Promise<void> {
+  const metadata: StoredProposalDraft = {
+    schemaVersion: 1,
+    branchName: branch,
+    draftSnapshot: proposal.draftSnapshot,
+  };
+
+  await putFile(
+    env,
+    token,
+    branch,
+    proposalMetadataPath(proposal.id),
+    `Store editable draft snapshot for ${proposal.id}`,
+    textToBase64(`${JSON.stringify(metadata, null, 2)}\n`),
+  );
+}
+
+async function readProposalDraftMetadata(
+  env: Env,
+  token: string,
+  branch: string,
+  themeId: string,
+): Promise<StoredProposalDraft> {
+  const content = await getContent(env, token, proposalMetadataPath(themeId), branch);
+  if (!content.content) {
+    throw new Error(`Missing editable draft snapshot for ${themeId}`);
+  }
+
+  return JSON.parse(decodeContent(content.content)) as StoredProposalDraft;
+}
+
+function guessContentType(path: string): string {
+  const lowerPath = path.toLowerCase();
+  if (lowerPath.endsWith('.png')) return 'image/png';
+  if (lowerPath.endsWith('.jpg') || lowerPath.endsWith('.jpeg')) return 'image/jpeg';
+  if (lowerPath.endsWith('.webp')) return 'image/webp';
+  if (lowerPath.endsWith('.mp3')) return 'audio/mpeg';
+  if (lowerPath.endsWith('.wav')) return 'audio/wav';
+  if (lowerPath.endsWith('.ttf')) return 'font/ttf';
+  if (lowerPath.endsWith('.otf')) return 'font/otf';
+  if (lowerPath.endsWith('.woff')) return 'font/woff';
+  if (lowerPath.endsWith('.woff2')) return 'font/woff2';
+  if (lowerPath.endsWith('.json')) return 'application/json; charset=utf-8';
+  return 'application/octet-stream';
+}
+
+function hasEditorAccess(request: Request, env: Env): boolean {
+  const expected = env.EDITOR_TOKEN?.trim();
+  if (!expected) {
+    return false;
+  }
+
+  const provided = request.headers.get('X-Editor-Token')?.trim();
+  return Boolean(provided) && provided === expected;
+}
+
 function validateProposal(input: unknown): ProposalPayload {
   if (!input || typeof input !== 'object') {
     throw new Error('Invalid proposal payload');
   }
 
   const proposal = input as ProposalPayload;
-  if (!proposal.catalogEntry || !proposal.files) {
+  if (!proposal.catalogEntry || !proposal.files || !proposal.draftSnapshot) {
     throw new Error('Incomplete proposal payload');
   }
 
   proposal.id = sanitizeThemeId(proposal.id);
+  proposal.siteBaseUrl = sanitizeSiteBaseUrl(proposal.siteBaseUrl);
+  proposal.draftSnapshot = sanitizeDraftSnapshot(proposal.draftSnapshot);
   proposal.catalogEntry.id = sanitizeThemeId(proposal.catalogEntry.id);
   proposal.catalogEntry.path = sanitizeRelativePath(proposal.catalogEntry.path);
   proposal.catalogEntry.manifest = sanitizeRelativePath(proposal.catalogEntry.manifest);
@@ -328,6 +665,11 @@ function validateProposal(input: unknown): ProposalPayload {
       }
     });
   }
+
+  if (proposal.draftSnapshot.id !== proposal.id) {
+    throw new Error('Draft snapshot id must match proposal id');
+  }
+
   return proposal;
 }
 
@@ -354,7 +696,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     return jsonResponse({ error: `A theme with id '${proposal.id}' already exists.` }, 409, corsHeaders(request, env));
   }
 
-  const root = `themes/${proposal.id}`;
+  const root = themeRoot(proposal.id);
   const commitPrefix = `[theme-studio] ${proposal.id}`;
 
   await uploadBinaryFile(
@@ -452,14 +794,200 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     textToBase64(manifestJson),
   );
 
+  await writeProposalDraftMetadata(env, token, branch, proposal);
+
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: register theme in catalog`, (current) => {
-    const nextCatalog = current as { schemaVersion: number; themes: CatalogEntry[] };
-    nextCatalog.themes = [...nextCatalog.themes, proposal.catalogEntry].sort((left, right) => left.name.localeCompare(right.name));
-    return nextCatalog;
+    return upsertCatalogEntry(current, proposal.catalogEntry);
   });
 
-  const pullRequestUrl = await openPullRequest(env, token, defaultBranch, branch, proposal.prTitle, proposal.prBody);
-  return jsonResponse({ pullRequestUrl, branchName: branch }, 200, corsHeaders(request, env));
+  const proposalLinks = buildProposalLinks(proposal.siteBaseUrl, proposal.id, branch);
+  const pullRequestUrl = await openPullRequest(
+    env,
+    token,
+    defaultBranch,
+    branch,
+    proposal.prTitle,
+    buildPullRequestBody(proposal.prBody, proposalLinks),
+  );
+  return jsonResponse({ pullRequestUrl, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
+}
+
+async function handleGetProposalDraft(request: Request, env: Env, url: URL): Promise<Response> {
+  const branch = sanitizeBranchName(url.searchParams.get('branch') ?? '');
+  const proposalId = sanitizeThemeId(url.searchParams.get('id') ?? '');
+  const token = await getInstallationToken(env);
+  const metadata = await readProposalDraftMetadata(env, token, branch, proposalId);
+
+  return jsonResponse(
+    {
+      proposalId,
+      branchName: branch,
+      draftSnapshot: metadata.draftSnapshot,
+    },
+    200,
+    corsHeaders(request, env),
+  );
+}
+
+async function handleGetProposalAsset(request: Request, env: Env, url: URL): Promise<Response> {
+  const branch = sanitizeBranchName(url.searchParams.get('branch') ?? '');
+  const proposalId = sanitizeThemeId(url.searchParams.get('id') ?? '');
+  const relativePath = sanitizeRelativePath(url.searchParams.get('path') ?? '');
+  const token = await getInstallationToken(env);
+  const repoFilePath = sanitizeRelativePath(`${themeRoot(proposalId)}/${relativePath}`);
+  const upstream = await githubRequest(
+    env,
+    token,
+    `${repoPath(env)}/contents/${repoFilePath}?ref=${encodeURIComponent(branch)}`,
+    {
+      headers: {
+        Accept: 'application/vnd.github.raw',
+      },
+    },
+  );
+
+  if (!upstream.ok) {
+    const text = await upstream.text();
+    return jsonResponse({ error: `GitHub asset fetch failed (${upstream.status}): ${text}` }, upstream.status, corsHeaders(request, env));
+  }
+
+  return new Response(await upstream.arrayBuffer(), {
+    status: 200,
+    headers: {
+      ...corsHeaders(request, env),
+      'cache-control': 'public, max-age=60',
+      'content-type': upstream.headers.get('content-type') || guessContentType(relativePath),
+    },
+  });
+}
+
+async function handleUpdateProposal(request: Request, env: Env, url: URL): Promise<Response> {
+  if (!env.EDITOR_TOKEN?.trim()) {
+    return jsonResponse({ error: 'EDITOR_TOKEN is not configured on the proxy.' }, 503, corsHeaders(request, env));
+  }
+
+  if (!hasEditorAccess(request, env)) {
+    return jsonResponse({ error: 'Forbidden: missing or invalid editor token.' }, 403, corsHeaders(request, env));
+  }
+
+  const branch = sanitizeBranchName(url.searchParams.get('branch') ?? '');
+  if (!branch.startsWith('theme-studio/')) {
+    return jsonResponse({ error: 'Only theme-studio proposal branches can be updated.' }, 400, corsHeaders(request, env));
+  }
+
+  const formData = await request.formData();
+  const proposalRaw = formData.get('proposal');
+  if (typeof proposalRaw !== 'string') {
+    return jsonResponse({ error: 'Missing proposal payload' }, 400, corsHeaders(request, env));
+  }
+
+  const proposal = validateProposal(JSON.parse(proposalRaw));
+  const token = await getInstallationToken(env);
+  const root = themeRoot(proposal.id);
+  const commitPrefix = `[theme-studio] ${proposal.id}`;
+  const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
+
+  await putFile(
+    env,
+    token,
+    branch,
+    `${root}/theme.json`,
+    `${commitPrefix}: update theme manifest`,
+    textToBase64(manifestJson),
+  );
+
+  await uploadBinaryFile(
+    env,
+    token,
+    branch,
+    root,
+    proposal.files.previewScreenshot,
+    requireFile(formData, 'previewScreenshot'),
+    `${commitPrefix}: update preview screenshot`,
+  );
+
+  const backgroundImage = optionalFile(formData, 'backgroundImage');
+  if (backgroundImage && proposal.files.backgroundImage) {
+    await uploadBinaryFile(
+      env,
+      token,
+      branch,
+      root,
+      proposal.files.backgroundImage,
+      backgroundImage,
+      `${commitPrefix}: update background image`,
+    );
+  }
+
+  const regularFont = optionalFile(formData, 'regularFont');
+  if (regularFont && proposal.files.regularFont) {
+    await uploadBinaryFile(
+      env,
+      token,
+      branch,
+      root,
+      proposal.files.regularFont,
+      regularFont,
+      `${commitPrefix}: update regular font`,
+    );
+  }
+
+  const smallFont = optionalFile(formData, 'smallFont');
+  if (smallFont && proposal.files.smallFont) {
+    await uploadBinaryFile(
+      env,
+      token,
+      branch,
+      root,
+      proposal.files.smallFont,
+      smallFont,
+      `${commitPrefix}: update small font`,
+    );
+  }
+
+  const music = optionalFile(formData, 'music');
+  if (music && proposal.files.music) {
+    await uploadBinaryFile(
+      env,
+      token,
+      branch,
+      root,
+      proposal.files.music,
+      music,
+      `${commitPrefix}: update background music`,
+    );
+  }
+
+  if (proposal.files.sfx) {
+    for (const [name, relativePath] of Object.entries(proposal.files.sfx)) {
+      if (!relativePath) {
+        continue;
+      }
+
+      const file = optionalFile(formData, `sfx:${name}`);
+      if (!file) {
+        continue;
+      }
+
+      await uploadBinaryFile(
+        env,
+        token,
+        branch,
+        root,
+        relativePath,
+        file,
+        `${commitPrefix}: update ${name} sfx`,
+      );
+    }
+  }
+
+  await writeProposalDraftMetadata(env, token, branch, proposal);
+  await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: update catalog entry`, (current) => {
+    return upsertCatalogEntry(current, proposal.catalogEntry);
+  });
+
+  const proposalLinks = buildProposalLinks(proposal.siteBaseUrl, proposal.id, branch);
+  return jsonResponse({ ok: true, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
 }
 
 export default {
@@ -475,8 +1003,20 @@ export default {
         return jsonResponse({ ok: true, repo: `${env.GITHUB_REPO_OWNER}/${env.GITHUB_REPO_NAME}` }, 200, corsHeaders(request, env));
       }
 
+      if (request.method === 'GET' && url.pathname === '/api/proposals/draft') {
+        return await handleGetProposalDraft(request, env, url);
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/proposals/asset') {
+        return await handleGetProposalAsset(request, env, url);
+      }
+
       if (request.method === 'POST' && url.pathname === '/api/proposals') {
         return await handleCreateProposal(request, env);
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/proposals/update') {
+        return await handleUpdateProposal(request, env, url);
       }
 
       return jsonResponse({ error: 'Not found' }, 404, corsHeaders(request, env));
