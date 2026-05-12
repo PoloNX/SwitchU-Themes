@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "themes": [
     {
+      "id": "aoab",
+      "name": "Ascendance of a Bookworm",
+      "author": "SaoriYuki",
+      "version": "1.0.0",
+      "path": "themes/aoab",
+      "manifest": "themes/aoab/theme.json",
+      "cover": "themes/aoab/media/screenshots/00.png"
+    },
+    {
       "id": "forest",
       "name": "Forest",
       "author": "PoloNX",
