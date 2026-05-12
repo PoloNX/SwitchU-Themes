@@ -38,7 +38,7 @@
       ]
     },
     "background": {
-      "layout": "grid",
+      "layout": "floating",
       "shape": "square",
       "symmetry": "quad",
       "count": 72,
