@@ -18,6 +18,15 @@
       "manifest": "themes/iisu/theme.json"
     },
     {
+      "id": "my-theme",
+      "name": "My Theme",
+      "author": "",
+      "version": "1.0.0",
+      "path": "themes/my-theme",
+      "manifest": "themes/my-theme/theme.json",
+      "cover": "themes/my-theme/media/screenshots/00.png"
+    },
+    {
       "id": "ocean",
       "name": "Ocean",
       "author": "PoloNX",
