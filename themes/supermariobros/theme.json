@@ -1,0 +1,77 @@
+{
+  "id": "supermariobros",
+  "name": "Super Mario Bros.",
+  "author": "PoloNX",
+  "version": "1.1.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.32,
+        0.68,
+        0.68
+      ],
+      "accent": [
+        0.31,
+        0.58,
+        0.46
+      ],
+      "background": [
+        0.32,
+        0.3,
+        0.1
+      ],
+      "backgroundAccent": [
+        0.31,
+        0.45,
+        0.15
+      ],
+      "shapes": [
+        0.33,
+        0.56,
+        0.53
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 0,
+      "fixedOrientation": false,
+      "orientation": 0,
+      "roundness": 0,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        18,
+        52
+      ],
+      "speed": [
+        4,
+        10
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "image": {
+        "path": "media/backgrounds/860645.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "bundled": true
+  }
+}
