@@ -1,0 +1,6 @@
+name = "switchu-themes-pr-proxy"
+main = "src/index.ts"
+compatibility_date = "2025-05-12"
+
+[vars]
+ALLOWED_ORIGIN = "*"

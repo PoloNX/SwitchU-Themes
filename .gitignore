@@ -1,0 +1,10 @@
+node_modules/
+docs/
+site/node_modules/
+site/dist/
+site/public/catalog/
+site/*.tsbuildinfo
+pr-proxy/node_modules/
+pr-proxy/dist/
+pr-proxy/.wrangler/
+pr-proxy/.dev.vars

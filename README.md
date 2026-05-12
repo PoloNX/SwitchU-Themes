@@ -4,6 +4,57 @@ This repository is the public catalog for SwitchU themes.
 
 The client can fetch the full list of available themes with a single request to the root `index.json` file. Each theme then keeps its own manifest, screenshots, and optional audio inside a dedicated folder.
 
+## Theme site and PR flow
+
+This repository now also contains the web stack for the public theme browser and the browser-based theme creator.
+
+### What ships in this repo
+
+- `site/`: React + Vite + TypeScript frontend intended for GitHub Pages.
+- `pr-proxy/`: Cloudflare Worker that receives proposal uploads and opens a pull request through a GitHub App.
+- `.github/workflows/deploy-pages.yml`: Pages build and deployment workflow.
+
+### Local commands
+
+From the repository root:
+
+```bash
+npm install
+npm run dev
+npm run build
+```
+
+What these commands do:
+
+- `npm run dev` launches the Vite site in `site/`.
+- `npm run build` rebuilds the Pages frontend and typechecks the PR proxy.
+- Before each site build, the current `index.json`, `themes/`, and `templates/` trees are synced into `site/public/catalog/`.
+
+### Frontend environment
+
+Create `site/.env` from `site/.env.example` and set:
+
+- `VITE_PR_PROXY_URL`: base URL of the deployed PR proxy.
+
+### PR proxy environment
+
+Create `pr-proxy/.dev.vars` from `pr-proxy/.dev.vars.example` and provide:
+
+- `GITHUB_APP_ID`
+- `GITHUB_INSTALLATION_ID`
+- `GITHUB_PRIVATE_KEY`
+- `GITHUB_REPO_OWNER`
+- `GITHUB_REPO_NAME`
+- `GITHUB_DEFAULT_BRANCH` optional
+- `ALLOWED_ORIGIN` optional
+
+Recommended GitHub App permissions:
+
+- `Contents`: read and write
+- `Pull requests`: read and write
+
+The worker endpoint is `POST /api/proposals`. It creates a branch, uploads `theme.json`, the generated preview screenshot, every uploaded asset, updates `index.json`, and opens a PR back to the default branch.
+
 ## Repository layout
 
 ```text
