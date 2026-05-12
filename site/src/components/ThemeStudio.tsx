@@ -13,6 +13,7 @@ import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } fr
 import {
   DEFAULT_SFX_NAMES,
   cloneDraft,
+  createOptimizedBackgroundUploadAsset,
   createUploadAsset,
   normalizeDraftId,
   type DefaultSfxName,
@@ -294,6 +295,8 @@ export function ThemeStudio({
   const [archiveSuccess, setArchiveSuccess] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<SubmitSuccessState | null>(null);
+  const [assetError, setAssetError] = useState<string | null>(null);
+  const [backgroundOptimizing, setBackgroundOptimizing] = useState(false);
   const controlsLocked = Boolean(linkedProposal && (linkedProposal.proposalMode === 'preview' || !editorUnlocked));
 
   const hasProposalAssets = useMemo(() => {
@@ -308,6 +311,7 @@ export function ThemeStudio({
 
   function update(next: StudioDraft) {
     onChange(next);
+    setAssetError(null);
     setArchiveError(null);
     setArchiveSuccess(null);
     setSubmitError(null);
@@ -354,16 +358,27 @@ export function ThemeStudio({
     });
   }
 
-  function onAssetUpload(field: 'background' | 'music' | 'regularFont' | 'smallFont', file: File | undefined) {
+  async function onAssetUpload(field: 'background' | 'music' | 'regularFont' | 'smallFont', file: File | undefined) {
     if (!file) {
       return;
     }
 
     const safeName = file.name.replace(/\s+/g, '-');
     if (field === 'background') {
-      patchBackground('image', createUploadAsset(file, `media/backgrounds/${safeName}`));
+      setBackgroundOptimizing(true);
+      setAssetError(null);
+      try {
+        const optimizedAsset = await createOptimizedBackgroundUploadAsset(file, 'media/backgrounds');
+        patchBackground('image', optimizedAsset);
+      } catch (cause) {
+        setAssetError(cause instanceof Error ? cause.message : 'Unknown background conversion error');
+      } finally {
+        setBackgroundOptimizing(false);
+      }
       return;
     }
+
+    setAssetError(null);
     if (field === 'music') {
       update({
         ...cloneDraft(draft),
@@ -725,15 +740,24 @@ export function ThemeStudio({
                   </Field>
                 </div>
 
+                  {assetError ? <div className="submit-feedback submit-feedback--error">{assetError}</div> : null}
+
                 <div className="studio-grid studio-grid--three studio-assets-row">
-                  <Field label="Background image" hint={draft.background.image?.proposalReady ? draft.background.image.name : 'PNG/JPG/WebP'}>
-                    <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={(event) => onAssetUpload('background', event.currentTarget.files?.[0])} />
+                    <Field
+                      label="Background image"
+                      hint={draft.background.image?.proposalReady
+                        ? `${draft.background.image.name}${backgroundOptimizing ? ' · optimizing…' : ' · optimized PNG'}`
+                        : backgroundOptimizing
+                          ? 'Optimizing image for SwitchU…'
+                          : 'PNG/JPG/WebP · auto-converted to PNG (max 1920px)'}
+                    >
+                      <input type="file" accept=".png,.jpg,.jpeg,.webp" disabled={backgroundOptimizing} onChange={(event) => { void onAssetUpload('background', event.currentTarget.files?.[0]); }} />
                   </Field>
                   <Field label="Regular font" hint={draft.fonts.regular?.proposalReady ? draft.fonts.regular.name : 'Optional TTF/OTF'}>
-                    <input type="file" accept=".ttf,.otf,.woff,.woff2" onChange={(event) => onAssetUpload('regularFont', event.currentTarget.files?.[0])} />
+                      <input type="file" accept=".ttf,.otf,.woff,.woff2" onChange={(event) => { void onAssetUpload('regularFont', event.currentTarget.files?.[0]); }} />
                   </Field>
                   <Field label="Small font" hint={draft.fonts.small?.proposalReady ? draft.fonts.small.name : 'Optional secondary font'}>
-                    <input type="file" accept=".ttf,.otf,.woff,.woff2" onChange={(event) => onAssetUpload('smallFont', event.currentTarget.files?.[0])} />
+                      <input type="file" accept=".ttf,.otf,.woff,.woff2" onChange={(event) => { void onAssetUpload('smallFont', event.currentTarget.files?.[0]); }} />
                   </Field>
                 </div>
               </div>
@@ -744,7 +768,7 @@ export function ThemeStudio({
                 <div className="studio-control-section__title">Audio</div>
                 <div className="studio-grid studio-grid--two">
                   <Field label="Background music" hint={draft.audio.music?.proposalReady ? draft.audio.music.name : 'MP3 file copied into sounds/music'}>
-                    <input type="file" accept=".mp3" onChange={(event) => onAssetUpload('music', event.currentTarget.files?.[0])} />
+                    <input type="file" accept=".mp3" onChange={(event) => { void onAssetUpload('music', event.currentTarget.files?.[0]); }} />
                   </Field>
                   <div className="audio-summary-card">
                     <Music4 size={18} />

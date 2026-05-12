@@ -192,6 +192,49 @@ function cloneSfxRecord(source?: Partial<Record<DefaultSfxName, StudioAsset>>): 
   return { ...(source ?? {}) };
 }
 
+function uploadSafeStem(fileName: string): string {
+  const normalized = fileName
+    .trim()
+    .replace(/\.[^.]+$/, '')
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9._-]+/gi, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return normalized || 'background';
+}
+
+function loadImageElement(file: File): Promise<HTMLImageElement> {
+  const objectUrl = URL.createObjectURL(file);
+
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.decoding = 'async';
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error(`Failed to decode image '${file.name}'.`));
+    };
+    image.src = objectUrl;
+  });
+}
+
+function canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error('Failed to convert the uploaded image.'));
+        return;
+      }
+
+      resolve(blob);
+    }, type);
+  });
+}
+
 function snapshotAsset(asset: StudioAsset | undefined): StudioAssetSnapshot | undefined {
   if (!asset) {
     return undefined;
@@ -277,6 +320,33 @@ export function createUploadAsset(file: File, relativePath: string): StudioAsset
     proposalReady: true,
     file,
   };
+}
+
+export async function createOptimizedBackgroundUploadAsset(file: File, relativeDirectory: string, maxSide = 1920): Promise<StudioAsset> {
+  const image = await loadImageElement(file);
+  const longestSide = Math.max(image.naturalWidth, image.naturalHeight);
+  const scale = longestSide > maxSide ? maxSide / longestSide : 1;
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext('2d');
+  if (!context) {
+    throw new Error('Failed to create an image conversion canvas.');
+  }
+
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = 'high';
+  context.drawImage(image, 0, 0, width, height);
+
+  const optimizedBlob = await canvasToBlob(canvas, 'image/png');
+  const optimizedName = `${uploadSafeStem(file.name)}.png`;
+  const optimizedFile = new File([optimizedBlob], optimizedName, { type: 'image/png' });
+
+  return createUploadAsset(optimizedFile, `${relativeDirectory}/${optimizedName}`);
 }
 
 export function draftSnapshotFromDraft(draft: StudioDraft): StudioDraftSnapshot {
