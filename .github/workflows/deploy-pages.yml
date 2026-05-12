@@ -18,6 +18,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_PR_PROXY_URL: ${{ vars.VITE_PR_PROXY_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,7 +38,6 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

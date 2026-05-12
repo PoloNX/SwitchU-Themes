@@ -3,4 +3,9 @@ main = "src/index.ts"
 compatibility_date = "2025-05-12"
 
 [vars]
-ALLOWED_ORIGIN = "*"
+GITHUB_APP_ID = "3691730"
+GITHUB_INSTALLATION_ID = "131794732"
+GITHUB_REPO_OWNER = "PoloNX"
+GITHUB_REPO_NAME = "SwitchU-Themes"
+GITHUB_DEFAULT_BRANCH = "main"
+ALLOWED_ORIGIN = "https://polonx.github.io"
