@@ -48,6 +48,15 @@
       "version": "1.2.0",
       "path": "themes/sunset",
       "manifest": "themes/sunset/theme.json"
+    },
+    {
+      "id": "supermariobros",
+      "name": "Super Mario Bros.",
+      "author": "PoloNX",
+      "version": "1.1.0",
+      "path": "themes/supermariobros",
+      "manifest": "themes/supermariobros/theme.json",
+      "cover": "themes/supermariobros/media/screenshots/00.png"
     }
   ]
 }
