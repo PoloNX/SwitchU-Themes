@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/supermariobros-1778617406679",
+  "draftSnapshot": {
+    "basedOnThemeId": "pikmin",
+    "id": "supermariobros",
+    "name": "Super Mario Bros.",
+    "author": "PoloNX",
+    "version": "1.1.0",
+    "summary": "Add mario bros nes theme",
+    "notes": "test",
+    "contributor": "PoloNX",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.32,
+        "s": 0.68,
+        "l": 0.68
+      },
+      "accent": {
+        "h": 0.31,
+        "s": 0.58,
+        "l": 0.46
+      },
+      "background": {
+        "h": 0.32,
+        "s": 0.3,
+        "l": 0.1
+      },
+      "backgroundAccent": {
+        "h": 0.31,
+        "s": 0.45,
+        "l": 0.15
+      },
+      "shapes": {
+        "h": 0.33,
+        "s": 0.56,
+        "l": 0.53
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 0,
+      "fixedOrientation": false,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 18,
+      "sizeMax": 52,
+      "speedMin": 4,
+      "speedMax": 10,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "860645.png",
+        "relativePath": "media/backgrounds/860645.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "menu.mp3",
+        "relativePath": "sounds/music/menu.mp3"
+      },
+      "sfx": {}
+    }
+  }
+}
