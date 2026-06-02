@@ -43,6 +43,15 @@
       "manifest": "themes/pikmin/theme.json"
     },
     {
+      "id": "psp",
+      "name": "PSP in Switch",
+      "author": "daniel.sox",
+      "version": "1.0.0",
+      "path": "themes/psp",
+      "manifest": "themes/psp/theme.json",
+      "cover": "themes/psp/media/screenshots/00.png"
+    },
+    {
       "id": "sakura",
       "name": "Sakura",
       "author": "PoloNX",
