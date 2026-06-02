@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/psp-1780438243743",
+  "draftSnapshot": {
+    "id": "psp",
+    "name": "PSP in Switch",
+    "author": "daniel.sox",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.58,
+        "s": 0.9,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.53,
+        "s": 0.8,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.56,
+        "s": 0.4,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "vertical",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 3,
+      "speedMax": 5,
+      "wobble": 8,
+      "rotationSpeed": 0.1,
+      "opacity": 0.8,
+      "imageOpacity": 0.42,
+      "imageFit": "cover",
+      "image": {
+        "name": "thumb-1920-1375141.png",
+        "relativePath": "media/backgrounds/thumb-1920-1375141.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "LoggingIn.mp3",
+        "relativePath": "sounds/music/LoggingIn.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "activation.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "confirm.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "show_modal.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "hide_modal.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "navigation.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "launch_game.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "slider_up.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "slider_down.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "toggle_on.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "toggle_off.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "tab_transition.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "volume.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}
