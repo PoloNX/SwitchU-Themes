@@ -1,0 +1,77 @@
+{
+  "id": "psp",
+  "name": "PSP in Switch",
+  "author": "daniel.sox",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.58,
+        0.9,
+        0.62
+      ],
+      "accent": [
+        0.53,
+        0.8,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.56,
+        0.4,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "vertical",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        3,
+        5
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.1,
+      "opacity": 0.8,
+      "image": {
+        "path": "media/backgrounds/thumb-1920-1375141.png",
+        "opacity": 0.42,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "bundled": true
+  }
+}
