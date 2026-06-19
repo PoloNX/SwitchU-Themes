@@ -4,6 +4,7 @@ import type {
   ThemeCatalogRecord,
   ThemeColorConfig,
   ThemeFontsConfig,
+  ThemeIconsConfig,
   ThemeManifest,
   ThemeMode,
 } from './schema';
@@ -91,6 +92,7 @@ export interface StudioDraft {
     regular?: StudioAsset;
     small?: StudioAsset;
   };
+  icons?: ThemeIconsConfig;
   audio: {
     bundled: boolean;
     music?: StudioAsset;
@@ -117,6 +119,7 @@ export interface StudioDraftSnapshot {
     regular?: StudioAssetSnapshot;
     small?: StudioAssetSnapshot;
   };
+  icons?: ThemeIconsConfig;
   audio: {
     bundled: boolean;
     music?: StudioAssetSnapshot;
@@ -379,6 +382,7 @@ export function draftSnapshotFromDraft(draft: StudioDraft): StudioDraftSnapshot 
       regular: snapshotAsset(draft.fonts.regular),
       small: snapshotAsset(draft.fonts.small),
     },
+    icons: draft.icons ? { ...draft.icons } : undefined,
     audio: {
       bundled: draft.audio.bundled,
       music: snapshotAsset(draft.audio.music),
@@ -427,6 +431,7 @@ export function draftFromSnapshot(
       regular: hydrateAsset(snapshot.fonts.regular, resolveAssetUrl, proposalReadyAssets),
       small: hydrateAsset(snapshot.fonts.small, resolveAssetUrl, proposalReadyAssets),
     },
+    icons: snapshot.icons ? { ...snapshot.icons } : undefined,
     audio: {
       bundled: snapshot.audio.bundled,
       music: hydrateAsset(snapshot.audio.music, resolveAssetUrl, proposalReadyAssets),
@@ -490,6 +495,7 @@ export function draftFromCatalogRecord(record: ThemeCatalogRecord, options: { pr
     regular: toCatalogAsset(record, fonts?.regular),
     small: toCatalogAsset(record, fonts?.small),
   };
+  base.icons = base.proposalMode === 'update' && theme?.icons ? { ...theme.icons } : undefined;
   base.audio = {
     bundled: Boolean(manifest.audio?.bundled),
     sfx: {},
@@ -562,10 +568,10 @@ function serializeAudio(draft: StudioDraft): ThemeAudioConfig | undefined {
   const hasMusic = Boolean(draft.audio.music?.proposalReady);
   const hasSfx = Object.values(draft.audio.sfx).some((asset) => asset?.proposalReady);
   if (!draft.audio.bundled && !hasMusic && !hasSfx) {
-    return undefined;
+    return { preset: 'wiiu', bundled: false };
   }
 
-  return { bundled: true };
+  return { preset: 'bundled', bundled: true };
 }
 
 export function buildManifestFromDraft(draft: StudioDraft): ThemeManifest {
@@ -588,6 +594,9 @@ export function buildManifestFromDraft(draft: StudioDraft): ThemeManifest {
   if (fonts) {
     manifest.theme!.fonts = fonts;
   }
+  if (draft.icons) {
+    manifest.theme!.icons = { ...draft.icons };
+  }
 
   const audio = serializeAudio(draft);
   if (audio) {
@@ -609,6 +618,7 @@ export function cloneDraft(draft: StudioDraft): StudioDraft {
     },
     background: { ...draft.background },
     fonts: { ...draft.fonts },
+    icons: draft.icons ? { ...draft.icons } : undefined,
     audio: {
       ...draft.audio,
       sfx: cloneSfxRecord(draft.audio.sfx),

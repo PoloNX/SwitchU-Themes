@@ -74,6 +74,7 @@ export interface ThemeThemeConfig {
 }
 
 export interface ThemeAudioConfig {
+  preset?: 'wiiu' | 'bundled' | 'theme' | 'package' | string;
   bundled?: boolean;
 }
 

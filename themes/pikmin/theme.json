@@ -11,11 +11,31 @@
   "theme": {
     "mode": "dark",
     "colors": {
-      "cursor": [0.32, 0.68, 0.68],
-      "accent": [0.31, 0.58, 0.46],
-      "background": [0.32, 0.30, 0.10],
-      "backgroundAccent": [0.31, 0.45, 0.15],
-      "shapes": [0.33, 0.56, 0.53]
+      "cursor": [
+        0.32,
+        0.68,
+        0.68
+      ],
+      "accent": [
+        0.31,
+        0.58,
+        0.46
+      ],
+      "background": [
+        0.32,
+        0.3,
+        0.1
+      ],
+      "backgroundAccent": [
+        0.31,
+        0.45,
+        0.15
+      ],
+      "shapes": [
+        0.33,
+        0.56,
+        0.53
+      ]
     },
     "background": {
       "image": {
@@ -27,16 +47,23 @@
       "shape": "circle",
       "symmetry": "none",
       "count": 18,
-      "size": [18, 52],
-      "speed": [4, 10],
+      "size": [
+        18,
+        52
+      ],
+      "speed": [
+        4,
+        10
+      ],
       "wobble": 8,
       "fixedOrientation": false,
       "rotationSpeed": 0.04,
-      "roundness": 0.0,
+      "roundness": 0,
       "opacity": 0.14
     }
   },
   "audio": {
+    "preset": "bundled",
     "bundled": true
   }
 }

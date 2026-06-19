@@ -70,5 +70,9 @@
         "fit": "cover"
       }
     }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
   }
 }

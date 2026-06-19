@@ -12,27 +12,54 @@
   "theme": {
     "mode": "dark",
     "colors": {
-      "cursor": [0.53, 0.80, 0.55],
-      "accent": [0.53, 0.80, 0.55],
-      "background": [0.58, 0.50, 0.08],
-      "backgroundAccent": [0.56, 0.55, 0.14],
-      "shapes": [0.56, 0.40, 0.30]
+      "cursor": [
+        0.53,
+        0.8,
+        0.55
+      ],
+      "accent": [
+        0.53,
+        0.8,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.56,
+        0.4,
+        0.3
+      ]
     },
     "background": {
       "layout": "floating",
       "shape": "circle",
       "symmetry": "horizontal",
       "count": 30,
-      "size": [20, 68],
-      "speed": [3, 10],
+      "size": [
+        20,
+        68
+      ],
+      "speed": [
+        3,
+        10
+      ],
       "wobble": 14,
       "fixedOrientation": false,
       "rotationSpeed": 0.08,
-      "roundness": 0.0,
+      "roundness": 0,
       "opacity": 0.66
     }
   },
   "audio": {
+    "preset": "wiiu",
     "bundled": false
   }
 }

@@ -72,6 +72,7 @@
     }
   },
   "audio": {
+    "preset": "bundled",
     "bundled": true
   }
 }
