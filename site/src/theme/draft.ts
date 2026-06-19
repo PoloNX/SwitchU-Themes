@@ -48,6 +48,7 @@ export interface StudioAssetSnapshot {
 
 export interface StudioDraft {
   basedOnThemeId?: string;
+  proposalMode: 'create' | 'update';
   id: string;
   name: string;
   author: string;
@@ -99,6 +100,7 @@ export interface StudioDraft {
 
 export interface StudioDraftSnapshot {
   basedOnThemeId?: string;
+  proposalMode?: 'create' | 'update';
   id: string;
   name: string;
   author: string;
@@ -266,6 +268,7 @@ function hydrateAsset(
 
 export function createEmptyDraft(): StudioDraft {
   return {
+    proposalMode: 'create',
     id: 'my-theme',
     name: 'My Theme',
     author: '',
@@ -352,6 +355,7 @@ export async function createOptimizedBackgroundUploadAsset(file: File, relativeD
 export function draftSnapshotFromDraft(draft: StudioDraft): StudioDraftSnapshot {
   return {
     basedOnThemeId: draft.basedOnThemeId,
+    proposalMode: draft.proposalMode,
     id: draft.id,
     name: draft.name,
     author: draft.author,
@@ -398,6 +402,7 @@ export function draftFromSnapshot(
 
   return {
     basedOnThemeId: snapshot.basedOnThemeId,
+    proposalMode: snapshot.proposalMode ?? 'create',
     id: snapshot.id,
     name: snapshot.name,
     author: snapshot.author,
@@ -435,7 +440,7 @@ export function draftFromSnapshot(
   };
 }
 
-export function draftFromCatalogRecord(record: ThemeCatalogRecord): StudioDraft {
+export function draftFromCatalogRecord(record: ThemeCatalogRecord, options: { proposalMode?: 'create' | 'update' } = {}): StudioDraft {
   const manifest = record.manifest;
   const theme = manifest.theme;
   const colors = theme?.colors;
@@ -444,11 +449,12 @@ export function draftFromCatalogRecord(record: ThemeCatalogRecord): StudioDraft 
 
   const base = createEmptyDraft();
   base.basedOnThemeId = record.entry.id;
-  base.id = `${slugifyThemeId(record.entry.id)}-variant`;
-  base.name = `${record.entry.name} Variant`;
+  base.proposalMode = options.proposalMode ?? 'create';
+  base.id = base.proposalMode === 'update' ? record.entry.id : `${slugifyThemeId(`${record.entry.name} Variant`)}`;
+  base.name = base.proposalMode === 'update' ? record.entry.name : `${record.entry.name} Variant`;
   base.author = manifest.author;
   base.version = manifest.version;
-  base.summary = `Add theme ${base.name}`;
+  base.summary = `${base.proposalMode === 'update' ? 'Update' : 'Add'} theme ${base.name}`;
   base.mode = theme?.mode ?? 'dark';
   base.colors = {
     cursor: toTriplet(colors?.cursor, base.colors.cursor),
@@ -523,7 +529,7 @@ function serializeBackground(draft: StudioDraft): ThemeBackgroundConfig {
     opacity: draft.background.opacity,
   };
 
-  if (draft.background.image?.proposalReady) {
+  if (draft.background.image && (draft.proposalMode === 'update' || draft.background.image.proposalReady)) {
     background.image = {
       path: draft.background.image.relativePath,
       opacity: draft.background.imageOpacity,
@@ -535,8 +541,12 @@ function serializeBackground(draft: StudioDraft): ThemeBackgroundConfig {
 }
 
 function serializeFonts(draft: StudioDraft): ThemeFontsConfig | undefined {
-  const regular = draft.fonts.regular?.proposalReady ? draft.fonts.regular.relativePath : undefined;
-  const small = draft.fonts.small?.proposalReady ? draft.fonts.small.relativePath : undefined;
+  const regular = draft.fonts.regular && (draft.proposalMode === 'update' || draft.fonts.regular.proposalReady)
+    ? draft.fonts.regular.relativePath
+    : undefined;
+  const small = draft.fonts.small && (draft.proposalMode === 'update' || draft.fonts.small.proposalReady)
+    ? draft.fonts.small.relativePath
+    : undefined;
 
   if (!regular && !small) {
     return undefined;

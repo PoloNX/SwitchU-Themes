@@ -1,4 +1,4 @@
-import { AudioLines, Download, Eye, ImageIcon, LoaderCircle, Palette, Search, Sparkles, Wand2, X } from 'lucide-react';
+import { AudioLines, Download, Eye, ImageIcon, LoaderCircle, Palette, PenLine, Search, Sparkles, Wand2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { downloadThemeArchive } from './catalog/download';
@@ -28,6 +28,7 @@ function ThemeCard({
   downloading,
   onPreview,
   onUseTemplate,
+  onEditTheme,
   onDownload,
 }: {
   record: ThemeCatalogRecord;
@@ -36,6 +37,7 @@ function ThemeCard({
   downloading: boolean;
   onPreview: () => void;
   onUseTemplate: () => void;
+  onEditTheme: () => void;
   onDownload: () => void;
 }) {
   const background = record.manifest.theme?.background;
@@ -91,6 +93,15 @@ function ThemeCard({
           >
             <Wand2 size={16} />
             <span>Template</span>
+          </button>
+          <button
+            className="theme-card__action"
+            type="button"
+            onClick={onEditTheme}
+            title={`Open a pull request to update ${record.entry.name}`}
+          >
+            <PenLine size={16} />
+            <span>Edit</span>
           </button>
           <button
             className="ghost-button theme-card__secondary"
@@ -287,7 +298,15 @@ export default function App() {
     clearProposalRoute();
     setSelectedThemeId(record.entry.id);
     setPreviewThemeId(null);
-    setDraft(draftFromCatalogRecord(record));
+    setDraft(draftFromCatalogRecord(record, { proposalMode: 'create' }));
+    setActiveTab('create');
+  }
+
+  function editRecordInStudio(record: ThemeCatalogRecord) {
+    clearProposalRoute();
+    setSelectedThemeId(record.entry.id);
+    setPreviewThemeId(null);
+    setDraft(draftFromCatalogRecord(record, { proposalMode: 'update' }));
     setActiveTab('create');
   }
 
@@ -433,6 +452,7 @@ export default function App() {
                       downloading={record.entry.id === downloadingThemeId}
                       onPreview={() => showRecordPreview(record)}
                       onUseTemplate={() => loadRecordInStudio(record)}
+                      onEditTheme={() => editRecordInStudio(record)}
                       onDownload={() => { void handleDownload(record); }}
                     />
                   ))}
@@ -551,6 +571,10 @@ export default function App() {
                   <button className="theme-card__action" type="button" onClick={() => loadRecordInStudio(previewRecord)}>
                     <Wand2 size={16} />
                     <span>Use as template</span>
+                  </button>
+                  <button className="theme-card__action" type="button" onClick={() => editRecordInStudio(previewRecord)}>
+                    <PenLine size={16} />
+                    <span>Edit theme</span>
                   </button>
                   <button
                     className="ghost-button theme-card__secondary"

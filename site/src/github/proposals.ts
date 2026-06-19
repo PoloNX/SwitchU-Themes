@@ -79,6 +79,7 @@ function buildProposalPayload(draft: StudioDraft) {
 
   return {
     id,
+    proposalMode: draft.proposalMode,
     name: manifest.name,
     siteBaseUrl: currentSiteBaseUrl(),
     draftSnapshot: draftSnapshotFromDraft(draft),
@@ -92,11 +93,12 @@ function buildProposalPayload(draft: StudioDraft) {
       manifest: `${themeRoot(id)}/theme.json`,
       cover: `${themeRoot(id)}/media/screenshots/00.png`,
     },
-    prTitle: draft.summary.trim() || `Add theme ${manifest.name}`,
+    prTitle: draft.summary.trim() || `${draft.proposalMode === 'update' ? 'Update' : 'Add'} theme ${manifest.name}`,
     prBody: [
       `Theme proposal submitted from SwitchU Themes Studio.`,
       '',
       `Theme: ${manifest.name}`,
+      `Mode: ${draft.proposalMode === 'update' ? 'Update existing theme' : 'Add new theme'}`,
       `Author: ${manifest.author}`,
       draft.contributor ? `Contributor: ${draft.contributor}` : '',
       draft.notes.trim() ? '' : '',

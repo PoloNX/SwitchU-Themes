@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
-  "branchName": "theme-studio/iisu-variant-1781855939751",
+  "branchName": "theme-studio/cammy-minimalist-1781855939751",
   "draftSnapshot": {
     "basedOnThemeId": "iisu",
-    "id": "iisu-variant",
+    "proposalMode": "create",
+    "id": "cammy-minimalist",
     "name": "cammy Minimalist",
     "author": "iiSU Team",
     "version": "1.1.0",
-    "summary": "Add theme iiSU Variant",
+    "summary": "Add theme cammy Minimalist",
     "notes": "",
     "contributor": "Degrahne",
     "mode": "dark",

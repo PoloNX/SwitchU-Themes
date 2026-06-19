@@ -23,6 +23,7 @@ interface CatalogEntry {
 
 interface ProposalPayload {
   id: string;
+  proposalMode?: 'create' | 'update';
   name: string;
   manifest: unknown;
   catalogEntry: CatalogEntry;
@@ -53,6 +54,7 @@ interface ProposalColorSnapshot {
 
 interface ProposalDraftSnapshot {
   basedOnThemeId?: string;
+  proposalMode?: 'create' | 'update';
   id: string;
   name: string;
   author: string;
@@ -688,6 +690,7 @@ function validateProposal(input: unknown): ProposalPayload {
   }
 
   proposal.id = sanitizeThemeId(proposal.id);
+  proposal.proposalMode = proposal.proposalMode === 'update' ? 'update' : 'create';
   proposal.siteBaseUrl = sanitizeSiteBaseUrl(proposal.siteBaseUrl);
   proposal.draftSnapshot = sanitizeDraftSnapshot(proposal.draftSnapshot);
   proposal.catalogEntry.id = sanitizeThemeId(proposal.catalogEntry.id);
@@ -714,6 +717,14 @@ function validateProposal(input: unknown): ProposalPayload {
     throw new Error('Draft snapshot id must match proposal id');
   }
 
+  if ((proposal.draftSnapshot.proposalMode ?? 'create') !== proposal.proposalMode) {
+    throw new Error('Draft snapshot proposal mode must match proposal mode');
+  }
+
+  if (proposal.catalogEntry.id !== proposal.id) {
+    throw new Error('Catalog entry id must match proposal id');
+  }
+
   return proposal;
 }
 
@@ -727,21 +738,28 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
   const proposal = validateProposal(JSON.parse(proposalRaw));
   const token = await getInstallationToken(env);
   const defaultBranch = await getDefaultBranch(env, token);
-  const defaultSha = await getBranchSha(env, token, defaultBranch);
-  const branch = `theme-studio/${proposal.id}-${Date.now()}`;
-  await createBranch(env, token, branch, defaultSha);
-
   const existingCatalog = await getContent(env, token, 'index.json', defaultBranch);
   const catalog = existingCatalog.content
     ? (JSON.parse(decodeContent(existingCatalog.content)) as { schemaVersion: number; themes: CatalogEntry[] })
     : { schemaVersion: 1, themes: [] };
+  const themeExists = catalog.themes.some((entry) => entry.id === proposal.id);
 
-  if (catalog.themes.some((entry) => entry.id === proposal.id)) {
+  if (proposal.proposalMode === 'create' && themeExists) {
     return jsonResponse({ error: `A theme with id '${proposal.id}' already exists.` }, 409, corsHeaders(request, env));
   }
 
+  if (proposal.proposalMode === 'update' && !themeExists) {
+    return jsonResponse({ error: `Cannot update missing theme '${proposal.id}'.` }, 404, corsHeaders(request, env));
+  }
+
+  const defaultSha = await getBranchSha(env, token, defaultBranch);
+  const branch = `theme-studio/${proposal.proposalMode === 'update' ? 'update-' : ''}${proposal.id}-${Date.now()}`;
+  await createBranch(env, token, branch, defaultSha);
+
+  const isUpdate = proposal.proposalMode === 'update';
   const root = themeRoot(proposal.id);
   const commitPrefix = `[theme-studio] ${proposal.id}`;
+  const commitVerb = isUpdate ? 'update' : 'add';
 
   await uploadBinaryFile(
     env,
@@ -750,7 +768,8 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     root,
     proposal.files.previewScreenshot,
     requireFile(formData, 'previewScreenshot'),
-    `${commitPrefix}: add preview screenshot`,
+    `${commitPrefix}: ${commitVerb} preview screenshot`,
+    { ensureSha: isUpdate },
   );
 
   const backgroundImage = optionalFile(formData, 'backgroundImage');
@@ -762,7 +781,8 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       root,
       proposal.files.backgroundImage,
       backgroundImage,
-      `${commitPrefix}: add background image`,
+      `${commitPrefix}: ${commitVerb} background image`,
+      { ensureSha: isUpdate },
     );
   }
 
@@ -775,7 +795,8 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       root,
       proposal.files.regularFont,
       regularFont,
-      `${commitPrefix}: add regular font`,
+      `${commitPrefix}: ${commitVerb} regular font`,
+      { ensureSha: isUpdate },
     );
   }
 
@@ -788,7 +809,8 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       root,
       proposal.files.smallFont,
       smallFont,
-      `${commitPrefix}: add small font`,
+      `${commitPrefix}: ${commitVerb} small font`,
+      { ensureSha: isUpdate },
     );
   }
 
@@ -801,7 +823,8 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       root,
       proposal.files.music,
       music,
-      `${commitPrefix}: add background music`,
+      `${commitPrefix}: ${commitVerb} background music`,
+      { ensureSha: isUpdate },
     );
   }
 
@@ -823,24 +846,27 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
         root,
         relativePath,
         file,
-        `${commitPrefix}: add ${name} sfx`,
+        `${commitPrefix}: ${commitVerb} ${name} sfx`,
+        { ensureSha: isUpdate },
       );
     }
   }
 
   const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
+  const existingManifestSha = isUpdate ? await findContentSha(env, token, branch, `${root}/theme.json`) : undefined;
   await putFile(
     env,
     token,
     branch,
     `${root}/theme.json`,
-    `${commitPrefix}: add theme manifest`,
+    `${commitPrefix}: ${commitVerb} theme manifest`,
     textToBase64(manifestJson),
+    existingManifestSha,
   );
 
-  await writeProposalDraftMetadata(env, token, branch, proposal);
+  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: isUpdate });
 
-  await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: register theme in catalog`, (current) => {
+  await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: ${isUpdate ? 'update' : 'register'} theme in catalog`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
   });
 

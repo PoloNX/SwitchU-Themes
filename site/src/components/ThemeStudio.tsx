@@ -338,6 +338,18 @@ export function ThemeStudio({
     update({ ...cloneDraft(draft), [key]: value });
   }
 
+  function patchDisplayName(name: string) {
+    const next = cloneDraft(draft);
+    const currentNameId = normalizeDraftId(draft.name);
+    next.name = name;
+
+    if (draft.proposalMode === 'create' && (!draft.id || draft.id === currentNameId)) {
+      next.id = normalizeDraftId(name);
+    }
+
+    update(next);
+  }
+
   function patchColor(key: keyof StudioDraft['colors'], triplet: StudioTriplet) {
     update({
       ...cloneDraft(draft),
@@ -518,6 +530,8 @@ export function ThemeStudio({
           <p className="studio-shell__lede">
             {linkedProposal
               ? `Linked to ${linkedProposal.proposalId} on ${linkedProposal.branchName}. Preview mode is public; saving edits stays locked behind your private editor token.`
+              : draft.proposalMode === 'update'
+                ? `Editing ${draft.id}. This will create a pull request that updates the existing catalog theme instead of adding a new folder.`
               : selectedRecord
                 ? `Loaded from ${selectedRecord.entry.name}. Existing assets are previewable immediately; uploaded assets are the ones bundled into the generated proposal.`
                 : 'Start from a blank theme and tune the SwitchU preview in real time.'}
@@ -581,7 +595,7 @@ export function ThemeStudio({
                 <div className="studio-control-section">
                   <div className="studio-control-section__title">Template</div>
                   <div className="studio-grid studio-grid--two">
-                    <Field label="Base theme" hint="Start from blank or clone an existing theme into the creator.">
+                    <Field label="Base theme" hint="Start from blank or clone an existing theme into a new theme. Use Edit from the catalog to update an existing theme.">
                       <select
                         className="studio-input"
                         value={selectedRecord?.entry.id ?? ''}
@@ -599,7 +613,9 @@ export function ThemeStudio({
                       <strong>{selectedRecord ? selectedRecord.entry.name : 'Blank draft'}</strong>
                       <span>
                         {selectedRecord
-                          ? `Using ${selectedRecord.entry.id} as the current template.`
+                          ? draft.proposalMode === 'update'
+                            ? `Editing the existing ${selectedRecord.entry.id} theme.`
+                            : `Using ${selectedRecord.entry.id} as the current template.`
                           : 'No catalog template loaded. The editor is using a fresh draft.'}
                       </span>
                       <button className="ghost-button" type="button" onClick={() => {
@@ -613,10 +629,14 @@ export function ThemeStudio({
                 <div className="studio-control-section">
                   <div className="studio-control-section__title">Metadata</div>
                   <div className="studio-grid studio-grid--two">
-                    <Field label="Theme ID" hint="Lowercase + hyphens. This becomes the folder name.">
+                    <Field
+                      label="Theme ID"
+                      hint={draft.proposalMode === 'update' ? 'Locked to the existing theme folder.' : 'Lowercase + hyphens. This becomes the folder name.'}
+                    >
                       <input
                         className="studio-input"
                         value={draft.id}
+                        disabled={draft.proposalMode === 'update'}
                         onChange={(event) => patch('id', normalizeDraftId(event.currentTarget.value))}
                       />
                     </Field>
@@ -624,7 +644,7 @@ export function ThemeStudio({
                       <input className="studio-input" value={draft.version} onChange={(event) => patch('version', event.currentTarget.value)} />
                     </Field>
                     <Field label="Display name">
-                      <input className="studio-input" value={draft.name} onChange={(event) => patch('name', event.currentTarget.value)} />
+                      <input className="studio-input" value={draft.name} onChange={(event) => patchDisplayName(event.currentTarget.value)} />
                     </Field>
                     <Field label="Author">
                       <input className="studio-input" value={draft.author} onChange={(event) => patch('author', event.currentTarget.value)} />
@@ -800,7 +820,9 @@ export function ThemeStudio({
                   <p>
                     {linkedProposal
                       ? 'This linked PR keeps its editable draft snapshot on the proposal branch. Existing branch assets stay attached to the draft, and any new uploads replace the matching files when you save.'
-                      : 'The PR payload will include `theme.json`, a generated preview screenshot, and every uploaded asset. Catalog assets loaded from an existing theme stay available in the preview, but only uploaded files are bundled into the proposal.'}
+                      : draft.proposalMode === 'update'
+                        ? 'The PR payload will update the existing theme folder, refresh `theme.json`, replace the generated preview screenshot, and upload any newly selected assets.'
+                        : 'The PR payload will include `theme.json`, a generated preview screenshot, and every uploaded asset. Catalog assets loaded from an existing theme stay available in the preview, but only uploaded files are bundled into the proposal.'}
                   </p>
                   <div className="submit-actions">
                     {linkedProposal?.proposalMode === 'preview' ? null : (
@@ -815,7 +837,9 @@ export function ThemeStudio({
                                 : 'Unlock and update linked proposal'
                             : submitting
                               ? 'Creating pull request…'
-                              : 'Create pull request from this draft'}
+                              : draft.proposalMode === 'update'
+                                ? 'Create update pull request'
+                                : 'Create pull request from this draft'}
                         </span>
                       </button>
                     )}
