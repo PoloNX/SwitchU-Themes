@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/iisu-variant-1781855939751",
+  "draftSnapshot": {
+    "basedOnThemeId": "iisu",
+    "id": "iisu-variant",
+    "name": "cammy Minimalist",
+    "author": "iiSU Team",
+    "version": "1.1.0",
+    "summary": "Add theme iiSU Variant",
+    "notes": "",
+    "contributor": "Degrahne",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.5895642076105134,
+        "s": 1,
+        "l": 0.56
+      },
+      "accent": {
+        "h": 0.5140623502305363,
+        "s": 0.8658776881687149,
+        "l": 0.56
+      },
+      "background": {
+        "h": 0.8283853244282687,
+        "s": 1,
+        "l": 0.94
+      },
+      "backgroundAccent": {
+        "h": 0.5767059322983281,
+        "s": 0.9846636176111454,
+        "l": 0.89
+      },
+      "shapes": {
+        "h": 0.5912659197259944,
+        "s": 0.919599661085112,
+        "l": 0.76
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 30,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.24,
+      "columns": 26,
+      "rows": 20,
+      "spacingX": 47,
+      "spacingY": 58,
+      "sizeMin": 8,
+      "sizeMax": 15,
+      "speedMin": 62,
+      "speedMax": 10,
+      "wobble": 8,
+      "rotationSpeed": 0.38,
+      "opacity": 0.53,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "cammy.png",
+        "relativePath": "media/backgrounds/cammy.png"
+      }
+    },
+    "fonts": {
+      "regular": {
+        "name": "Digital-Serial-Bold.ttf",
+        "relativePath": "fonts/Digital-Serial-Bold.ttf"
+      },
+      "small": {
+        "name": "Digital-Serial-Regular.ttf",
+        "relativePath": "fonts/Digital-Serial-Regular.ttf"
+      }
+    },
+    "audio": {
+      "bundled": true,
+      "sfx": {}
+    }
+  }
+}
