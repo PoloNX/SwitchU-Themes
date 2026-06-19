@@ -69,7 +69,7 @@
       "small": "fonts/Digital-Serial-Regular.ttf"
     },
     "icons": {
-      "path": "assets/icons",
+      "basePath": "assets/icons",
       "files": [
         "assets/icons/album.iisu-disabled.png",
         "assets/icons/controller.png",

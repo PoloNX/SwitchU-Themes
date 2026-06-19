@@ -21,6 +21,11 @@ function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
+function hasCustomIcons(record: ThemeCatalogRecord): boolean {
+  const icons = record.manifest.theme?.icons;
+  return Boolean(icons?.path || icons?.basePath || icons?.base_path);
+}
+
 function ThemeCard({
   record,
   previewed,
@@ -72,7 +77,7 @@ function ThemeCard({
         </div>
         <div className="theme-card__flags">
           <span>{hasBackgroundImage ? 'background image' : 'procedural background'}</span>
-          <span>{record.manifest.theme?.icons?.path ? 'custom icons' : 'default icons'}</span>
+          <span>{hasCustomIcons(record) ? 'custom icons' : 'default icons'}</span>
           <span>{record.manifest.theme?.fonts?.regular ? 'custom fonts' : 'bundled fonts'}</span>
         </div>
         <div className="theme-card__actions">
@@ -198,7 +203,7 @@ export default function App() {
   const stats = useMemo(() => {
     const withAudio = records.filter((record) => record.manifest.audio?.bundled).length;
     const withImages = records.filter((record) => record.manifest.theme?.background?.image).length;
-    const withCustomIcons = records.filter((record) => record.manifest.theme?.icons?.path).length;
+    const withCustomIcons = records.filter(hasCustomIcons).length;
 
     return {
       total: records.length,

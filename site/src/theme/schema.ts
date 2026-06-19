@@ -55,6 +55,8 @@ export interface ThemeFontsConfig {
 
 export interface ThemeIconsConfig {
   path?: string;
+  basePath?: string;
+  base_path?: string;
   files?: string[];
 }
 
