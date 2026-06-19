@@ -27,13 +27,13 @@
       "manifest": "themes/iisu/theme.json"
     },
     {
-      "id": "iisu-variant",
+      "id": "nier-minimalist",
       "name": "Nier Minimalist",
       "author": "iiSU Team",
       "version": "1.1.0",
-      "path": "themes/iisu-variant",
-      "manifest": "themes/iisu-variant/theme.json",
-      "cover": "themes/iisu-variant/media/screenshots/00.png"
+      "path": "themes/nier-minimalist",
+      "manifest": "themes/nier-minimalist/theme.json",
+      "cover": "themes/nier-minimalist/media/screenshots/00.png"
     },
     {
       "id": "ocean",
