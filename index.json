@@ -75,6 +75,15 @@
       "path": "themes/supermariobros",
       "manifest": "themes/supermariobros/theme.json",
       "cover": "themes/supermariobros/media/screenshots/00.png"
+    },
+    {
+      "id": "zeldaminimalist",
+      "name": "Zelda Minimalist",
+      "author": "Degrahne",
+      "version": "1.0.0",
+      "path": "themes/zeldaminimalist",
+      "manifest": "themes/zeldaminimalist/theme.json",
+      "cover": "themes/zeldaminimalist/media/screenshots/00.png"
     }
   ]
 }
