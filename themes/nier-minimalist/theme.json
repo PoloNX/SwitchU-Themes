@@ -1,0 +1,77 @@
+{
+  "id": "nier-minimalist",
+  "name": "Nier Minimalist",
+  "author": "iiSU Team",
+  "version": "1.1.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.2254681751382499,
+        0.016287113148034688,
+        0.56
+      ],
+      "accent": [
+        0.2459643769195441,
+        0.09862541603223322,
+        0.56
+      ],
+      "background": [
+        0.6274424049330537,
+        1,
+        0.94
+      ],
+      "backgroundAccent": [
+        0.5767059322983281,
+        0.9846636176111454,
+        0.89
+      ],
+      "shapes": [
+        0.15971337773369743,
+        0.6653064497443911,
+        0.76
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 65,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.24,
+      "grid": {
+        "columns": 28,
+        "rows": 15,
+        "spacing": [
+          10,
+          10
+        ]
+      },
+      "size": [
+        8,
+        14
+      ],
+      "speed": [
+        4,
+        10
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0,
+      "opacity": 0.48,
+      "image": {
+        "path": "media/backgrounds/nier1.png",
+        "opacity": 0.71,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "bundled": true
+  }
+}
