@@ -69,11 +69,28 @@
       "small": "fonts/Digital-Serial-Regular.ttf"
     },
     "icons": {
-      "path": "assets/icons"
+      "path": "assets/icons",
+      "files": [
+        "assets/icons/album.iisu-disabled.png",
+        "assets/icons/controller.png",
+        "assets/icons/gamecard.png",
+        "assets/icons/mii_editor.png",
+        "assets/icons/themes.png"
+      ]
     }
   },
   "audio": {
     "preset": "bundled",
-    "bundled": true
+    "bundled": true,
+    "music": [
+      "sounds/music/home.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "show_modal": "sounds/sfx/show_modal.wav"
+    }
   }
 }

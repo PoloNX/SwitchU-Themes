@@ -185,6 +185,33 @@ function backgroundImageFit(background: ThemeBackgroundConfig | undefined): 'cov
   return image.fit === 'contain' ? 'contain' : 'cover';
 }
 
+function audioMusicPath(audio: ThemeAudioConfig | undefined): string | undefined {
+  const music = audio?.music;
+  if (!music) {
+    return undefined;
+  }
+
+  if (Array.isArray(music)) {
+    return music[0];
+  }
+
+  return music;
+}
+
+function audioSfxPaths(audio: ThemeAudioConfig | undefined): Partial<Record<DefaultSfxName, string>> {
+  const sfx = audio?.sfx;
+  if (!sfx) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    DEFAULT_SFX_NAMES.flatMap((name) => {
+      const path = sfx[name];
+      return path ? [[name, path]] : [];
+    }),
+  ) as Partial<Record<DefaultSfxName, string>>;
+}
+
 function slugifyThemeId(input: string): string {
   return input
     .trim()
@@ -498,7 +525,13 @@ export function draftFromCatalogRecord(record: ThemeCatalogRecord, options: { pr
   base.icons = base.proposalMode === 'update' && theme?.icons ? { ...theme.icons } : undefined;
   base.audio = {
     bundled: Boolean(manifest.audio?.bundled),
-    sfx: {},
+    music: toCatalogAsset(record, audioMusicPath(manifest.audio)),
+    sfx: Object.fromEntries(
+      Object.entries(audioSfxPaths(manifest.audio)).flatMap(([name, path]) => {
+        const asset = toCatalogAsset(record, path);
+        return asset ? [[name, asset]] : [];
+      }),
+    ) as Partial<Record<DefaultSfxName, StudioAsset>>,
   };
 
   return base;
@@ -565,13 +598,29 @@ function serializeFonts(draft: StudioDraft): ThemeFontsConfig | undefined {
 }
 
 function serializeAudio(draft: StudioDraft): ThemeAudioConfig | undefined {
-  const hasMusic = Boolean(draft.audio.music?.proposalReady);
-  const hasSfx = Object.values(draft.audio.sfx).some((asset) => asset?.proposalReady);
+  const music = draft.audio.music && (draft.proposalMode === 'update' || draft.audio.music.proposalReady)
+    ? draft.audio.music.relativePath
+    : undefined;
+  const sfx = Object.fromEntries(
+    DEFAULT_SFX_NAMES.flatMap((name) => {
+      const asset = draft.audio.sfx[name];
+      return asset && (draft.proposalMode === 'update' || asset.proposalReady)
+        ? [[name, asset.relativePath]]
+        : [];
+    }),
+  ) as Record<string, string>;
+  const hasMusic = Boolean(music);
+  const hasSfx = Object.keys(sfx).length > 0;
   if (!draft.audio.bundled && !hasMusic && !hasSfx) {
     return { preset: 'wiiu', bundled: false };
   }
 
-  return { preset: 'bundled', bundled: true };
+  return {
+    preset: 'bundled',
+    bundled: true,
+    ...(music ? { music: [music] } : {}),
+    ...(hasSfx ? { sfx } : {}),
+  };
 }
 
 export function buildManifestFromDraft(draft: StudioDraft): ThemeManifest {

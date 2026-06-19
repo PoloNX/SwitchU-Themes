@@ -73,6 +73,22 @@
   },
   "audio": {
     "preset": "bundled",
-    "bundled": true
+    "bundled": true,
+    "music": [
+      "sounds/music/3-12.-Nook's-Cranny-(Small).mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
   }
 }

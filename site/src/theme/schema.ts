@@ -55,6 +55,7 @@ export interface ThemeFontsConfig {
 
 export interface ThemeIconsConfig {
   path?: string;
+  files?: string[];
 }
 
 export interface ThemeColorConfig {
@@ -76,6 +77,8 @@ export interface ThemeThemeConfig {
 export interface ThemeAudioConfig {
   preset?: 'wiiu' | 'bundled' | 'theme' | 'package' | string;
   bundled?: boolean;
+  music?: string | string[];
+  sfx?: Record<string, string>;
 }
 
 export interface ThemeManifest {

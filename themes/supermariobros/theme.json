@@ -73,6 +73,9 @@
   },
   "audio": {
     "preset": "bundled",
-    "bundled": true
+    "bundled": true,
+    "music": [
+      "sounds/music/menu.mp3"
+    ]
   }
 }
