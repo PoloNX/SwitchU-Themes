@@ -27,6 +27,15 @@
       "manifest": "themes/iisu/theme.json"
     },
     {
+      "id": "iisu-variant",
+      "name": "Nier Minimalist",
+      "author": "iiSU Team",
+      "version": "1.1.0",
+      "path": "themes/iisu-variant",
+      "manifest": "themes/iisu-variant/theme.json",
+      "cover": "themes/iisu-variant/media/screenshots/00.png"
+    },
+    {
       "id": "ocean",
       "name": "Ocean",
       "author": "PoloNX",
