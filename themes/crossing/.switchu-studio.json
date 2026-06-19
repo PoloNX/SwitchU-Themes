@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/crossing-1781872880832",
+  "draftSnapshot": {
+    "basedOnThemeId": "zeldaminimalist",
+    "id": "crossing",
+    "name": "Animal Crossing",
+    "author": "Junin",
+    "version": "1.0.0",
+    "summary": "Add theme AC",
+    "notes": "",
+    "contributor": "JunioSplat",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.30851972383394455,
+        "s": 0.5023253821638322,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.22000931437610904,
+        "s": 0.6806423728608855,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.14173296378403122,
+        "s": 0.6270838140779429,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.2345103847689738,
+        "s": 1,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.13455893169613997,
+        "s": 0.8018437180397374,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "triangle",
+      "symmetry": "horizontal",
+      "count": 70,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.5,
+      "columns": -1,
+      "rows": 0,
+      "spacingX": 10,
+      "spacingY": 10,
+      "sizeMin": 8,
+      "sizeMax": 15,
+      "speedMin": 0,
+      "speedMax": 13,
+      "wobble": 8,
+      "rotationSpeed": 0,
+      "opacity": 0.3,
+      "imageOpacity": 0.48,
+      "imageFit": "cover",
+      "image": {
+        "name": "1186035.png",
+        "relativePath": "media/backgrounds/1186035.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "3-12. Nook's Cranny (Small).mp3",
+        "relativePath": "sounds/music/3-12.-Nook's-Cranny-(Small).mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "UI_InteriorStudio_Wipe_Off.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "UI_Decide.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "UI_Interior_Rotate_90.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "navigation": {
+          "name": "UI_Point_Footstep.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "UI_MealEffect_Up.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "UI_CountUp.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "UI_CountDown.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "UI_Decide.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "UI_Cancel.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "UI_Paper_Slide.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "UI_DragStart.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}

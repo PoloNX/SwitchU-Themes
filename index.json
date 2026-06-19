@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "themes": [
     {
+      "id": "crossing",
+      "name": "Animal Crossing",
+      "author": "Junin",
+      "version": "1.0.0",
+      "path": "themes/crossing",
+      "manifest": "themes/crossing/theme.json",
+      "cover": "themes/crossing/media/screenshots/00.png"
+    },
+    {
       "id": "aoab",
       "name": "Ascendance of a Bookworm",
       "author": "SaoriYuki",
