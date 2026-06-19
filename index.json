@@ -11,6 +11,15 @@
       "cover": "themes/aoab/media/screenshots/00.png"
     },
     {
+      "id": "iisu-variant",
+      "name": "cammy Minimalist",
+      "author": "iiSU Team",
+      "version": "1.1.0",
+      "path": "themes/iisu-variant",
+      "manifest": "themes/iisu-variant/theme.json",
+      "cover": "themes/iisu-variant/media/screenshots/00.png"
+    },
+    {
       "id": "forest",
       "name": "Forest",
       "author": "PoloNX",
