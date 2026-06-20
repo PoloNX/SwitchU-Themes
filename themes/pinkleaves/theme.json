@@ -1,0 +1,78 @@
+{
+  "id": "pinkleaves",
+  "name": "ACNH Leaves (Pink)",
+  "author": "pillOwOfort",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.48701298701298695,
+        0.41621621621621613,
+        0.6372549019607843
+      ],
+      "accent": [
+        0.48701298701298695,
+        0.41621621621621613,
+        0.6372549019607843
+      ],
+      "background": [
+        0.9703389830508474,
+        0.6941176470588235,
+        0.6666666666666667
+      ],
+      "backgroundAccent": [
+        0.9703389830508474,
+        0.6941176470588235,
+        0.6666666666666667
+      ],
+      "shapes": [
+        0.98,
+        0.8426966292134833,
+        0.8254901960784313
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        5,
+        40
+      ],
+      "speed": [
+        5,
+        45
+      ],
+      "wobble": 15,
+      "rotationSpeed": 0.15,
+      "opacity": 0.45,
+      "image": {
+        "path": "media/backgrounds/acnh-leaf-pink.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}
