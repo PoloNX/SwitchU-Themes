@@ -1,0 +1,78 @@
+{
+  "id": "tealleaves",
+  "name": "ACNH Leaves (Teal)",
+  "author": "pillOwOfort",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.48701298701298695,
+        0.41621621621621613,
+        0.6372549019607843
+      ],
+      "accent": [
+        0.4889807162534436,
+        1,
+        0.2372549019607843
+      ],
+      "background": [
+        0.4889807162534436,
+        1,
+        0.2372549019607843
+      ],
+      "backgroundAccent": [
+        0.4889807162534436,
+        1,
+        0.2372549019607843
+      ],
+      "shapes": [
+        0.48701298701298695,
+        0.41621621621621613,
+        0.6372549019607843
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        1,
+        40
+      ],
+      "speed": [
+        5,
+        40
+      ],
+      "wobble": 15,
+      "rotationSpeed": 0.2,
+      "opacity": 0.35,
+      "image": {
+        "path": "media/backgrounds/acnh-leaf-teal.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}
