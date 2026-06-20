@@ -29,6 +29,15 @@
       "cover": "themes/cammy-minimalist/media/screenshots/00.png"
     },
     {
+      "id": "ch4r1z4rd-th3m3",
+      "name": "CH4R1Z4RD TH3M3",
+      "author": "Darlin Collado",
+      "version": "1.2.0",
+      "path": "themes/ch4r1z4rd-th3m3",
+      "manifest": "themes/ch4r1z4rd-th3m3/theme.json",
+      "cover": "themes/ch4r1z4rd-th3m3/media/screenshots/00.png"
+    },
+    {
       "id": "cubesque",
       "name": "Cubesque",
       "author": "Lostbhoy",
