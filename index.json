@@ -29,6 +29,15 @@
       "cover": "themes/cammy-minimalist/media/screenshots/00.png"
     },
     {
+      "id": "cubesque",
+      "name": "Cubesque",
+      "author": "Lostbhoy",
+      "version": "1.0.0",
+      "path": "themes/cubesque",
+      "manifest": "themes/cubesque/theme.json",
+      "cover": "themes/cubesque/media/screenshots/00.png"
+    },
+    {
       "id": "forest",
       "name": "Forest",
       "author": "PoloNX",
