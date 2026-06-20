@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/cubesque-1781914559467",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "cubesque",
+    "name": "Cubesque",
+    "author": "Lostbhoy",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.2972545906619861,
+        "s": 0.6780007442329343,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.008849825794946975,
+        "s": 0.8600170620418465,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.8181534981063749,
+        "s": 0.8524836956264772,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.16922121282195013,
+        "s": 0.8552474996179628,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 0.24,
+      "imageFit": "cover",
+      "image": {
+        "name": "22620.png",
+        "relativePath": "media/backgrounds/22620.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "sfx": {
+        "confirm": {
+          "name": "confirm.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "launch_game": {
+          "name": "launch_game.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        }
+      }
+    }
+  }
+}
