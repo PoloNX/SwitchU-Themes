@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "themes": [
     {
+      "id": "pinkleaves",
+      "name": "ACNH Leaves (Pink)",
+      "author": "pillOwOfort",
+      "version": "1.0.0",
+      "path": "themes/pinkleaves",
+      "manifest": "themes/pinkleaves/theme.json",
+      "cover": "themes/pinkleaves/media/screenshots/00.png"
+    },
+    {
       "id": "crossing",
       "name": "Animal Crossing",
       "author": "Junin",
