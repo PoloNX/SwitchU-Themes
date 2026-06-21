@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "themes": [
     {
+      "id": "tealleaves",
+      "name": "ACNH Leaves (Teal)",
+      "author": "pillOwOfort",
+      "version": "1.0.0",
+      "path": "themes/tealleaves",
+      "manifest": "themes/tealleaves/theme.json",
+      "cover": "themes/tealleaves/media/screenshots/00.png"
+    },
+    {
       "id": "crossing",
       "name": "Animal Crossing",
       "author": "Junin",
