@@ -1,0 +1,95 @@
+{
+  "id": "mifondo",
+  "name": "Negro",
+  "author": "Adan",
+  "version": "1.1.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.015310764979239,
+        0.8711305251761549,
+        0.62
+      ],
+      "accent": [
+        0.236764467888414,
+        0.8392981572957826,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.7706143894396218,
+        0.6747012518101247,
+        0.021568627450980392
+      ],
+      "shapes": [
+        0.56,
+        0.4,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "square",
+      "symmetry": "none",
+      "count": 0,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "image": {
+        "path": "media/backgrounds/1000260360.png",
+        "opacity": 10000,
+        "fit": "contain"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/User-Page---Nintendo-Switch-Music.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}
