@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/super-mario-bros-variant-1782153212643",
+  "draftSnapshot": {
+    "basedOnThemeId": "supermariobros",
+    "proposalMode": "create",
+    "id": "super-mario-bros-variant",
+    "name": "Super Mario Bros. Variant",
+    "author": "PoloNX",
+    "version": "1.1.0",
+    "summary": "Add theme Super Mario Bros. Variant",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.4853913703672341,
+        "s": 1,
+        "l": 0.514
+      },
+      "accent": {
+        "h": 0.5041988261743021,
+        "s": 0.7107942206238494,
+        "l": 0.46
+      },
+      "background": {
+        "h": 0.7607863110921164,
+        "s": 0.5825874282648618,
+        "l": 0.1
+      },
+      "backgroundAccent": {
+        "h": 0.31,
+        "s": 0.45,
+        "l": 0.15
+      },
+      "shapes": {
+        "h": 0.33,
+        "s": 0.56,
+        "l": 0.53
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 0,
+      "fixedOrientation": false,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 18,
+      "sizeMax": 52,
+      "speedMin": 4,
+      "speedMax": 10,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "image.png",
+        "relativePath": "media/backgrounds/image.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "menu.mp3",
+        "relativePath": "sounds/music/menu.mp3"
+      },
+      "sfx": {}
+    }
+  }
+}
