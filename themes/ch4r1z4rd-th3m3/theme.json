@@ -1,0 +1,81 @@
+{
+  "id": "ch4r1z4rd-th3m3",
+  "name": "CH4R1Z4RD TH3M3",
+  "author": "Darlin Collado",
+  "version": "1.2.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.08,
+        0.85,
+        0.6
+      ],
+      "accent": [
+        0.011806700608164133,
+        0.5323234497917102,
+        0.6
+      ],
+      "background": [
+        0.03259178965268106,
+        0.7677342367354837,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.06,
+        0.5,
+        0.14
+      ],
+      "shapes": [
+        0.9939487678476786,
+        0.6062975533015382,
+        0.28
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "quad",
+      "count": 4,
+      "fixedOrientation": false,
+      "orientation": 0,
+      "roundness": 0,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        26,
+        78
+      ],
+      "speed": [
+        10,
+        24
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.18,
+      "opacity": 0.7,
+      "image": {
+        "path": "media/backgrounds/Gemini_Generated_Image_psit0wpsit0wpsit.png",
+        "opacity": 0.24,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/pk-battle.mp3"
+    ]
+  }
+}
