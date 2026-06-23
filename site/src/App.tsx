@@ -1,15 +1,15 @@
-import { AudioLines, Download, Eye, ImageIcon, LoaderCircle, Palette, PenLine, Search, Sparkles, Wand2, X } from 'lucide-react';
+import { AudioLines, Download, ExternalLink, Eye, GitPullRequest, ImageIcon, LoaderCircle, Palette, PenLine, RefreshCw, Search, Sparkles, Wand2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { downloadThemeArchive } from './catalog/download';
 import { ThemeStudio } from './components/ThemeStudio';
-import { loadProposalDraft, readProposalRouteState, updateThemeProposal, type ProposalRouteState } from './github/proposals';
+import { loadOpenProposals, loadProposalDraft, readProposalRouteState, updateThemeProposal, type OpenProposalSummary, type ProposalResult, type ProposalRouteState } from './github/proposals';
 import { SwitchUPreview } from './preview/SwitchUPreview';
 import { createEmptyDraft, draftFromCatalogRecord, type StudioDraft } from './theme/draft';
 import type { ThemeCatalogRecord } from './theme/schema';
 
-type AppTab = 'explore' | 'create';
-const EDITOR_TOKEN_STORAGE_KEY = 'switchu-themes-editor-token';
+type AppTab = 'explore' | 'pending' | 'create';
+const PROPOSAL_EDIT_CODES_STORAGE_KEY = 'switchu-themes-proposal-edit-codes';
 
 function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
@@ -24,6 +24,32 @@ function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string
 function hasCustomIcons(record: ThemeCatalogRecord): boolean {
   const icons = record.manifest.theme?.icons;
   return Boolean(icons?.path || icons?.basePath || icons?.base_path);
+}
+
+function proposalEditCodeKey(proposal: Pick<ProposalRouteState, 'proposalId' | 'branchName'>): string {
+  return `${proposal.branchName}::${proposal.proposalId}`;
+}
+
+function readStoredProposalEditCodes(): Record<string, string> {
+  try {
+    const raw = window.localStorage.getItem(PROPOSAL_EDIT_CODES_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === 'object' ? parsed as Record<string, string> : {};
+  } catch {
+    return {};
+  }
+}
+
+function formatDateTime(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
 }
 
 function ThemeCard({
@@ -124,6 +150,60 @@ function ThemeCard({
   );
 }
 
+function ProposalCard({
+  proposal,
+  onPreview,
+  onEdit,
+}: {
+  proposal: OpenProposalSummary;
+  onPreview: () => void;
+  onEdit: () => void;
+}) {
+  return (
+    <article className="theme-card proposal-card">
+      <div className="theme-card__cover-wrap">
+        <img className="theme-card__cover" src={proposal.coverUrl} alt={`Preview of ${proposal.name}`} />
+        <div className="theme-card__badges">
+          <span>PR #{proposal.number}</span>
+          <span>{proposal.proposalMode === 'update' ? 'update' : 'new'}</span>
+          <span>{proposal.mode}</span>
+        </div>
+      </div>
+      <div className="theme-card__body">
+        <div>
+          <p className="theme-card__eyebrow">{proposal.proposalId}</p>
+          <h3>{proposal.name}</h3>
+          <p className="theme-card__meta">
+            by {proposal.author} · v{proposal.version}
+          </p>
+        </div>
+        <div className="proposal-card__status">
+          <GitPullRequest size={16} />
+          <span>{proposal.title}</span>
+        </div>
+        <div className="theme-card__flags">
+          <span>{proposal.contributor ? `submitted by ${proposal.contributor}` : 'community proposal'}</span>
+          <span>updated {formatDateTime(proposal.updatedAt)}</span>
+        </div>
+        <div className="theme-card__actions">
+          <button className="theme-card__action theme-card__action--preview" type="button" onClick={onPreview}>
+            <Eye size={16} />
+            <span>Preview</span>
+          </button>
+          <button className="theme-card__action" type="button" onClick={onEdit}>
+            <PenLine size={16} />
+            <span>Edit</span>
+          </button>
+          <a className="ghost-button theme-card__secondary" href={proposal.pullRequestUrl} target="_blank" rel="noreferrer">
+            <ExternalLink size={16} />
+            <span>Open PR</span>
+          </a>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export default function App() {
   const initialProposalRoute = useMemo(() => readProposalRouteState(), []);
   const [activeTab, setActiveTab] = useState<AppTab>('explore');
@@ -139,7 +219,11 @@ export default function App() {
   const [linkedProposal, setLinkedProposal] = useState<ProposalRouteState | null>(initialProposalRoute);
   const [proposalLoading, setProposalLoading] = useState(Boolean(initialProposalRoute));
   const [proposalError, setProposalError] = useState<string | null>(null);
-  const [editorToken, setEditorToken] = useState(() => window.localStorage.getItem(EDITOR_TOKEN_STORAGE_KEY) ?? '');
+  const [proposalEditCodes, setProposalEditCodes] = useState<Record<string, string>>(() => readStoredProposalEditCodes());
+  const [openProposals, setOpenProposals] = useState<OpenProposalSummary[]>([]);
+  const [openProposalsLoading, setOpenProposalsLoading] = useState(false);
+  const [openProposalsLoaded, setOpenProposalsLoaded] = useState(false);
+  const [openProposalsError, setOpenProposalsError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -200,6 +284,14 @@ export default function App() {
     };
   }, [linkedProposal]);
 
+  useEffect(() => {
+    if (activeTab !== 'pending' || openProposalsLoaded || openProposalsLoading) {
+      return;
+    }
+
+    void refreshOpenProposals();
+  }, [activeTab, openProposalsLoaded, openProposalsLoading]);
+
   const stats = useMemo(() => {
     const withAudio = records.filter((record) => record.manifest.audio?.bundled).length;
     const withImages = records.filter((record) => record.manifest.theme?.background?.image).length;
@@ -242,6 +334,10 @@ export default function App() {
     return previewRecord ? draftFromCatalogRecord(previewRecord) : null;
   }, [previewRecord]);
 
+  const activeProposalEditCode = useMemo(() => {
+    return linkedProposal ? proposalEditCodes[proposalEditCodeKey(linkedProposal)] ?? '' : '';
+  }, [linkedProposal, proposalEditCodes]);
+
   useEffect(() => {
     if (!previewRecord) {
       return undefined;
@@ -259,14 +355,31 @@ export default function App() {
     };
   }, [previewRecord]);
 
-  function persistEditorToken(nextToken: string) {
-    setEditorToken(nextToken);
-    if (nextToken) {
-      window.localStorage.setItem(EDITOR_TOKEN_STORAGE_KEY, nextToken);
-      return;
+  async function refreshOpenProposals() {
+    setOpenProposalsLoading(true);
+    setOpenProposalsError(null);
+    try {
+      const proposals = await loadOpenProposals();
+      setOpenProposals(proposals);
+      setOpenProposalsLoaded(true);
+    } catch (cause) {
+      setOpenProposalsError(cause instanceof Error ? cause.message : 'Unknown proposal list error');
+    } finally {
+      setOpenProposalsLoading(false);
+    }
+  }
+
+  function persistProposalEditCode(proposal: Pick<ProposalRouteState, 'proposalId' | 'branchName'>, nextCode: string) {
+    const key = proposalEditCodeKey(proposal);
+    const nextCodes = { ...proposalEditCodes };
+    if (nextCode) {
+      nextCodes[key] = nextCode;
+    } else {
+      delete nextCodes[key];
     }
 
-    window.localStorage.removeItem(EDITOR_TOKEN_STORAGE_KEY);
+    setProposalEditCodes(nextCodes);
+    window.localStorage.setItem(PROPOSAL_EDIT_CODES_STORAGE_KEY, JSON.stringify(nextCodes));
   }
 
   function clearProposalRoute() {
@@ -280,19 +393,55 @@ export default function App() {
     setProposalError(null);
   }
 
-  function requestEditorToken(): string | null {
-    const existing = editorToken.trim() || window.localStorage.getItem(EDITOR_TOKEN_STORAGE_KEY)?.trim() || '';
+  function requestProposalEditCode(): string | null {
+    if (!linkedProposal) {
+      return null;
+    }
+
+    const existing = activeProposalEditCode.trim();
     if (existing) {
       return existing;
     }
 
-    const entered = window.prompt('Enter the private editor token configured on the PR proxy.')?.trim();
+    const entered = window.prompt(`Enter the personal edit code for ${linkedProposal.proposalId}.`)?.trim();
     if (!entered) {
       return null;
     }
 
-    persistEditorToken(entered);
+    persistProposalEditCode(linkedProposal, entered);
     return entered;
+  }
+
+  function openProposalInStudio(proposal: OpenProposalSummary, proposalMode: ProposalRouteState['proposalMode']) {
+    const route: ProposalRouteState = {
+      proposalId: proposal.proposalId,
+      branchName: proposal.branchName,
+      proposalMode,
+    };
+    const url = new URL(window.location.href);
+    url.searchParams.set('proposalId', route.proposalId);
+    url.searchParams.set('proposalBranch', route.branchName);
+    url.searchParams.set('proposalMode', route.proposalMode);
+    window.history.replaceState({}, '', url);
+    setLinkedProposal(route);
+    setSelectedThemeId(null);
+    setPreviewThemeId(null);
+    setActiveTab('create');
+  }
+
+  function handleProposalCreated(result: ProposalResult, createdDraft: StudioDraft) {
+    if (!result.editCode) {
+      return;
+    }
+
+    persistProposalEditCode(
+      {
+        proposalId: createdDraft.id,
+        branchName: result.branchName,
+      },
+      result.editCode,
+    );
+    setOpenProposalsLoaded(false);
   }
 
   function showRecordPreview(record: ThemeCatalogRecord) {
@@ -339,16 +488,16 @@ export default function App() {
       throw new Error('No linked proposal is currently loaded.');
     }
 
-    const token = requestEditorToken();
-    if (!token) {
-      throw new Error('Editor token is required to update this linked proposal.');
+    const editCode = requestProposalEditCode();
+    if (!editCode) {
+      throw new Error('Personal edit code is required to update this linked proposal.');
     }
 
     try {
-      return await updateThemeProposal(nextDraft, previewNode, linkedProposal.branchName, token);
+      return await updateThemeProposal(nextDraft, previewNode, linkedProposal.branchName, editCode);
     } catch (cause) {
       if (cause instanceof Error && cause.message.includes('Forbidden')) {
-        persistEditorToken('');
+        persistProposalEditCode(linkedProposal, '');
       }
       throw cause;
     }
@@ -384,6 +533,13 @@ export default function App() {
           onClick={() => setActiveTab('explore')}
         >
           Explore themes
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'pending' ? 'tab-button--active' : ''}`}
+          type="button"
+          onClick={() => setActiveTab('pending')}
+        >
+          Validation
         </button>
         <button
           className={`tab-button ${activeTab === 'create' ? 'tab-button--active' : ''}`}
@@ -465,6 +621,70 @@ export default function App() {
               ) : null}
             </section>
           </>
+        ) : activeTab === 'pending' ? (
+          <>
+            <section className="panel panel--spotlight">
+              <div className="panel__header">
+                <div>
+                  <p className="panel__eyebrow">Validation queue</p>
+                  <h2>Themes awaiting review</h2>
+                </div>
+                <button className="ghost-button" type="button" onClick={() => { void refreshOpenProposals(); }} disabled={openProposalsLoading}>
+                  <RefreshCw size={16} />
+                  <span>{openProposalsLoading ? 'Refreshing…' : 'Refresh'}</span>
+                </button>
+              </div>
+              <div className="feature-list">
+                <div className="feature-card">
+                  <strong>Preview PR themes</strong>
+                  <span>Open any studio proposal with the same live SwitchU renderer used by the creator.</span>
+                </div>
+                <div className="feature-card">
+                  <strong>Edit with a personal code</strong>
+                  <span>Proposal authors can keep editing their own PR after entering its private edit code.</span>
+                </div>
+                <div className="feature-card">
+                  <strong>Review from GitHub</strong>
+                  <span>Jump straight to the pull request when a theme is ready for merge review.</span>
+                </div>
+              </div>
+            </section>
+
+            <section className="panel">
+              <div className="panel__header">
+                <div>
+                  <p className="panel__eyebrow">Open proposals</p>
+                  <h2>{openProposals.length ? `${openProposals.length} theme${openProposals.length === 1 ? '' : 's'} in validation` : 'No themes in validation'}</h2>
+                </div>
+              </div>
+
+              {openProposalsLoading ? (
+                <div className="loading-state">
+                  <LoaderCircle className="loading-state__spinner" size={24} />
+                  <span>Loading open proposals…</span>
+                </div>
+              ) : null}
+
+              {openProposalsError ? <div className="submit-feedback submit-feedback--error">{openProposalsError}</div> : null}
+
+              {!openProposalsLoading && !openProposalsError ? (
+                openProposals.length ? (
+                  <div className="theme-grid">
+                    {openProposals.map((proposal) => (
+                      <ProposalCard
+                        key={`${proposal.branchName}:${proposal.proposalId}`}
+                        proposal={proposal}
+                        onPreview={() => openProposalInStudio(proposal, 'preview')}
+                        onEdit={() => openProposalInStudio(proposal, 'edit')}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-state">No open studio proposals right now.</div>
+                )
+              ) : null}
+            </section>
+          </>
         ) : (
           <>
             <section className="panel panel--spotlight">
@@ -493,7 +713,7 @@ export default function App() {
                   <span>
                     {linkedProposal
                       ? linkedProposal.proposalMode === 'edit'
-                        ? 'This link opens the editor for the linked PR. Saving remains locked until you provide the private editor token.'
+                        ? "This link opens the editor for the linked PR. Saving remains locked until you provide this proposal's personal edit code."
                         : 'This link opens the linked PR in preview mode without write access.'
                       : 'Pick an existing theme in the creator to clone its palette, assets, and layout values.'}
                   </span>
@@ -526,9 +746,10 @@ export default function App() {
               onLoadTemplate={loadRecordInStudio}
               onReset={resetStudio}
               linkedProposal={linkedProposal}
-              editorUnlocked={Boolean(editorToken.trim())}
-              onUnlockEditor={async () => Boolean(requestEditorToken())}
+              editorUnlocked={Boolean(activeProposalEditCode.trim())}
+              onUnlockEditor={async () => Boolean(requestProposalEditCode())}
               onUpdateProposal={handleUpdateLinkedProposal}
+              onProposalCreated={handleProposalCreated}
             />
           </>
         )}

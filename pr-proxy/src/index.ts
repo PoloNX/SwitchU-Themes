@@ -108,11 +108,31 @@ interface StoredProposalDraft {
   schemaVersion: number;
   branchName: string;
   draftSnapshot: ProposalDraftSnapshot;
+  editCodeHash?: string;
+  editCodeCreatedAt?: string;
 }
 
 interface ProposalLinks {
   previewUrl: string;
   editUrl: string;
+}
+
+interface GitHubPullResponse {
+  number: number;
+  title: string;
+  html_url: string;
+  created_at: string;
+  updated_at: string;
+  head: {
+    ref: string;
+  };
+  user?: {
+    login: string;
+  };
+}
+
+interface GitHubPullFileResponse {
+  filename: string;
 }
 
 interface GitHubRepoResponse {
@@ -142,7 +162,7 @@ function corsHeaders(request: Request, env: Env): HeadersInit {
   return {
     'access-control-allow-origin': finalOrigin,
     'access-control-allow-methods': 'GET,POST,OPTIONS',
-    'access-control-allow-headers': 'Content-Type, X-Editor-Token',
+    'access-control-allow-headers': 'Content-Type, X-Editor-Token, X-Proposal-Edit-Code',
   };
 }
 
@@ -321,6 +341,26 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 
 function decodeContent(content: string): string {
   return atob(content.replace(/\n/g, ''));
+}
+
+function createEditCode(): string {
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const bytes = new Uint8Array(12);
+  crypto.getRandomValues(bytes);
+
+  return Array.from(bytes, (byte, index) => {
+    const separator = index > 0 && index % 4 === 0 ? '-' : '';
+    return `${separator}${alphabet[byte % alphabet.length]}`;
+  }).join('');
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function hashEditCode(branch: string, proposalId: string, editCode: string): Promise<string> {
+  return sha256Hex(`${sanitizeBranchName(branch)}:${sanitizeThemeId(proposalId)}:${editCode.trim().toUpperCase()}`);
 }
 
 async function createGitHubAppJwt(env: Env): Promise<string> {
@@ -613,7 +653,7 @@ function buildPullRequestBody(baseBody: string, links: ProposalLinks | undefined
     'Edit this proposal:',
     links.editUrl,
     '',
-    'The edit link only saves changes when the private editor token is configured in the proxy and provided from the site.',
+    'The edit link saves changes with the personal proposal code shown to the submitter after creation.',
   ].filter(Boolean).join('\n');
 }
 
@@ -622,12 +662,14 @@ async function writeProposalDraftMetadata(
   token: string,
   branch: string,
   proposal: ProposalPayload,
-  options: { ensureSha?: boolean } = {},
+  options: { ensureSha?: boolean; editCodeHash?: string } = {},
 ): Promise<void> {
   const metadata: StoredProposalDraft = {
-    schemaVersion: 1,
+    schemaVersion: options.editCodeHash ? 2 : 1,
     branchName: branch,
     draftSnapshot: proposal.draftSnapshot,
+    editCodeHash: options.editCodeHash,
+    editCodeCreatedAt: options.editCodeHash ? new Date().toISOString() : undefined,
   };
 
   const path = proposalMetadataPath(proposal.id);
@@ -669,14 +711,28 @@ function guessContentType(path: string): string {
   return 'application/octet-stream';
 }
 
-function hasEditorAccess(request: Request, env: Env): boolean {
+async function hasEditorAccess(
+  request: Request,
+  env: Env,
+  branch: string,
+  proposalId: string,
+  metadata: StoredProposalDraft,
+): Promise<boolean> {
   const expected = env.EDITOR_TOKEN?.trim();
-  if (!expected) {
+  const provided = request.headers.get('X-Proposal-Edit-Code')?.trim() || request.headers.get('X-Editor-Token')?.trim();
+  if (!provided) {
     return false;
   }
 
-  const provided = request.headers.get('X-Editor-Token')?.trim();
-  return Boolean(provided) && provided === expected;
+  if (expected && provided === expected) {
+    return true;
+  }
+
+  if (!metadata.editCodeHash) {
+    return false;
+  }
+
+  return await hashEditCode(branch, proposalId, provided) === metadata.editCodeHash;
 }
 
 function validateProposal(input: unknown): ProposalPayload {
@@ -760,6 +816,8 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
   const root = themeRoot(proposal.id);
   const commitPrefix = `[theme-studio] ${proposal.id}`;
   const commitVerb = isUpdate ? 'update' : 'add';
+  const editCode = createEditCode();
+  const editCodeHash = await hashEditCode(branch, proposal.id, editCode);
 
   await uploadBinaryFile(
     env,
@@ -864,7 +922,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     existingManifestSha,
   );
 
-  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: isUpdate });
+  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: isUpdate, editCodeHash });
 
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: ${isUpdate ? 'update' : 'register'} theme in catalog`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
@@ -879,7 +937,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     proposal.prTitle,
     buildPullRequestBody(proposal.prBody, proposalLinks),
   );
-  return jsonResponse({ pullRequestUrl, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
+  return jsonResponse({ pullRequestUrl, branchName: branch, editCode, ...proposalLinks }, 200, corsHeaders(request, env));
 }
 
 async function handleGetProposalDraft(request: Request, env: Env, url: URL): Promise<Response> {
@@ -931,15 +989,74 @@ async function handleGetProposalAsset(request: Request, env: Env, url: URL): Pro
   });
 }
 
+function metadataThemeIdFromPath(path: string): string | undefined {
+  const match = /^themes\/([^/]+)\/\.switchu-studio\.json$/.exec(path);
+  return match?.[1];
+}
+
+function buildProposalAssetUrl(request: Request, branchName: string, proposalId: string, relativePath: string): string {
+  const url = new URL('/api/proposals/asset', request.url);
+  url.searchParams.set('branch', branchName);
+  url.searchParams.set('id', proposalId);
+  url.searchParams.set('path', relativePath);
+  return url.toString();
+}
+
+async function handleListProposals(request: Request, env: Env, url: URL): Promise<Response> {
+  const token = await getInstallationToken(env);
+  const defaultBranch = await getDefaultBranch(env, token);
+  const siteBaseUrl = sanitizeSiteBaseUrl(url.searchParams.get('siteBaseUrl') ?? undefined);
+  const pulls = await githubFetch<GitHubPullResponse[]>(
+    env,
+    token,
+    `${repoPath(env)}/pulls?state=open&base=${encodeURIComponent(defaultBranch)}&per_page=100`,
+  );
+
+  const proposals = await Promise.all(
+    pulls
+      .filter((pull) => pull.head.ref.startsWith('theme-studio/'))
+      .map(async (pull) => {
+        const files = await githubFetch<GitHubPullFileResponse[]>(
+          env,
+          token,
+          `${repoPath(env)}/pulls/${pull.number}/files?per_page=100`,
+        );
+        const metadataFile = files.find((file) => metadataThemeIdFromPath(file.filename));
+        const proposalId = metadataFile ? metadataThemeIdFromPath(metadataFile.filename) : undefined;
+        if (!proposalId) {
+          return undefined;
+        }
+
+        const metadata = await readProposalDraftMetadata(env, token, pull.head.ref, proposalId);
+        const links = buildProposalLinks(siteBaseUrl, metadata.draftSnapshot.id, pull.head.ref);
+        return {
+          number: pull.number,
+          title: pull.title,
+          pullRequestUrl: pull.html_url,
+          branchName: pull.head.ref,
+          proposalId: metadata.draftSnapshot.id,
+          name: metadata.draftSnapshot.name,
+          author: metadata.draftSnapshot.author,
+          version: metadata.draftSnapshot.version,
+          mode: metadata.draftSnapshot.mode,
+          proposalMode: metadata.draftSnapshot.proposalMode ?? 'create',
+          contributor: metadata.draftSnapshot.contributor || pull.user?.login || '',
+          createdAt: pull.created_at,
+          updatedAt: pull.updated_at,
+          coverUrl: buildProposalAssetUrl(request, pull.head.ref, metadata.draftSnapshot.id, 'media/screenshots/00.png'),
+          ...links,
+        };
+      }),
+  );
+
+  return jsonResponse(
+    { proposals: proposals.filter(Boolean) },
+    200,
+    corsHeaders(request, env),
+  );
+}
+
 async function handleUpdateProposal(request: Request, env: Env, url: URL): Promise<Response> {
-  if (!env.EDITOR_TOKEN?.trim()) {
-    return jsonResponse({ error: 'EDITOR_TOKEN is not configured on the proxy.' }, 503, corsHeaders(request, env));
-  }
-
-  if (!hasEditorAccess(request, env)) {
-    return jsonResponse({ error: 'Forbidden: missing or invalid editor token.' }, 403, corsHeaders(request, env));
-  }
-
   const branch = sanitizeBranchName(url.searchParams.get('branch') ?? '');
   if (!branch.startsWith('theme-studio/')) {
     return jsonResponse({ error: 'Only theme-studio proposal branches can be updated.' }, 400, corsHeaders(request, env));
@@ -953,6 +1070,11 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
 
   const proposal = validateProposal(JSON.parse(proposalRaw));
   const token = await getInstallationToken(env);
+  const currentMetadata = await readProposalDraftMetadata(env, token, branch, proposal.id);
+  if (!await hasEditorAccess(request, env, branch, proposal.id, currentMetadata)) {
+    return jsonResponse({ error: 'Forbidden: missing or invalid proposal edit code.' }, 403, corsHeaders(request, env));
+  }
+
   const root = themeRoot(proposal.id);
   const commitPrefix = `[theme-studio] ${proposal.id}`;
   const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
@@ -1058,7 +1180,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
     }
   }
 
-  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: true });
+  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: true, editCodeHash: currentMetadata.editCodeHash });
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: update catalog entry`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
   });
@@ -1086,6 +1208,10 @@ export default {
 
       if (request.method === 'GET' && url.pathname === '/api/proposals/asset') {
         return await handleGetProposalAsset(request, env, url);
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/proposals') {
+        return await handleListProposals(request, env, url);
       }
 
       if (request.method === 'POST' && url.pathname === '/api/proposals') {

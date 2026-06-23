@@ -16,6 +16,7 @@ export interface ProposalResult {
   branchName: string;
   previewUrl?: string;
   editUrl?: string;
+  editCode?: string;
 }
 
 export type ProposalMode = 'preview' | 'edit';
@@ -43,6 +44,29 @@ export interface ProposalUpdateResult {
   branchName: string;
   previewUrl?: string;
   editUrl?: string;
+}
+
+export interface OpenProposalSummary {
+  number: number;
+  title: string;
+  pullRequestUrl: string;
+  branchName: string;
+  proposalId: string;
+  name: string;
+  author: string;
+  version: string;
+  mode: 'dark' | 'light';
+  proposalMode: 'create' | 'update';
+  contributor: string;
+  createdAt: string;
+  updatedAt: string;
+  coverUrl: string;
+  previewUrl?: string;
+  editUrl?: string;
+}
+
+interface OpenProposalsResponse {
+  proposals: OpenProposalSummary[];
 }
 
 function themeRoot(id: string): string {
@@ -277,6 +301,19 @@ export async function submitThemeProposal(draft: StudioDraft, previewNode: HTMLE
   return response.json() as Promise<ProposalResult>;
 }
 
+export async function loadOpenProposals(): Promise<OpenProposalSummary[]> {
+  const url = new URL(`${proxyBaseUrl()}/api/proposals`);
+  url.searchParams.set('siteBaseUrl', currentSiteBaseUrl());
+
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) {
+    return readProposalResponseError(response, `Failed to load open proposals (${response.status})`);
+  }
+
+  const payload = await response.json() as OpenProposalsResponse;
+  return payload.proposals;
+}
+
 export function readProposalRouteState(locationLike: Pick<Location, 'search'> = window.location): ProposalRouteState | null {
   const params = new URLSearchParams(locationLike.search);
   const proposalId = params.get('proposalId')?.trim();
@@ -320,7 +357,7 @@ export async function updateThemeProposal(
   draft: StudioDraft,
   previewNode: HTMLElement,
   branchName: string,
-  editorToken: string,
+  editCode: string,
 ): Promise<ProposalUpdateResult> {
   const url = new URL(`${proxyBaseUrl()}/api/proposals/update`);
   url.searchParams.set('branch', branchName);
@@ -328,7 +365,7 @@ export async function updateThemeProposal(
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'X-Editor-Token': editorToken,
+      'X-Proposal-Edit-Code': editCode,
     },
     body: await buildProposalFormData(draft, previewNode),
   });

@@ -7,7 +7,7 @@ import {
   Upload,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { downloadDraftArchive, submitThemeProposal, type ProposalMode, type ProposalUpdateResult } from '../github/proposals';
+import { downloadDraftArchive, submitThemeProposal, type ProposalMode, type ProposalResult, type ProposalUpdateResult } from '../github/proposals';
 import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
 import {
@@ -37,11 +37,13 @@ interface ThemeStudioProps {
   editorUnlocked?: boolean;
   onUnlockEditor?: () => Promise<boolean>;
   onUpdateProposal?: (draft: StudioDraft, previewNode: HTMLElement) => Promise<ProposalUpdateResult>;
+  onProposalCreated?: (result: ProposalResult, draft: StudioDraft) => void;
 }
 
 interface SubmitSuccessState {
   message: string;
   href?: string;
+  editCode?: string;
 }
 
 type StudioEditorTab = 'setup' | 'palette' | 'background' | 'audio' | 'publish';
@@ -285,6 +287,7 @@ export function ThemeStudio({
   editorUnlocked = false,
   onUnlockEditor,
   onUpdateProposal,
+  onProposalCreated,
 }: ThemeStudioProps) {
   const previewRef = useRef<HTMLDivElement>(null);
   const [activeEditorTab, setActiveEditorTab] = useState<StudioEditorTab>('setup');
@@ -326,7 +329,7 @@ export function ThemeStudio({
 
     const unlocked = await onUnlockEditor();
     if (!unlocked) {
-      setSubmitError('Editor token is required to update this linked proposal.');
+      setSubmitError('The personal edit code is required to update this linked proposal.');
       return false;
     }
 
@@ -491,9 +494,11 @@ export function ThemeStudio({
     setSubmitSuccess(null);
     try {
       const result = await submitThemeProposal(draft, previewRef.current);
+      onProposalCreated?.(result, draft);
       setSubmitSuccess({
         message: 'Pull request created.',
-        href: result.pullRequestUrl,
+        href: result.editUrl ?? result.pullRequestUrl,
+        editCode: result.editCode,
       });
     } catch (cause) {
       setSubmitError(cause instanceof Error ? cause.message : 'Unknown submission error');
@@ -529,7 +534,7 @@ export function ThemeStudio({
           <h2>Live theme studio</h2>
           <p className="studio-shell__lede">
             {linkedProposal
-              ? `Linked to ${linkedProposal.proposalId} on ${linkedProposal.branchName}. Preview mode is public; saving edits stays locked behind your private editor token.`
+              ? `Linked to ${linkedProposal.proposalId} on ${linkedProposal.branchName}. Preview mode is public; saving edits stays locked behind this proposal's personal edit code.`
               : draft.proposalMode === 'update'
                 ? `Editing ${draft.id}. This will create a pull request that updates the existing catalog theme instead of adding a new folder.`
               : selectedRecord
@@ -578,13 +583,13 @@ export function ThemeStudio({
                 <strong>{linkedProposal?.proposalMode === 'edit' ? 'Editing is locked' : 'Preview-only link'}</strong>
                 <span>
                   {linkedProposal?.proposalMode === 'edit'
-                    ? 'Enter the private editor token to unlock changes and update the same PR branch.'
+                    ? "Enter this proposal's personal edit code to unlock changes and update the same PR branch."
                     : 'This PR link only loads the draft for inspection. Use the edit link from the PR if you need to save changes.'}
                 </span>
-                {linkedProposal?.proposalMode === 'edit' ? (
+                  {linkedProposal?.proposalMode === 'edit' ? (
                   <button className="submit-button submit-button--secondary" type="button" onClick={() => { void handleUnlockEditor(); }}>
                     <LockKeyhole size={18} />
-                    <span>{editorUnlocked ? 'Editor unlocked' : 'Unlock editor'}</span>
+                    <span>{editorUnlocked ? 'Editor unlocked' : 'Enter edit code'}</span>
                   </button>
                 ) : null}
               </div>
@@ -860,6 +865,12 @@ export function ThemeStudio({
                     <div className="submit-feedback submit-feedback--success">
                       {submitSuccess.message}
                       {submitSuccess.href ? <> <a href={submitSuccess.href} target="_blank" rel="noreferrer">{submitSuccess.href}</a></> : null}
+                      {submitSuccess.editCode ? (
+                        <span className="proposal-edit-code">
+                          <LockKeyhole size={16} />
+                          <strong>{submitSuccess.editCode}</strong>
+                        </span>
+                      ) : null}
                     </div>
                   ) : null}
                 </div>
