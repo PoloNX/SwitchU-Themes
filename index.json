@@ -72,6 +72,15 @@
       "manifest": "themes/iisu/theme.json"
     },
     {
+      "id": "black",
+      "name": "Black",
+      "author": "Adan",
+      "version": "1.1.0",
+      "path": "themes/black",
+      "manifest": "themes/black/theme.json",
+      "cover": "themes/black/media/screenshots/00.png"
+    },
+    {
       "id": "nier-minimalist",
       "name": "Nier Minimalist",
       "author": "iiSU Team",
