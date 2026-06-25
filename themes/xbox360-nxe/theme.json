@@ -1,0 +1,90 @@
+{
+  "id": "xbox360-nxe",
+  "name": "Xbox 360 in Switch",
+  "author": "daniel.sox",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.22222222222222224,
+        1,
+        0.5
+      ],
+      "accent": [
+        0.2318840579710145,
+        0.5564516129032258,
+        0.5137254901960784
+      ],
+      "background": [
+        0.6,
+        0.026178010471204095,
+        0.6254901960784314
+      ],
+      "backgroundAccent": [
+        0.2318840579710145,
+        0.5564516129032258,
+        0.5137254901960784
+      ],
+      "shapes": [
+        0,
+        0,
+        0.23137254901960785
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "vertical",
+      "count": 76,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 10,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        11,
+        17
+      ],
+      "speed": [
+        4,
+        8
+      ],
+      "wobble": 24,
+      "rotationSpeed": 0.41,
+      "opacity": 0.5
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/bg1.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}

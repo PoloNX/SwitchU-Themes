@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/xbox360-nxe-1782365346010",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "xbox360-nxe",
+    "name": "Xbox 360 in Switch",
+    "author": "daniel.sox",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.22222222222222224,
+        "s": 1,
+        "l": 0.5
+      },
+      "accent": {
+        "h": 0.2318840579710145,
+        "s": 0.5564516129032258,
+        "l": 0.5137254901960784
+      },
+      "background": {
+        "h": 0.6,
+        "s": 0.026178010471204095,
+        "l": 0.6254901960784314
+      },
+      "backgroundAccent": {
+        "h": 0.2318840579710145,
+        "s": 0.5564516129032258,
+        "l": 0.5137254901960784
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 0.23137254901960785
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "vertical",
+      "count": 76,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 10,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 11,
+      "sizeMax": 17,
+      "speedMin": 4,
+      "speedMax": 8,
+      "wobble": 24,
+      "rotationSpeed": 0.41,
+      "opacity": 0.5,
+      "imageOpacity": 0.73,
+      "imageFit": "cover"
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "bg1.mp3",
+        "relativePath": "sounds/music/bg1.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "activation.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "confirm.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "show_modal.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "hide_modal.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "navigation.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "launch_game.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "slider_up.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "slider_down.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "toggle_on.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "toggle_off.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "tab_transition.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "volume.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}

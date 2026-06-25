@@ -38,6 +38,15 @@
       "cover": "themes/aoab/media/screenshots/00.png"
     },
     {
+      "id": "black",
+      "name": "Black",
+      "author": "Adan",
+      "version": "1.1.0",
+      "path": "themes/black",
+      "manifest": "themes/black/theme.json",
+      "cover": "themes/black/media/screenshots/00.png"
+    },
+    {
       "id": "cammy-minimalist",
       "name": "cammy Minimalist",
       "author": "iiSU Team",
@@ -79,15 +88,6 @@
       "version": "1.1.0",
       "path": "themes/iisu",
       "manifest": "themes/iisu/theme.json"
-    },
-    {
-      "id": "black",
-      "name": "Black",
-      "author": "Adan",
-      "version": "1.1.0",
-      "path": "themes/black",
-      "manifest": "themes/black/theme.json",
-      "cover": "themes/black/media/screenshots/00.png"
     },
     {
       "id": "nier-minimalist",
@@ -147,6 +147,15 @@
       "path": "themes/supermariobros",
       "manifest": "themes/supermariobros/theme.json",
       "cover": "themes/supermariobros/media/screenshots/00.png"
+    },
+    {
+      "id": "xbox360-nxe",
+      "name": "Xbox 360 in Switch",
+      "author": "daniel.sox",
+      "version": "1.0.0",
+      "path": "themes/xbox360-nxe",
+      "manifest": "themes/xbox360-nxe/theme.json",
+      "cover": "themes/xbox360-nxe/media/screenshots/00.png"
     },
     {
       "id": "zeldaminimalist",
