@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/sonicadventure2-1782509380377",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "sonicadventure2",
+    "name": "Sonic Adventure Theme",
+    "author": "Sloth_Blast",
+    "version": "1.0.0",
+    "summary": "S A 2",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.5914913856181698,
+        "s": 1,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.5890747625045701,
+        "s": 1,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.2102532083915376,
+        "s": 0.8567952990345874,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "vertical",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 4,
+      "sizeMax": 19,
+      "speedMin": 100,
+      "speedMax": 0,
+      "wobble": 10,
+      "rotationSpeed": 0,
+      "opacity": 0.15,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "801c9339-a8d1-4b07-a7ae-76616a27cf4a.png",
+        "relativePath": "media/backgrounds/801c9339-a8d1-4b07-a7ae-76616a27cf4a.png"
+      }
+    },
+    "fonts": {
+      "regular": {
+        "name": "Display Plump W95 Regular.ttf",
+        "relativePath": "fonts/Display-Plump-W95-Regular.ttf"
+      },
+      "small": {
+        "name": "TintaArabic-Bold.otf",
+        "relativePath": "fonts/TintaArabic-Bold.otf"
+      }
+    },
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Sonic Adventure 2 Story select.mp3",
+        "relativePath": "sounds/music/Sonic-Adventure-2-Story-select.mp3"
+      },
+      "sfx": {
+        "show_modal": {
+          "name": "show_modal.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "hide_modal.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "navigation.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "launch_game.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "toggle_on": {
+          "name": "toggle_on.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "tab_transition": {
+          "name": "tab_transition.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        }
+      }
+    }
+  }
+}
