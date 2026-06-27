@@ -132,6 +132,15 @@
       "manifest": "themes/sakura/theme.json"
     },
     {
+      "id": "sonicadventure2",
+      "name": "Sonic Adventure Theme",
+      "author": "Sloth_Blast",
+      "version": "1.0.0",
+      "path": "themes/sonicadventure2",
+      "manifest": "themes/sonicadventure2/theme.json",
+      "cover": "themes/sonicadventure2/media/screenshots/00.png"
+    },
+    {
       "id": "sunset",
       "name": "Sunset",
       "author": "PoloNX",
