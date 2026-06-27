@@ -1,0 +1,92 @@
+{
+  "id": "sonicadventure2",
+  "name": "Sonic Adventure 2",
+  "author": "Sloth_Blast",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.5849957631389209,
+        1,
+        0.62
+      ],
+      "accent": [
+        0.5504559299306792,
+        1,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.4418316473927759,
+        0.19225149624353574,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "quad",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.22,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        4,
+        19
+      ],
+      "speed": [
+        0,
+        100
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.5,
+      "image": {
+        "path": "media/backgrounds/title-screen.png",
+        "opacity": 0.96,
+        "fit": "cover"
+      }
+    },
+    "fonts": {
+      "regular": "fonts/Display-Plump-W95-Regular.ttf",
+      "small": "fonts/TintaArabic-Bold.otf"
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Sonic-Adventure-2-Story-select.mp3"
+    ],
+    "sfx": {
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav"
+    }
+  }
+}
