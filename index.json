@@ -90,6 +90,15 @@
       "manifest": "themes/iisu/theme.json"
     },
     {
+      "id": "metalsonic-om",
+      "name": "MetalSonic OM",
+      "author": "Tuto",
+      "version": "1.0.0",
+      "path": "themes/metalsonic-om",
+      "manifest": "themes/metalsonic-om/theme.json",
+      "cover": "themes/metalsonic-om/media/screenshots/00.png"
+    },
+    {
       "id": "nier-minimalist",
       "name": "Nier Minimalist",
       "author": "iiSU Team",
