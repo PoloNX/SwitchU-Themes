@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/astral-observatory-1783235143428",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "astral-observatory",
+    "name": "Astral observatory",
+    "author": "Adan",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.7446178291593134,
+        "s": 0.6443636867729071,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.8740734063213557,
+        "s": 0.024793519592703255,
+        "l": 0.9117647058823529
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.7245983241158396,
+        "s": 0.3290048425381324,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "none",
+      "count": 30,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 10,
+      "rows": 9,
+      "spacingX": 350,
+      "spacingY": 200,
+      "sizeMin": 3,
+      "sizeMax": 4,
+      "speedMin": 7,
+      "speedMax": 10,
+      "wobble": 0,
+      "rotationSpeed": 0.04,
+      "opacity": 0.5,
+      "imageOpacity": 500,
+      "imageFit": "cover",
+      "image": {
+        "name": "1000272178.png",
+        "relativePath": "media/backgrounds/1000272178.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Astral Observatory Restored __ The Legend of Zelda_ Majora's Mask.mp3",
+        "relativePath": "sounds/music/Astral-Observatory-Restored-__-The-Legend-of-Zelda_-Majora's-Mask.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "Activar.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "Confirmar.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "Mostrar.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "Ocultar.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "Navegacion.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "Juego de lanzamiento.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "Deslizador.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "Deslizador.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "Activar.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "Desactivar.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "Transicion de pestañas.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "Volumen.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}
