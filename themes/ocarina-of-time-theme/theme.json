@@ -1,0 +1,95 @@
+{
+  "id": "ocarina-of-time-theme",
+  "name": "Ocarina of time theme",
+  "author": "Adan",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.40031684559627667,
+        0.6184870165720654,
+        0.62
+      ],
+      "accent": [
+        0.3793743808502592,
+        0.6779480617363636,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.39810053939261447,
+        0.5868089807608872,
+        0.14
+      ],
+      "shapes": [
+        0.56,
+        0.4,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 0,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "grid": {
+        "columns": 0,
+        "rows": 0,
+        "spacing": [
+          0,
+          0
+        ]
+      },
+      "size": [
+        0,
+        0
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 0,
+      "rotationSpeed": 0,
+      "opacity": 0,
+      "image": {
+        "path": "media/backgrounds/1000272180.png",
+        "opacity": 200,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/The-Legend-of-Zelda_-Ocarina-of-Time-_-Title-Theme-_-近藤浩治-[Koji-Kondo].mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}
