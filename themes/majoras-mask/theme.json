@@ -1,0 +1,78 @@
+{
+  "id": "majoras-mask",
+  "name": "Majoras mask",
+  "author": "Adan",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.7574059785138116,
+        0.7493812642675773,
+        0.62
+      ],
+      "accent": [
+        0.7623185669599282,
+        0.5071685751078414,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.7446565545119563,
+        0.2596097432512218,
+        0.14
+      ],
+      "shapes": [
+        0,
+        0,
+        1
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 90,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 5,
+        "rows": 9,
+        "spacing": [
+          500,
+          530
+        ]
+      },
+      "size": [
+        1,
+        2
+      ],
+      "speed": [
+        7,
+        10
+      ],
+      "wobble": 0,
+      "rotationSpeed": 0.04,
+      "opacity": 0.8,
+      "image": {
+        "path": "media/backgrounds/1000272466.png",
+        "opacity": 0.9,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}
