@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/majoras-mask-1783233751057",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "majoras-mask",
+    "name": "Majoras mask",
+    "author": "Adan",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.7574059785138116,
+        "s": 0.7493812642675773,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.7623185669599282,
+        "s": 0.5071685751078414,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.7446565545119563,
+        "s": 0.2596097432512218,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 90,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 5,
+      "rows": 9,
+      "spacingX": 500,
+      "spacingY": 530,
+      "sizeMin": 1,
+      "sizeMax": 2,
+      "speedMin": 7,
+      "speedMax": 10,
+      "wobble": 0,
+      "rotationSpeed": 0.04,
+      "opacity": 0.8,
+      "imageOpacity": 0.9,
+      "imageFit": "cover",
+      "image": {
+        "name": "1000272466.png",
+        "relativePath": "media/backgrounds/1000272466.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  }
+}
