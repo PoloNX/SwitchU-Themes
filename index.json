@@ -108,6 +108,15 @@
       "cover": "themes/nier-minimalist/media/screenshots/00.png"
     },
     {
+      "id": "ocarina-of-time-theme",
+      "name": "Ocarina of time theme",
+      "author": "Adan",
+      "version": "1.0.0",
+      "path": "themes/ocarina-of-time-theme",
+      "manifest": "themes/ocarina-of-time-theme/theme.json",
+      "cover": "themes/ocarina-of-time-theme/media/screenshots/00.png"
+    },
+    {
       "id": "ocean",
       "name": "Ocean",
       "author": "PoloNX",
