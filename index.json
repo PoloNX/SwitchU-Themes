@@ -90,6 +90,15 @@
       "manifest": "themes/iisu/theme.json"
     },
     {
+      "id": "majoras-mask",
+      "name": "Majoras mask",
+      "author": "Adan",
+      "version": "1.0.0",
+      "path": "themes/majoras-mask",
+      "manifest": "themes/majoras-mask/theme.json",
+      "cover": "themes/majoras-mask/media/screenshots/00.png"
+    },
+    {
       "id": "metalsonic-om",
       "name": "MetalSonic OM",
       "author": "Tuto",
