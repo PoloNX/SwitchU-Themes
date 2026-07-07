@@ -1,0 +1,95 @@
+{
+  "id": "astral-observatory",
+  "name": "Astral observatory",
+  "author": "Adan",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.7446178291593134,
+        0.6443636867729071,
+        0.62
+      ],
+      "accent": [
+        0.8740734063213557,
+        0.024793519592703255,
+        0.9117647058823529
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.7245983241158396,
+        0.3290048425381324,
+        0.14
+      ],
+      "shapes": [
+        0,
+        0,
+        1
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "none",
+      "count": 30,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 10,
+        "rows": 9,
+        "spacing": [
+          350,
+          200
+        ]
+      },
+      "size": [
+        3,
+        4
+      ],
+      "speed": [
+        7,
+        10
+      ],
+      "wobble": 0,
+      "rotationSpeed": 0.04,
+      "opacity": 0.5,
+      "image": {
+        "path": "media/backgrounds/1000272178.png",
+        "opacity": 500,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Astral-Observatory-Restored-__-The-Legend-of-Zelda_-Majora's-Mask.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}

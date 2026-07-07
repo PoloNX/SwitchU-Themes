@@ -38,6 +38,15 @@
       "cover": "themes/aoab/media/screenshots/00.png"
     },
     {
+      "id": "astral-observatory",
+      "name": "Astral observatory",
+      "author": "Adan",
+      "version": "1.0.0",
+      "path": "themes/astral-observatory",
+      "manifest": "themes/astral-observatory/theme.json",
+      "cover": "themes/astral-observatory/media/screenshots/00.png"
+    },
+    {
       "id": "black",
       "name": "Black",
       "author": "Adan",
