@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/ocarina-of-time-theme-1783236213894",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "ocarina-of-time-theme",
+    "name": "Ocarina of time theme",
+    "author": "Adan",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.40031684559627667,
+        "s": 0.6184870165720654,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.3793743808502592,
+        "s": 0.6779480617363636,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.39810053939261447,
+        "s": 0.5868089807608872,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.56,
+        "s": 0.4,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 0,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 0,
+      "rows": 0,
+      "spacingX": 0,
+      "spacingY": 0,
+      "sizeMin": 0,
+      "sizeMax": 0,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 0,
+      "rotationSpeed": 0,
+      "opacity": 0,
+      "imageOpacity": 200,
+      "imageFit": "cover",
+      "image": {
+        "name": "1000272180.png",
+        "relativePath": "media/backgrounds/1000272180.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "The Legend of Zelda_ Ocarina of Time _ Title Theme _ 近藤浩治 [Koji Kondo].mp3",
+        "relativePath": "sounds/music/The-Legend-of-Zelda_-Ocarina-of-Time-_-Title-Theme-_-近藤浩治-[Koji-Kondo].mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "Activar.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "Confirmar.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "Mostrar.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "Ocultar.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "Navegacion.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "Navegacion.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "Deslizador.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "Deslizador.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "Activar.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "Desactivar.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "Transicion de pestañas.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "Volumen.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}
