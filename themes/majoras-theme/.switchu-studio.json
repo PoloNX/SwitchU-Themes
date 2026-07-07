@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/majoras-theme-1783383144422",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "majoras-theme",
+    "name": "Majoras theme",
+    "author": "Adan",
+    "version": "1.1.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.58,
+        "s": 0.9,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.53,
+        "s": 0.8,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 1000,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 50,
+      "rows": 50,
+      "spacingX": 350,
+      "spacingY": 200,
+      "sizeMin": 1,
+      "sizeMax": 2,
+      "speedMin": 3,
+      "speedMax": 4,
+      "wobble": 0,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 1000,
+      "imageFit": "cover",
+      "image": {
+        "name": "1000272539.png",
+        "relativePath": "media/backgrounds/1000272539.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Song of Healing - The Legend of Zelda_ Majora's Mask OST _ Remastered.mp3",
+        "relativePath": "sounds/music/Song-of-Healing---The-Legend-of-Zelda_-Majora's-Mask-OST-_-Remastered.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "Activacion.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "Activacion.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "OOT_PauseMenu_Open.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "OOT_PauseMenu_Close.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "OOT_Dialogue_Next.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "OOT_PressStart.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "OOT_PauseMenu_Cursor.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "OOT_PauseMenu_Cursor.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "OOT_MiniMap_On.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "OOT_MiniMap_Off.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "OOT_PauseMenu_Turn_Mono.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "OOT_MainMenu_Cursor.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}
