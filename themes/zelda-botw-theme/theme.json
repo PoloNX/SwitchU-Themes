@@ -1,0 +1,81 @@
+{
+  "id": "zelda-botw-theme",
+  "name": "Zelda BOTW theme",
+  "author": "Adan",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.844321216435459,
+        0.36665082942018157,
+        0.62
+      ],
+      "accent": [
+        0.5441438135398767,
+        0.43039257070144926,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.5921328721717912,
+        0.21342155107480554,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 0,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "grid": {
+        "columns": 0,
+        "rows": 0,
+        "spacing": [
+          0,
+          0
+        ]
+      },
+      "size": [
+        0,
+        0
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 0,
+      "rotationSpeed": 0,
+      "opacity": 0,
+      "image": {
+        "path": "media/backgrounds/1000273472.png",
+        "opacity": 500,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Sheikah-Tower-The-Legend-of-Zelda_-Breath-of-the-Wild-OST.mp3"
+    ]
+  }
+}
