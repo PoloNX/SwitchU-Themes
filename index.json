@@ -203,6 +203,15 @@
       "cover": "themes/xbox360-nxe/media/screenshots/00.png"
     },
     {
+      "id": "zelda-botw-theme",
+      "name": "Zelda BOTW theme",
+      "author": "Adan",
+      "version": "1.0.0",
+      "path": "themes/zelda-botw-theme",
+      "manifest": "themes/zelda-botw-theme/theme.json",
+      "cover": "themes/zelda-botw-theme/media/screenshots/00.png"
+    },
+    {
       "id": "zeldaminimalist",
       "name": "Zelda Minimalist",
       "author": "Degrahne",
