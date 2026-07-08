@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/zelda-botw-theme-1783549626588",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "zelda-botw-theme",
+    "name": "Zelda BOTW theme",
+    "author": "Adan",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "fort",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.844321216435459,
+        "s": 0.36665082942018157,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.5441438135398767,
+        "s": 0.43039257070144926,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.5921328721717912,
+        "s": 0.21342155107480554,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 0,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 0,
+      "rows": 0,
+      "spacingX": 0,
+      "spacingY": 0,
+      "sizeMin": 0,
+      "sizeMax": 0,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 0,
+      "rotationSpeed": 0,
+      "opacity": 0,
+      "imageOpacity": 500,
+      "imageFit": "cover",
+      "image": {
+        "name": "1000273472.png",
+        "relativePath": "media/backgrounds/1000273472.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Sheikah Tower The Legend of Zelda_ Breath of the Wild OST.mp3",
+        "relativePath": "sounds/music/Sheikah-Tower-The-Legend-of-Zelda_-Breath-of-the-Wild-OST.mp3"
+      },
+      "sfx": {}
+    }
+  }
+}
