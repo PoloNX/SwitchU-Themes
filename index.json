@@ -186,6 +186,15 @@
       "cover": "themes/sonicfrontiers/media/screenshots/00.png"
     },
     {
+      "id": "srcmiku",
+      "name": "SRC Hatsune Miku",
+      "author": "CrisUllon",
+      "version": "1.0.0",
+      "path": "themes/srcmiku",
+      "manifest": "themes/srcmiku/theme.json",
+      "cover": "themes/srcmiku/media/screenshots/00.png"
+    },
+    {
       "id": "sunset",
       "name": "Sunset",
       "author": "PoloNX",
