@@ -91,6 +91,15 @@
       "manifest": "themes/forest/theme.json"
     },
     {
+      "id": "hatsune-miku",
+      "name": "Hatsune Miku",
+      "author": "Five39s",
+      "version": "1.0.0",
+      "path": "themes/hatsune-miku",
+      "manifest": "themes/hatsune-miku/theme.json",
+      "cover": "themes/hatsune-miku/media/screenshots/00.png"
+    },
+    {
       "id": "iisu",
       "name": "iiSU",
       "author": "iiSU Team",
