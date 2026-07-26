@@ -108,6 +108,15 @@
       "manifest": "themes/iisu/theme.json"
     },
     {
+      "id": "kasaneteto",
+      "name": "Kasane Teto",
+      "author": "KoQuinS",
+      "version": "1.0.0",
+      "path": "themes/kasaneteto",
+      "manifest": "themes/kasaneteto/theme.json",
+      "cover": "themes/kasaneteto/media/screenshots/00.png"
+    },
+    {
       "id": "majoras-theme",
       "name": "Majoras theme",
       "author": "Adan",
