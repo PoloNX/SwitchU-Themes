@@ -178,6 +178,15 @@
       "cover": "themes/psp/media/screenshots/00.png"
     },
     {
+      "id": "psp-in-switch-variant",
+      "name": "PSP in Switch Variant",
+      "author": "daniel.sox",
+      "version": "1.0.0",
+      "path": "themes/psp-in-switch-variant",
+      "manifest": "themes/psp-in-switch-variant/theme.json",
+      "cover": "themes/psp-in-switch-variant/media/screenshots/00.png"
+    },
+    {
       "id": "sakura",
       "name": "Sakura",
       "author": "PoloNX",
