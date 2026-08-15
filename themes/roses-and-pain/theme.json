@@ -1,0 +1,81 @@
+{
+  "id": "roses-and-pain",
+  "name": "Roses and Pain",
+  "author": "Trastornada",
+  "version": "1.1.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.9937634963511215,
+        1,
+        0.56
+      ],
+      "accent": [
+        0.00362701962001144,
+        1,
+        0.56
+      ],
+      "background": [
+        0.8436425817581502,
+        1,
+        0.94
+      ],
+      "backgroundAccent": [
+        0.6464256118709681,
+        1,
+        0.89
+      ],
+      "shapes": [
+        0.9677798548563017,
+        1,
+        0.76
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 20,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.42,
+      "grid": {
+        "columns": 26,
+        "rows": 20,
+        "spacing": [
+          47,
+          58
+        ]
+      },
+      "size": [
+        8,
+        16
+      ],
+      "speed": [
+        62,
+        10
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.38,
+      "opacity": 0.53,
+      "image": {
+        "path": "media/backgrounds/abdeb8ce-e859-44d0-89e6-157cd643ff90.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/2debd19d-5593-4882-8c16-14615292ef99.mp3"
+    ]
+  }
+}
