@@ -83,6 +83,15 @@
       "cover": "themes/cubesque/media/screenshots/00.png"
     },
     {
+      "id": "cyan-theme",
+      "name": "Cyan Theme",
+      "author": "JohnK",
+      "version": "0.1.0",
+      "path": "themes/cyan-theme",
+      "manifest": "themes/cyan-theme/theme.json",
+      "cover": "themes/cyan-theme/media/screenshots/00.png"
+    },
+    {
       "id": "forest",
       "name": "Forest",
       "author": "PoloNX",
