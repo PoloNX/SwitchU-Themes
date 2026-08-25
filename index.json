@@ -178,6 +178,15 @@
       "cover": "themes/psp/media/screenshots/00.png"
     },
     {
+      "id": "roses-and-pain",
+      "name": "Roses and Pain",
+      "author": "Trastornada",
+      "version": "1.1.0",
+      "path": "themes/roses-and-pain",
+      "manifest": "themes/roses-and-pain/theme.json",
+      "cover": "themes/roses-and-pain/media/screenshots/00.png"
+    },
+    {
       "id": "sakura",
       "name": "Sakura",
       "author": "PoloNX",
