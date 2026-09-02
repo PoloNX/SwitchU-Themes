@@ -1,0 +1,90 @@
+{
+  "id": "acnh-boat-light",
+  "name": "ACNH Boat (Light)",
+  "author": "SilkyPanda",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.08159722222222224,
+        0.5274725274725275,
+        0.35686274509803917
+      ],
+      "accent": [
+        0.48701298701298695,
+        0.41621621621621613,
+        0.6372549019607843
+      ],
+      "background": [
+        0.4889807162534436,
+        1,
+        0.2372549019607843
+      ],
+      "backgroundAccent": [
+        0.11827956989247314,
+        1,
+        0.9392156862745098
+      ],
+      "shapes": [
+        0.34006734006734,
+        0.3944223107569721,
+        0.49215686274509807
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        1,
+        40
+      ],
+      "speed": [
+        5,
+        40
+      ],
+      "wobble": 15,
+      "rotationSpeed": 0.2,
+      "opacity": 0.35,
+      "image": {
+        "path": "media/backgrounds/SyocC5.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    },
+    "fonts": {
+      "regular": "fonts/FinkHeavy.ttf",
+      "small": "fonts/FinkHeavy.ttf"
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Animal-Crossing-New-Horizons.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "launch_game": "sounds/sfx/launch_game.wav"
+    }
+  }
+}
