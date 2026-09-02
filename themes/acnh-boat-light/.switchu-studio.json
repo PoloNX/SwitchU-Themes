@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/acnh-boat-light-1788373210857",
+  "draftSnapshot": {
+    "basedOnThemeId": "tealleaves",
+    "proposalMode": "create",
+    "id": "acnh-boat-light",
+    "name": "ACNH Boat (Light)",
+    "author": "SilkyPanda",
+    "version": "1.0.0",
+    "summary": "ACNH Boat (Light)",
+    "notes": "Contains bg music, some custom AC sounds, as well as an AC font I found! Based on a old Wii U theme I saw on themezer so all credit to the original creator on there.",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.08159722222222224,
+        "s": 0.5274725274725275,
+        "l": 0.35686274509803917
+      },
+      "accent": {
+        "h": 0.48701298701298695,
+        "s": 0.41621621621621613,
+        "l": 0.6372549019607843
+      },
+      "background": {
+        "h": 0.4889807162534436,
+        "s": 1,
+        "l": 0.2372549019607843
+      },
+      "backgroundAccent": {
+        "h": 0.11827956989247314,
+        "s": 1,
+        "l": 0.9392156862745098
+      },
+      "shapes": {
+        "h": 0.34006734006734,
+        "s": 0.3944223107569721,
+        "l": 0.49215686274509807
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 1,
+      "sizeMax": 40,
+      "speedMin": 5,
+      "speedMax": 40,
+      "wobble": 15,
+      "rotationSpeed": 0.2,
+      "opacity": 0.35,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "SyocC5.png",
+        "relativePath": "media/backgrounds/SyocC5.png"
+      }
+    },
+    "fonts": {
+      "regular": {
+        "name": "FinkHeavy.ttf",
+        "relativePath": "fonts/FinkHeavy.ttf"
+      }
+    },
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Animal Crossing New Horizons.mp3",
+        "relativePath": "sounds/music/Animal-Crossing-New-Horizons.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "Manpu_Hello.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "RosiePleased.mp3",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "launch_game": {
+          "name": "RosieAmazed.mp3",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        }
+      }
+    }
+  }
+}

@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "themes": [
     {
+      "id": "acnh-boat-light",
+      "name": "ACNH Boat (Light)",
+      "author": "SilkyPanda",
+      "version": "1.0.0",
+      "path": "themes/acnh-boat-light",
+      "manifest": "themes/acnh-boat-light/theme.json",
+      "cover": "themes/acnh-boat-light/media/screenshots/00.png"
+    },
+    {
       "id": "pinkleaves",
       "name": "ACNH Leaves (Pink)",
       "author": "pillOwOfort",
