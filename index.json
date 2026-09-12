@@ -187,6 +187,15 @@
       "manifest": "themes/pikmin/theme.json"
     },
     {
+      "id": "pku",
+      "name": "PKU",
+      "author": "Guilhon",
+      "version": "1.0.0",
+      "path": "themes/pku",
+      "manifest": "themes/pku/theme.json",
+      "cover": "themes/pku/media/screenshots/00.png"
+    },
+    {
       "id": "psp",
       "name": "PSP in Switch",
       "author": "daniel.sox",

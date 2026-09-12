@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/pku-1788784484106",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "pku",
+    "name": "PKU",
+    "author": "Guilhon",
+    "version": "1.0.0",
+    "summary": "PokemonU",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.17547085667660078,
+        "s": 0.9803865748464784,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.53,
+        "s": 0.8,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.6747157615269468,
+        "s": 0.7078860506577864,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.56,
+        "s": 0.4,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 0.24,
+      "imageFit": "cover",
+      "image": {
+        "name": "pokemons-pikachu-live-wallpaper.png",
+        "relativePath": "media/backgrounds/pokemons-pikachu-live-wallpaper.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "1-23. Pokemon Gym.mp3",
+        "relativePath": "sounds/music/1-23.-Pokemon-Gym.mp3"
+      },
+      "sfx": {
+        "hide_modal": {
+          "name": "se_pokemon_hassam_attack_01.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "se_pokemon_kasey_teleport_start_02.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "se_pokemon_arceus_gravity_start.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "se_pokemon_harimaron_landing.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "se_pokemon_harimaron_landing.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "se_pokemon_dedenne_charge.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "se_pokemon_dedenne_charge.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "se_pokemon_kasey_teleport_end.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "se_pokemon_genesect_jump.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}
