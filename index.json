@@ -266,6 +266,15 @@
       "cover": "themes/supermariobros/media/screenshots/00.png"
     },
     {
+      "id": "wii-ish",
+      "name": "Wii ish",
+      "author": "Duckyboy33",
+      "version": "1.0.0",
+      "path": "themes/wii-ish",
+      "manifest": "themes/wii-ish/theme.json",
+      "cover": "themes/wii-ish/media/screenshots/00.png"
+    },
+    {
       "id": "xbox360-nxe",
       "name": "Xbox 360 in Switch",
       "author": "daniel.sox",
