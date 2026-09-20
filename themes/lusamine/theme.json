@@ -1,0 +1,81 @@
+{
+  "id": "lusamine",
+  "name": "Lusamine",
+  "author": "CrisUllon",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.15809403552312062,
+        0.7683349543435077,
+        0.403921568627451
+      ],
+      "accent": [
+        0.8740734063213557,
+        0.024793519592703255,
+        0.9117647058823529
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.16518774509175027,
+        0.7764048057415283,
+        0.3941176470588235
+      ],
+      "shapes": [
+        0,
+        0,
+        1
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "diamond",
+      "symmetry": "none",
+      "count": 30,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "grid": {
+        "columns": 10,
+        "rows": 9,
+        "spacing": [
+          350,
+          200
+        ]
+      },
+      "size": [
+        0,
+        0
+      ],
+      "speed": [
+        7,
+        10
+      ],
+      "wobble": 0,
+      "rotationSpeed": 0.04,
+      "opacity": 0.5,
+      "image": {
+        "path": "media/backgrounds/DT-lusamine.png",
+        "opacity": 500,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/lusamine.mp3"
+    ]
+  }
+}
