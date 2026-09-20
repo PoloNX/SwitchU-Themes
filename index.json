@@ -65,6 +65,15 @@
       "cover": "themes/black/media/screenshots/00.png"
     },
     {
+      "id": "bowsette",
+      "name": "Bowsette",
+      "author": "CrisUllon",
+      "version": "1.0.0",
+      "path": "themes/bowsette",
+      "manifest": "themes/bowsette/theme.json",
+      "cover": "themes/bowsette/media/screenshots/00.png"
+    },
+    {
       "id": "cammy-minimalist",
       "name": "cammy Minimalist",
       "author": "iiSU Team",
