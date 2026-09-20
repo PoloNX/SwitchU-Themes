@@ -1,0 +1,92 @@
+{
+  "id": "wii-ish",
+  "name": "Wii ish",
+  "author": "Duckyboy33",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.5515587529976019,
+        0.8034682080924856,
+        0.6607843137254902
+      ],
+      "accent": [
+        0.5518018018018017,
+        0.654867256637168,
+        0.44313725490196076
+      ],
+      "background": [
+        0.43333333333333374,
+        0.2380952380952388,
+        0.9588235294117646
+      ],
+      "backgroundAccent": [
+        0.43589743589743607,
+        0.2280701754385961,
+        0.888235294117647
+      ],
+      "shapes": [
+        0,
+        0,
+        1
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "quad",
+      "count": 12,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 12,
+        "rows": 3,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        8,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "image": {
+        "path": "media/backgrounds/wii.png",
+        "opacity": 92,
+        "fit": "contain"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/01-(mp3cut.net).mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}
