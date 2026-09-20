@@ -135,6 +135,15 @@
       "cover": "themes/kasaneteto/media/screenshots/00.png"
     },
     {
+      "id": "lusamine",
+      "name": "Lusamine",
+      "author": "CrisUllon",
+      "version": "1.0.0",
+      "path": "themes/lusamine",
+      "manifest": "themes/lusamine/theme.json",
+      "cover": "themes/lusamine/media/screenshots/00.png"
+    },
+    {
       "id": "majoras-theme",
       "name": "Majoras theme",
       "author": "Adan",
