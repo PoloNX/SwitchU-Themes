@@ -56,6 +56,15 @@
       "cover": "themes/astral-observatory/media/screenshots/00.png"
     },
     {
+      "id": "atmosphere-darkman-361985",
+      "name": "Atmosphere (DarkMan_361985)",
+      "author": "bshurikan",
+      "version": "1.0.0",
+      "path": "themes/atmosphere-darkman-361985",
+      "manifest": "themes/atmosphere-darkman-361985/theme.json",
+      "cover": "themes/atmosphere-darkman-361985/media/screenshots/00.png"
+    },
+    {
       "id": "black",
       "name": "Black",
       "author": "Adan",
