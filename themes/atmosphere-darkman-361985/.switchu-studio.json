@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/atmosphere-darkman-361985-1790009248594",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "atmosphere-darkman-361985",
+    "name": "Atmosphere (DarkMan_361985)",
+    "author": "bshurikan",
+    "version": "1.0.0",
+    "summary": "Atmosphere (DarkMan_361985)",
+    "notes": "This is a port of DarkMan_361985's Atmosphere theme from Themezer",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.5988832813084602,
+        "s": 0.9599630883193733,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.5845450878992919,
+        "s": 1,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.5720619319163102,
+        "s": 0.5344168752581349,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.6092671362940791,
+        "s": 0.7829517903010816,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "triangle",
+      "symmetry": "none",
+      "count": 12,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 50,
+      "columns": 16,
+      "rows": 8,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 12,
+      "sizeMax": 24,
+      "speedMin": 25,
+      "speedMax": 50,
+      "wobble": 50,
+      "rotationSpeed": 1,
+      "opacity": 0.5,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "image.png",
+        "relativePath": "media/backgrounds/image.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  }
+}
