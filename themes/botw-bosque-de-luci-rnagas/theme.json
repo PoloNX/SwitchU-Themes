@@ -1,0 +1,95 @@
+{
+  "id": "botw-bosque-de-luci-rnagas",
+  "name": "Botw_bosque de luciérnagas",
+  "author": "Caløhtk",
+  "version": "0.5",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.27300518196450496,
+        0.2622331221379052,
+        0.62
+      ],
+      "accent": [
+        0.3793743808502592,
+        0.6779480617363636,
+        0.55
+      ],
+      "background": [
+        0.669173018547232,
+        0.5354131465603926,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.3325143703294149,
+        0.6545151334398642,
+        0.14
+      ],
+      "shapes": [
+        0.22732898133218193,
+        0.9820835427579985,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "horizontal",
+      "count": 15,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 10,
+      "grid": {
+        "columns": 100,
+        "rows": 100,
+        "spacing": [
+          15,
+          0
+        ]
+      },
+      "size": [
+        2,
+        8
+      ],
+      "speed": [
+        10,
+        10
+      ],
+      "wobble": 100,
+      "rotationSpeed": 10,
+      "opacity": 100,
+      "image": {
+        "path": "media/backgrounds/41900.png",
+        "opacity": 100,
+        "fit": "contain"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/BotW-Rito-Village-_Complete-Version_.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}
