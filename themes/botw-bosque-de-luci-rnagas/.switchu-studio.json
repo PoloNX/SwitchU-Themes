@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/botw-bosque-de-luci-rnagas-1790142785209",
+  "draftSnapshot": {
+    "basedOnThemeId": "ocarina-of-time-theme",
+    "proposalMode": "create",
+    "id": "botw-bosque-de-luci-rnagas",
+    "name": "Botw_bosque de luciérnagas",
+    "author": "Caløhtk",
+    "version": "0.5",
+    "summary": "Add botw theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.27300518196450496,
+        "s": 0.2622331221379052,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.3793743808502592,
+        "s": 0.6779480617363636,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.669173018547232,
+        "s": 0.5354131465603926,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.3325143703294149,
+        "s": 0.6545151334398642,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.22732898133218193,
+        "s": 0.9820835427579985,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "horizontal",
+      "count": 15,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 10,
+      "columns": 100,
+      "rows": 100,
+      "spacingX": 15,
+      "spacingY": 0,
+      "sizeMin": 2,
+      "sizeMax": 8,
+      "speedMin": 10,
+      "speedMax": 10,
+      "wobble": 100,
+      "rotationSpeed": 10,
+      "opacity": 100,
+      "imageOpacity": 100,
+      "imageFit": "contain",
+      "image": {
+        "name": "41900.png",
+        "relativePath": "media/backgrounds/41900.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "BotW-Rito-Village-_Complete-Version_.mp3",
+        "relativePath": "sounds/music/BotW-Rito-Village-_Complete-Version_.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "BotW-Get-Deluxe-Item.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "BotW-Interact-Sound.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}
