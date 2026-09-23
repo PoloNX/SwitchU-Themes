@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/wii-ish-1789934546217",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "wii-ish",
+    "name": "Wii ish",
+    "author": "Duckyboy33",
+    "version": "1.0.0",
+    "summary": "Wii ish",
+    "notes": "Its a Wii menu Kinda",
+    "contributor": "",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.5515587529976019,
+        "s": 0.8034682080924856,
+        "l": 0.6607843137254902
+      },
+      "accent": {
+        "h": 0.5518018018018017,
+        "s": 0.654867256637168,
+        "l": 0.44313725490196076
+      },
+      "background": {
+        "h": 0.43333333333333374,
+        "s": 0.2380952380952388,
+        "l": 0.9588235294117646
+      },
+      "backgroundAccent": {
+        "h": 0.43589743589743607,
+        "s": 0.2280701754385961,
+        "l": 0.888235294117647
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "quad",
+      "count": 12,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 12,
+      "rows": 3,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 8,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "imageOpacity": 92,
+      "imageFit": "contain",
+      "image": {
+        "name": "wii.png",
+        "relativePath": "media/backgrounds/wii.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "01 (mp3cut.net).mp3",
+        "relativePath": "sounds/music/01-(mp3cut.net).mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "Wii click.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "Back.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "navigation": {
+          "name": "Select.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "Click Channel.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "Select.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "Select.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "Start.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "Back.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "volume": {
+          "name": "Select.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}
