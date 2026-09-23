@@ -65,6 +65,15 @@
       "cover": "themes/black/media/screenshots/00.png"
     },
     {
+      "id": "botw-bosque-de-luci-rnagas",
+      "name": "Botw_bosque de luciérnagas",
+      "author": "Caløhtk",
+      "version": "0.5",
+      "path": "themes/botw-bosque-de-luci-rnagas",
+      "manifest": "themes/botw-bosque-de-luci-rnagas/theme.json",
+      "cover": "themes/botw-bosque-de-luci-rnagas/media/screenshots/00.png"
+    },
+    {
       "id": "cammy-minimalist",
       "name": "cammy Minimalist",
       "author": "iiSU Team",
