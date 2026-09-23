@@ -222,6 +222,15 @@
       "manifest": "themes/sakura/theme.json"
     },
     {
+      "id": "smash-ult",
+      "name": "Smash Bros",
+      "author": "CrisUllon",
+      "version": "1.0.0",
+      "path": "themes/smash-ult",
+      "manifest": "themes/smash-ult/theme.json",
+      "cover": "themes/smash-ult/media/screenshots/00.png"
+    },
+    {
       "id": "sonicadventure2",
       "name": "Sonic Adventure Theme",
       "author": "Sloth_Blast",
