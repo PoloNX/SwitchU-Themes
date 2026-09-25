@@ -92,6 +92,15 @@
       "cover": "themes/cammy-minimalist/media/screenshots/00.png"
     },
     {
+      "id": "cammy-minimalist-variant",
+      "name": "cammy Minimalist Variant",
+      "author": "iiSU Team",
+      "version": "1.1.0",
+      "path": "themes/cammy-minimalist-variant",
+      "manifest": "themes/cammy-minimalist-variant/theme.json",
+      "cover": "themes/cammy-minimalist-variant/media/screenshots/00.png"
+    },
+    {
       "id": "ch4r1z4rd-th3m3",
       "name": "CH4R1Z4RD TH3M3",
       "author": "Darlin Collado",
