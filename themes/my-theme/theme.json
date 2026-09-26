@@ -1,0 +1,82 @@
+{
+  "id": "my-theme",
+  "name": "My Theme",
+  "author": "priri",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.58,
+        0.9,
+        0.62
+      ],
+      "accent": [
+        0.5636355106234289,
+        0.4335091173209798,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.79384452796968,
+        0.07144387353748423,
+        0.14
+      ],
+      "shapes": [
+        0.7679355280764568,
+        0.6730189959153569,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 0,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.11,
+      "opacity": 0.39,
+      "image": {
+        "path": "media/backgrounds/background.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    },
+    "fonts": {
+      "regular": "fonts/ofont.ru_Tokeely-Brookings.ttf",
+      "small": "fonts/ofont.ru_SecessionLight.ttf"
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}
