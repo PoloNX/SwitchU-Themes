@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/bowsette-variant-1790468467701",
+  "draftSnapshot": {
+    "basedOnThemeId": "bowsette",
+    "proposalMode": "create",
+    "id": "bowsette-variant",
+    "name": "Bowsette Variant",
+    "author": "CrisUllon",
+    "version": "1.0.0",
+    "summary": "Add theme Bowsette Variant",
+    "notes": "",
+    "contributor": "",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.541910213707378,
+        "s": 1,
+        "l": 0.403921568627451
+      },
+      "accent": {
+        "h": 0.8740734063213557,
+        "s": 0.024793519592703255,
+        "l": 0.9117647058823529
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.5420711974110032,
+        "s": 1,
+        "l": 0.403921568627451
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "diamond",
+      "symmetry": "none",
+      "count": 30,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 10,
+      "rows": 9,
+      "spacingX": 350,
+      "spacingY": 200,
+      "sizeMin": 0,
+      "sizeMax": 0,
+      "speedMin": 7,
+      "speedMax": 10,
+      "wobble": 0,
+      "rotationSpeed": 0.04,
+      "opacity": 0.5,
+      "imageOpacity": 500,
+      "imageFit": "cover",
+      "image": {
+        "name": "Imagem-do-ChatGPT-25-de-set.-de-2026-23_34_00.png",
+        "relativePath": "media/backgrounds/Imagem-do-ChatGPT-25-de-set.-de-2026-23_34_00.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "supermaroddy.mp3",
+        "relativePath": "sounds/music/supermaroddy.mp3"
+      },
+      "sfx": {}
+    }
+  }
+}
