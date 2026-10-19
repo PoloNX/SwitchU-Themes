@@ -136,6 +136,15 @@
       "cover": "themes/hatsune-miku/media/screenshots/00.png"
     },
     {
+      "id": "hello-kitty-pink",
+      "name": "Hello kitty pink",
+      "author": "aadya",
+      "version": "1.0.0",
+      "path": "themes/hello-kitty-pink",
+      "manifest": "themes/hello-kitty-pink/theme.json",
+      "cover": "themes/hello-kitty-pink/media/screenshots/00.png"
+    },
+    {
       "id": "iisu",
       "name": "iiSU",
       "author": "iiSU Team",

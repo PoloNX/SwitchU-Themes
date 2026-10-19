@@ -1,0 +1,78 @@
+{
+  "id": "hello-kitty-pink",
+  "name": "Hello kitty pink",
+  "author": "aadya",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.8568470351644206,
+        0.6143200613238212,
+        0.62
+      ],
+      "accent": [
+        0,
+        0,
+        1
+      ],
+      "background": [
+        0.8917394687684724,
+        0.7674362731005451,
+        0.8588235294117648
+      ],
+      "backgroundAccent": [
+        0.9351577445383878,
+        0.5245253489244484,
+        0.7607843137254902
+      ],
+      "shapes": [
+        0.9379751786369868,
+        0.49634804523398585,
+        0.5705882352941176
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 60,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.3,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        5,
+        12
+      ],
+      "speed": [
+        10,
+        70
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "image": {
+        "path": "media/backgrounds/Screenshot-2026-10-19-at-11.19.41.png",
+        "opacity": 0.24,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}
