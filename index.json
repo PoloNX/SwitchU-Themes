@@ -258,6 +258,15 @@
       "manifest": "themes/sakura/theme.json"
     },
     {
+      "id": "slenditubbies-clasic",
+      "name": "Slenditubbies clasic",
+      "author": "guardian",
+      "version": "1.0.0",
+      "path": "themes/slenditubbies-clasic",
+      "manifest": "themes/slenditubbies-clasic/theme.json",
+      "cover": "themes/slenditubbies-clasic/media/screenshots/00.png"
+    },
+    {
       "id": "smash-ult",
       "name": "Smash Bros",
       "author": "CrisUllon",
