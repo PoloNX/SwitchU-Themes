@@ -47,6 +47,8 @@ Create `pr-proxy/.dev.vars` from `pr-proxy/.dev.vars.example` and provide:
 - `GITHUB_REPO_NAME`
 - `GITHUB_DEFAULT_BRANCH` optional
 - `ALLOWED_ORIGIN` optional
+- `ICON_PACK_REPO_OWNER` optional — repo that receives icon-pack PRs (defaults to `PoloNX`)
+- `ICON_PACK_REPO_NAME` optional — defaults to `SwitchU`
 
 Recommended GitHub App permissions:
 
@@ -54,6 +56,8 @@ Recommended GitHub App permissions:
 - `Pull requests`: read and write
 
 The worker endpoint is `POST /api/proposals`. It creates a branch, uploads `theme.json`, the generated preview screenshot, every uploaded asset, updates `index.json`, and opens a PR back to the default branch.
+
+The worker also exposes `POST /api/icon-packs`. It creates a branch on the icon-pack repo, uploads each glyph under `romfs/icons/<id>/`, and opens a PR. The GitHub App must also be installed on the icon-pack repo (defaults to `PoloNX/SwitchU`).
 
 ## Repository layout
 

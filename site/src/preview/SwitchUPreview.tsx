@@ -112,8 +112,8 @@ export const SwitchUPreview = forwardRef<HTMLDivElement, {
   const palette = useMemo(() => paletteFromDraft(draft), [draft]);
   const scene = useMemo(() => createBackgroundScene(draft, 1280, 720), [draft]);
   const backgroundImage = useObjectImage(draft.background.image);
-  const regularFontFamily = useFontFace(draft.fonts.regular, 'switchu-regular', '"Space Grotesk", sans-serif');
-  const smallFontFamily = useFontFace(draft.fonts.small ?? draft.fonts.regular, 'switchu-small', '"Sora", sans-serif');
+  const regularFontFamily = useFontFace(draft.fonts.regular, 'switchu-regular', 'ui-sans-serif, system-ui, sans-serif');
+  const smallFontFamily = useFontFace(draft.fonts.small ?? draft.fonts.regular, 'switchu-small', 'ui-sans-serif, system-ui, sans-serif');
 
   function setPreviewRef(node: HTMLDivElement | null) {
     viewportRef.current = node;

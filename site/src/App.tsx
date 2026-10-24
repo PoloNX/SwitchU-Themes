@@ -3,12 +3,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { downloadThemeArchive } from './catalog/download';
 import { ThemeStudio } from './components/ThemeStudio';
+import { IconWorkshop } from './components/IconWorkshop';
 import { loadOpenProposals, loadProposalDraft, readProposalRouteState, updateThemeProposal, type OpenProposalSummary, type ProposalResult, type ProposalRouteState } from './github/proposals';
 import { SwitchUPreview } from './preview/SwitchUPreview';
 import { createEmptyDraft, draftFromCatalogRecord, type StudioDraft } from './theme/draft';
 import type { ThemeCatalogRecord } from './theme/schema';
 
-type AppTab = 'explore' | 'pending' | 'create';
+type AppTab = 'explore' | 'pending' | 'create' | 'icons';
 const PROPOSAL_EDIT_CODES_STORAGE_KEY = 'switchu-themes-proposal-edit-codes';
 
 function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
@@ -505,16 +506,12 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <div className="hero-orb hero-orb--left" />
-      <div className="hero-orb hero-orb--right" />
-
       <header className="hero">
         <div className="hero__copy">
-          <p className="hero__kicker">Community catalog + live studio</p>
+          <p className="hero__kicker">Theme catalog</p>
           <h1>SwitchU Themes</h1>
           <p className="hero__lede">
-            Browse the live catalog, load existing themes into the studio, and tune a preview that follows
-            the actual SwitchU shell.
+            Browse and download themes, or open the studio to build your own with a live SwitchU preview.
           </p>
         </div>
 
@@ -547,6 +544,13 @@ export default function App() {
           onClick={() => setActiveTab('create')}
         >
           Theme creator
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'icons' ? 'tab-button--active' : ''}`}
+          type="button"
+          onClick={() => setActiveTab('icons')}
+        >
+          Icon workshop
         </button>
       </nav>
 
@@ -685,6 +689,8 @@ export default function App() {
               ) : null}
             </section>
           </>
+        ) : activeTab === 'icons' ? (
+          <IconWorkshop />
         ) : (
           <>
             <section className="panel panel--spotlight">

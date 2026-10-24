@@ -9,6 +9,8 @@ interface Env {
   GITHUB_DEFAULT_BRANCH?: string;
   ALLOWED_ORIGIN?: string;
   EDITOR_TOKEN?: string;
+  ICON_PACK_REPO_OWNER?: string;
+  ICON_PACK_REPO_NAME?: string;
 }
 
 interface CatalogEntry {
@@ -1189,6 +1191,72 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
   return jsonResponse({ ok: true, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
 }
 
+const ICON_PACK_SLUG = /^[a-z0-9][a-z0-9-]*$/;
+const ICON_PACK_GLYPH_FILE = /^[a-z0-9_.-]+\.png$/i;
+
+async function handleCreateIconPack(request: Request, env: Env): Promise<Response> {
+  const formData = await request.formData();
+  const id = (formData.get('id') as string | null)?.trim() ?? '';
+  const name = (formData.get('name') as string | null)?.trim() ?? id;
+  const author = (formData.get('author') as string | null)?.trim() ?? '';
+
+  if (!ICON_PACK_SLUG.test(id)) {
+    return jsonResponse({ error: 'Pack ID must be lowercase letters, digits, and hyphens.' }, 400, corsHeaders(request, env));
+  }
+
+  let glyphFileNames: string[] = [];
+  try {
+    const raw = formData.get('glyphFiles');
+    const parsed = typeof raw === 'string' ? JSON.parse(raw) : [];
+    glyphFileNames = Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+  } catch {
+    return jsonResponse({ error: 'Invalid glyphFiles payload.' }, 400, corsHeaders(request, env));
+  }
+
+  const glyphs: Array<{ fileName: string; file: File }> = [];
+  for (const fileName of glyphFileNames) {
+    if (!ICON_PACK_GLYPH_FILE.test(fileName)) {
+      return jsonResponse({ error: `Invalid glyph filename: ${fileName}` }, 400, corsHeaders(request, env));
+    }
+    const value = formData.get(`glyph:${fileName}`);
+    if (!(value instanceof File)) {
+      return jsonResponse({ error: `Missing glyph file: ${fileName}` }, 400, corsHeaders(request, env));
+    }
+    glyphs.push({ fileName, file: value });
+  }
+
+  if (glyphs.length === 0) {
+    return jsonResponse({ error: 'No glyph files provided.' }, 400, corsHeaders(request, env));
+  }
+
+  const iconEnv: Env = {
+    ...env,
+    GITHUB_REPO_OWNER: env.ICON_PACK_REPO_OWNER?.trim() || 'PoloNX',
+    GITHUB_REPO_NAME: env.ICON_PACK_REPO_NAME?.trim() || 'SwitchU',
+  };
+
+  const token = await getInstallationToken(iconEnv);
+  const base = await getDefaultBranch(iconEnv, token);
+  const branch = `icon-pack/${id}-${Date.now().toString(36)}`;
+  await createBranch(iconEnv, token, branch, await getBranchSha(iconEnv, token, base));
+
+  for (const glyph of glyphs) {
+    const contentBase64 = arrayBufferToBase64(await glyph.file.arrayBuffer());
+    await putFile(iconEnv, token, branch, `romfs/icons/${id}/${glyph.fileName}`, `icon pack ${id}: add ${glyph.fileName}`, contentBase64);
+  }
+
+  const prBody = [
+    'Icon pack submitted from SwitchU Themes Studio.',
+    '',
+    `Pack: ${name}`,
+    author ? `Author: ${author}` : '',
+  ].filter(Boolean).join('\n');
+
+  const pullRequestUrl = await openPullRequest(iconEnv, token, base, branch, `Add icon pack ${id}`, prBody);
+
+  return jsonResponse({ ok: true, branchName: branch, pullRequestUrl }, 200, corsHeaders(request, env));
+}
+
 export default {
   async fetch(request, env): Promise<Response> {
     const url = new URL(request.url);
@@ -1220,6 +1288,10 @@ export default {
 
       if (request.method === 'POST' && url.pathname === '/api/proposals/update') {
         return await handleUpdateProposal(request, env, url);
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/icon-packs') {
+        return await handleCreateIconPack(request, env);
       }
 
       return jsonResponse({ error: 'Not found' }, 404, corsHeaders(request, env));
