@@ -693,16 +693,14 @@ async function uploadBinaryFile(
   relativePath: string,
   file: File,
   message: string,
-  options: { ensureSha?: boolean } = {},
 ): Promise<void> {
   const repoFilePath = `${root}/${sanitizeRelativePath(relativePath)}`;
   const contentBase64 = arrayBufferToBase64(await file.arrayBuffer());
-  if (options.ensureSha) {
-    await putFileEnsuringSha(env, token, branch, repoFilePath, message, contentBase64);
-    return;
-  }
-
-  await putFile(env, token, branch, repoFilePath, message, contentBase64);
+  // Always resolve the existing blob sha first: a path can legitimately be
+  // written twice in one submission (e.g. the same font used as both the
+  // regular and small font), and GitHub rejects a second create with
+  // "sha wasn't supplied".
+  await putFileEnsuringSha(env, token, branch, repoFilePath, message, contentBase64);
 }
 
 function upsertCatalogEntry(current: unknown, entry: CatalogEntry): { schemaVersion: number; themes: CatalogEntry[] } {
@@ -762,7 +760,7 @@ async function writeProposalDraftMetadata(
   token: string,
   branch: string,
   proposal: ProposalPayload,
-  options: { ensureSha?: boolean; authorLogin?: string; editCodeHash?: string } = {},
+  options: { authorLogin?: string; editCodeHash?: string } = {},
 ): Promise<void> {
   const metadata: StoredProposalDraft = {
     schemaVersion: 3,
@@ -775,12 +773,7 @@ async function writeProposalDraftMetadata(
 
   const path = proposalMetadataPath(proposal.id);
   const contentBase64 = textToBase64(`${JSON.stringify(metadata, null, 2)}\n`);
-  if (options.ensureSha) {
-    await putFileEnsuringSha(env, token, branch, path, `Store editable draft snapshot for ${proposal.id}`, contentBase64);
-    return;
-  }
-
-  await putFile(env, token, branch, path, `Store editable draft snapshot for ${proposal.id}`, contentBase64);
+  await putFileEnsuringSha(env, token, branch, path, `Store editable draft snapshot for ${proposal.id}`, contentBase64);
 }
 
 async function readProposalDraftMetadata(
@@ -935,7 +928,6 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     proposal.files.previewScreenshot,
     requireFile(formData, 'previewScreenshot'),
     `${commitPrefix}: ${commitVerb} preview screenshot`,
-    { ensureSha: isUpdate },
   );
 
   const backgroundImage = optionalFile(formData, 'backgroundImage');
@@ -948,8 +940,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       proposal.files.backgroundImage,
       backgroundImage,
       `${commitPrefix}: ${commitVerb} background image`,
-      { ensureSha: isUpdate },
-    );
+      );
   }
 
   const regularFont = optionalFile(formData, 'regularFont');
@@ -962,8 +953,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       proposal.files.regularFont,
       regularFont,
       `${commitPrefix}: ${commitVerb} regular font`,
-      { ensureSha: isUpdate },
-    );
+      );
   }
 
   const smallFont = optionalFile(formData, 'smallFont');
@@ -976,8 +966,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       proposal.files.smallFont,
       smallFont,
       `${commitPrefix}: ${commitVerb} small font`,
-      { ensureSha: isUpdate },
-    );
+      );
   }
 
   const music = optionalFile(formData, 'music');
@@ -990,8 +979,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       proposal.files.music,
       music,
       `${commitPrefix}: ${commitVerb} background music`,
-      { ensureSha: isUpdate },
-    );
+      );
   }
 
   if (proposal.files.sfx) {
@@ -1013,24 +1001,21 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
         relativePath,
         file,
         `${commitPrefix}: ${commitVerb} ${name} sfx`,
-        { ensureSha: isUpdate },
-      );
+          );
     }
   }
 
   const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
-  const existingManifestSha = isUpdate ? await findContentSha(env, token, branch, `${root}/theme.json`) : undefined;
-  await putFile(
+  await putFileEnsuringSha(
     env,
     token,
     branch,
     `${root}/theme.json`,
     `${commitPrefix}: ${commitVerb} theme manifest`,
     textToBase64(manifestJson),
-    existingManifestSha,
   );
 
-  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: isUpdate, authorLogin: session.login });
+  await writeProposalDraftMetadata(env, token, branch, proposal, { authorLogin: session.login });
 
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: ${isUpdate ? 'update' : 'register'} theme in catalog`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
@@ -1207,7 +1192,6 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
     proposal.files.previewScreenshot,
     requireFile(formData, 'previewScreenshot'),
     `${commitPrefix}: update preview screenshot`,
-    { ensureSha: true },
   );
 
   const backgroundImage = optionalFile(formData, 'backgroundImage');
@@ -1220,8 +1204,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.backgroundImage,
       backgroundImage,
       `${commitPrefix}: update background image`,
-      { ensureSha: true },
-    );
+      );
   }
 
   const regularFont = optionalFile(formData, 'regularFont');
@@ -1234,8 +1217,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.regularFont,
       regularFont,
       `${commitPrefix}: update regular font`,
-      { ensureSha: true },
-    );
+      );
   }
 
   const smallFont = optionalFile(formData, 'smallFont');
@@ -1248,8 +1230,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.smallFont,
       smallFont,
       `${commitPrefix}: update small font`,
-      { ensureSha: true },
-    );
+      );
   }
 
   const music = optionalFile(formData, 'music');
@@ -1262,8 +1243,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.music,
       music,
       `${commitPrefix}: update background music`,
-      { ensureSha: true },
-    );
+      );
   }
 
   if (proposal.files.sfx) {
@@ -1285,12 +1265,11 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
         relativePath,
         file,
         `${commitPrefix}: update ${name} sfx`,
-        { ensureSha: true },
-      );
+          );
     }
   }
 
-  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: true, authorLogin: currentMetadata.authorLogin });
+  await writeProposalDraftMetadata(env, token, branch, proposal, { authorLogin: currentMetadata.authorLogin });
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: update catalog entry`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
   });
