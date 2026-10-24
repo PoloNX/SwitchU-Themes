@@ -172,6 +172,17 @@ npx wrangler secret bulk /tmp/switchu-secrets.json
 rm /tmp/switchu-secrets.json
 ```
 
+> **fish shell:** heredocs (`<<'PY'`) are not supported. Use `python3 -c` instead:
+>
+> ```fish
+> ls ~/Downloads/*.private-key.pem          # find the file
+>
+> python3 -c 'import json,pathlib,sys; json.dump({"GITHUB_PRIVATE_KEY": pathlib.Path(sys.argv[1]).read_text().strip(), "GITHUB_OAUTH_CLIENT_SECRET": "COLLE_TON_SECRET_ICI", "SESSION_SECRET": "COLLE_TA_VALEUR_ICI"}, open("/tmp/switchu-secrets.json","w"), indent=2)' ~/Downloads/<app>.private-key.pem
+> ```
+>
+> Or create `/tmp/switchu-secrets.json` directly in your editor — no shell
+> quoting and nothing lands in your shell history.
+
 > `GITHUB_OAUTH_CLIENT_ID` is **public** (the site fetches it from `/api/auth`),
 > so keep it in `[vars]` in `wrangler.toml` rather than as a secret. That way you
 > can read and fix it.
@@ -202,6 +213,11 @@ npx wrangler secret put EDITOR_TOKEN
 > Secrets are **write-only** — Cloudflare never returns them. Verify a secret is
 > correct through behaviour (`curl .../api/auth`), not by re-reading it. Clear a
 > bad one with `npx wrangler secret delete <NAME>`.
+
+> **If a secret is ever exposed** (pasted into chat, committed, shared in an
+> issue), rotate it: generate a new OAuth **client secret** in the GitHub OAuth
+> App and delete the old one, generate a new `SESSION_SECRET`, then
+> `wrangler secret bulk` + `npm run deploy`.
 
 ### 3.4 Deploy
 
