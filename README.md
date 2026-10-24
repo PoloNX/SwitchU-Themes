@@ -6,6 +6,9 @@ The client can fetch the full list of available themes with a single request to 
 
 ## Theme site and PR flow
 
+> Deploying for the first time? See [DEPLOY.md](./DEPLOY.md) for the full
+> step-by-step guide (OAuth app, GitHub App, Worker, Pages).
+
 This repository now also contains the web stack for the public theme browser and the browser-based theme creator.
 
 ### What ships in this repo
@@ -47,6 +50,11 @@ Create `pr-proxy/.dev.vars` from `pr-proxy/.dev.vars.example` and provide:
 - `GITHUB_REPO_NAME`
 - `GITHUB_DEFAULT_BRANCH` optional
 - `ALLOWED_ORIGIN` optional
+- `ICON_PACK_REPO_OWNER` optional — repo that receives icon-pack PRs (defaults to `PoloNX`)
+- `ICON_PACK_REPO_NAME` optional — defaults to `SwitchU`
+- `GITHUB_OAUTH_CLIENT_ID` — GitHub OAuth app client ID (sign-in)
+- `GITHUB_OAUTH_CLIENT_SECRET` — GitHub OAuth app client secret
+- `SESSION_SECRET` — secret used to sign session tokens
 
 Recommended GitHub App permissions:
 
@@ -54,6 +62,21 @@ Recommended GitHub App permissions:
 - `Pull requests`: read and write
 
 The worker endpoint is `POST /api/proposals`. It creates a branch, uploads `theme.json`, the generated preview screenshot, every uploaded asset, updates `index.json`, and opens a PR back to the default branch.
+
+The worker also exposes `POST /api/icon-packs`. It creates a branch on the icon-pack repo, uploads each glyph under `romfs/icons/<id>/`, and opens a PR. The GitHub App must also be installed on the icon-pack repo (defaults to `PoloNX/SwitchU`).
+
+### GitHub sign-in (OAuth)
+
+Submitting a theme or updating your own open proposal PR requires signing in with GitHub. Create a GitHub OAuth app with the callback URL set to `<PR_PROXY_URL>/api/auth/callback` and set `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET`, and `SESSION_SECRET`.
+
+Auth endpoints:
+
+- `GET /api/auth` — returns the OAuth client ID used by the site.
+- `GET /api/auth/callback` — exchanges the OAuth code, then redirects back to the site with a signed session token.
+- `POST /api/auth/token` — exchanges an OAuth code directly (JSON).
+- `GET /api/auth/session` — validates a `Bearer` session token and returns the user.
+
+Proposal ownership is stored as `authorLogin` in each proposal's `.switchu-studio.json`. `POST /api/proposals/update` only accepts the signed-in author of that proposal (or a request carrying the maintainer `X-Editor-Token`). The old per-proposal edit codes are no longer used.
 
 ## Repository layout
 

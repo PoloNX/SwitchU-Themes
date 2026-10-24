@@ -4,4 +4,13 @@ GITHUB_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
 GITHUB_REPO_OWNER=PoloNX
 GITHUB_REPO_NAME=SwitchU-Themes
 GITHUB_DEFAULT_BRANCH=main
+# GitHub OAuth app (sign-in for theme proposals / editing your own open PRs).
+GITHUB_OAUTH_CLIENT_ID=your_oauth_client_id
+GITHUB_OAUTH_CLIENT_SECRET=your_oauth_client_secret
+# Signs the session tokens returned to the browser. Use a long random string.
+SESSION_SECRET=change-me-to-a-long-random-string
 ALLOWED_ORIGIN=https://polonx.github.io
+# Icon packs are submitted as pull requests to the SwitchU repo (romfs/icons/<id>/).
+# The GitHub App must also be installed on this repo. Defaults to PoloNX/SwitchU.
+ICON_PACK_REPO_OWNER=PoloNX
+ICON_PACK_REPO_NAME=SwitchU

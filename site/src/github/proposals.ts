@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { toBlob } from 'html-to-image';
+import { authHeaders } from './auth';
 import {
   DEFAULT_SFX_NAMES,
   buildManifestFromDraft,
@@ -16,7 +17,6 @@ export interface ProposalResult {
   branchName: string;
   previewUrl?: string;
   editUrl?: string;
-  editCode?: string;
 }
 
 export type ProposalMode = 'preview' | 'edit';
@@ -36,6 +36,7 @@ interface ProposalDraftResponse {
 export interface ProposalDraftLoadResult {
   proposalId: string;
   branchName: string;
+  authorLogin: string;
   draft: StudioDraft;
 }
 
@@ -58,6 +59,7 @@ export interface OpenProposalSummary {
   mode: 'dark' | 'light';
   proposalMode: 'create' | 'update';
   contributor: string;
+  authorLogin: string;
   createdAt: string;
   updatedAt: string;
   coverUrl: string;
@@ -291,6 +293,7 @@ export async function downloadDraftArchive(draft: StudioDraft, previewNode: HTML
 export async function submitThemeProposal(draft: StudioDraft, previewNode: HTMLElement): Promise<ProposalResult> {
   const response = await fetch(`${proxyBaseUrl()}/api/proposals`, {
     method: 'POST',
+    headers: authHeaders(),
     body: await buildProposalFormData(draft, previewNode),
   });
 
@@ -341,10 +344,11 @@ export async function loadProposalDraft(route: ProposalRouteState): Promise<Prop
     return readProposalResponseError(response, `Failed to load proposal draft (${response.status})`);
   }
 
-  const payload = await response.json() as ProposalDraftResponse;
+  const payload = await response.json() as ProposalDraftResponse & { authorLogin?: string };
   return {
     proposalId: payload.proposalId,
     branchName: payload.branchName,
+    authorLogin: payload.authorLogin ?? '',
     draft: draftFromSnapshot(
       payload.draftSnapshot,
       (relativePath) => buildProposalAssetUrl(payload.branchName, payload.proposalId, relativePath),
@@ -357,16 +361,13 @@ export async function updateThemeProposal(
   draft: StudioDraft,
   previewNode: HTMLElement,
   branchName: string,
-  editCode: string,
 ): Promise<ProposalUpdateResult> {
   const url = new URL(`${proxyBaseUrl()}/api/proposals/update`);
   url.searchParams.set('branch', branchName);
 
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'X-Proposal-Edit-Code': editCode,
-    },
+    headers: authHeaders(),
     body: await buildProposalFormData(draft, previewNode),
   });
 

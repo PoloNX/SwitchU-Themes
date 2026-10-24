@@ -1,15 +1,16 @@
-import { AudioLines, Download, ExternalLink, Eye, GitPullRequest, ImageIcon, LoaderCircle, Palette, PenLine, RefreshCw, Search, Sparkles, Wand2, X } from 'lucide-react';
+import { AudioLines, Download, ExternalLink, Eye, GitPullRequest, ImageIcon, LoaderCircle, LogIn, LogOut, Palette, PenLine, RefreshCw, Search, Sparkles, Wand2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { downloadThemeArchive } from './catalog/download';
 import { ThemeStudio } from './components/ThemeStudio';
+import { IconWorkshop } from './components/IconWorkshop';
+import { beginGitHubLogin, clearSessionToken, completeAuthFromUrl, fetchCurrentUser, type AuthUser } from './github/auth';
 import { loadOpenProposals, loadProposalDraft, readProposalRouteState, updateThemeProposal, type OpenProposalSummary, type ProposalResult, type ProposalRouteState } from './github/proposals';
 import { SwitchUPreview } from './preview/SwitchUPreview';
 import { createEmptyDraft, draftFromCatalogRecord, type StudioDraft } from './theme/draft';
 import type { ThemeCatalogRecord } from './theme/schema';
 
-type AppTab = 'explore' | 'pending' | 'create';
-const PROPOSAL_EDIT_CODES_STORAGE_KEY = 'switchu-themes-proposal-edit-codes';
+type AppTab = 'explore' | 'pending' | 'create' | 'icons';
 
 function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
@@ -26,18 +27,10 @@ function hasCustomIcons(record: ThemeCatalogRecord): boolean {
   return Boolean(icons?.path || icons?.basePath || icons?.base_path);
 }
 
-function proposalEditCodeKey(proposal: Pick<ProposalRouteState, 'proposalId' | 'branchName'>): string {
-  return `${proposal.branchName}::${proposal.proposalId}`;
-}
-
-function readStoredProposalEditCodes(): Record<string, string> {
-  try {
-    const raw = window.localStorage.getItem(PROPOSAL_EDIT_CODES_STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : {};
-    return parsed && typeof parsed === 'object' ? parsed as Record<string, string> : {};
-  } catch {
-    return {};
-  }
+function loginMatches(a: string | undefined, b: string | undefined): boolean {
+  const left = a?.trim().toLowerCase();
+  const right = b?.trim().toLowerCase();
+  return Boolean(left && right) && left === right;
 }
 
 function formatDateTime(value: string): string {
@@ -219,7 +212,10 @@ export default function App() {
   const [linkedProposal, setLinkedProposal] = useState<ProposalRouteState | null>(initialProposalRoute);
   const [proposalLoading, setProposalLoading] = useState(Boolean(initialProposalRoute));
   const [proposalError, setProposalError] = useState<string | null>(null);
-  const [proposalEditCodes, setProposalEditCodes] = useState<Record<string, string>>(() => readStoredProposalEditCodes());
+  const [linkedProposalAuthorLogin, setLinkedProposalAuthorLogin] = useState<string>('');
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [openProposals, setOpenProposals] = useState<OpenProposalSummary[]>([]);
   const [openProposalsLoading, setOpenProposalsLoading] = useState(false);
   const [openProposalsLoaded, setOpenProposalsLoaded] = useState(false);
@@ -251,6 +247,40 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const completion = await completeAuthFromUrl();
+        if (cancelled) {
+          return;
+        }
+        if (completion.error) {
+          setAuthError(completion.error);
+          return;
+        }
+        if (completion.user) {
+          setAuthUser(completion.user);
+          return;
+        }
+        setAuthUser(await fetchCurrentUser());
+      } catch (cause) {
+        if (!cancelled) {
+          setAuthError(cause instanceof Error ? cause.message : 'Sign-in failed.');
+        }
+      } finally {
+        if (!cancelled) {
+          setAuthReady(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!linkedProposal) {
       return undefined;
     }
@@ -267,6 +297,7 @@ export default function App() {
           setSelectedThemeId(null);
           setPreviewThemeId(null);
           setDraft(proposalDraft.draft);
+          setLinkedProposalAuthorLogin(proposalDraft.authorLogin);
         }
       } catch (cause) {
         if (!cancelled) {
@@ -334,9 +365,12 @@ export default function App() {
     return previewRecord ? draftFromCatalogRecord(previewRecord) : null;
   }, [previewRecord]);
 
-  const activeProposalEditCode = useMemo(() => {
-    return linkedProposal ? proposalEditCodes[proposalEditCodeKey(linkedProposal)] ?? '' : '';
-  }, [linkedProposal, proposalEditCodes]);
+  const editorUnlocked = useMemo(() => {
+    if (!linkedProposal) {
+      return true;
+    }
+    return Boolean(authUser) && loginMatches(authUser?.login, linkedProposalAuthorLogin);
+  }, [linkedProposal, authUser, linkedProposalAuthorLogin]);
 
   useEffect(() => {
     if (!previewRecord) {
@@ -369,19 +403,6 @@ export default function App() {
     }
   }
 
-  function persistProposalEditCode(proposal: Pick<ProposalRouteState, 'proposalId' | 'branchName'>, nextCode: string) {
-    const key = proposalEditCodeKey(proposal);
-    const nextCodes = { ...proposalEditCodes };
-    if (nextCode) {
-      nextCodes[key] = nextCode;
-    } else {
-      delete nextCodes[key];
-    }
-
-    setProposalEditCodes(nextCodes);
-    window.localStorage.setItem(PROPOSAL_EDIT_CODES_STORAGE_KEY, JSON.stringify(nextCodes));
-  }
-
   function clearProposalRoute() {
     const url = new URL(window.location.href);
     url.searchParams.delete('proposalId');
@@ -389,27 +410,9 @@ export default function App() {
     url.searchParams.delete('proposalMode');
     window.history.replaceState({}, '', url);
     setLinkedProposal(null);
+    setLinkedProposalAuthorLogin('');
     setProposalLoading(false);
     setProposalError(null);
-  }
-
-  function requestProposalEditCode(): string | null {
-    if (!linkedProposal) {
-      return null;
-    }
-
-    const existing = activeProposalEditCode.trim();
-    if (existing) {
-      return existing;
-    }
-
-    const entered = window.prompt(`Enter the personal edit code for ${linkedProposal.proposalId}.`)?.trim();
-    if (!entered) {
-      return null;
-    }
-
-    persistProposalEditCode(linkedProposal, entered);
-    return entered;
   }
 
   function openProposalInStudio(proposal: OpenProposalSummary, proposalMode: ProposalRouteState['proposalMode']) {
@@ -424,24 +427,28 @@ export default function App() {
     url.searchParams.set('proposalMode', route.proposalMode);
     window.history.replaceState({}, '', url);
     setLinkedProposal(route);
+    setLinkedProposalAuthorLogin(proposal.authorLogin);
     setSelectedThemeId(null);
     setPreviewThemeId(null);
     setActiveTab('create');
   }
 
-  function handleProposalCreated(result: ProposalResult, createdDraft: StudioDraft) {
-    if (!result.editCode) {
-      return;
-    }
-
-    persistProposalEditCode(
-      {
-        proposalId: createdDraft.id,
-        branchName: result.branchName,
-      },
-      result.editCode,
-    );
+  function handleProposalCreated(_result: ProposalResult, _createdDraft: StudioDraft) {
     setOpenProposalsLoaded(false);
+  }
+
+  async function handleLogin() {
+    setAuthError(null);
+    try {
+      await beginGitHubLogin();
+    } catch (cause) {
+      setAuthError(cause instanceof Error ? cause.message : 'Sign-in failed.');
+    }
+  }
+
+  function handleLogout() {
+    clearSessionToken();
+    setAuthUser(null);
   }
 
   function showRecordPreview(record: ThemeCatalogRecord) {
@@ -488,33 +495,21 @@ export default function App() {
       throw new Error('No linked proposal is currently loaded.');
     }
 
-    const editCode = requestProposalEditCode();
-    if (!editCode) {
-      throw new Error('Personal edit code is required to update this linked proposal.');
+    if (!authUser) {
+      throw new Error('Sign in with GitHub to update this proposal.');
     }
 
-    try {
-      return await updateThemeProposal(nextDraft, previewNode, linkedProposal.branchName, editCode);
-    } catch (cause) {
-      if (cause instanceof Error && cause.message.includes('Forbidden')) {
-        persistProposalEditCode(linkedProposal, '');
-      }
-      throw cause;
-    }
+    return updateThemeProposal(nextDraft, previewNode, linkedProposal.branchName);
   }
 
   return (
     <div className="app-shell">
-      <div className="hero-orb hero-orb--left" />
-      <div className="hero-orb hero-orb--right" />
-
       <header className="hero">
         <div className="hero__copy">
-          <p className="hero__kicker">Community catalog + live studio</p>
+          <p className="hero__kicker">Theme catalog</p>
           <h1>SwitchU Themes</h1>
           <p className="hero__lede">
-            Browse the live catalog, load existing themes into the studio, and tune a preview that follows
-            the actual SwitchU shell.
+            Browse and download themes, or open the studio to build your own with a live SwitchU preview.
           </p>
         </div>
 
@@ -523,6 +518,25 @@ export default function App() {
           <StatChip icon={<AudioLines size={18} />} label="Audio" value={String(stats.withAudio)} />
           <StatChip icon={<ImageIcon size={18} />} label="Backgrounds" value={String(stats.withImages)} />
           <StatChip icon={<Sparkles size={18} />} label="Custom icons" value={String(stats.withCustomIcons)} />
+        </div>
+
+        <div className="auth-control">
+          {authUser ? (
+            <div className="auth-control__user">
+              {authUser.avatarUrl ? <img src={authUser.avatarUrl} alt="" className="auth-control__avatar" /> : null}
+              <span className="auth-control__login">@{authUser.login}</span>
+              <button className="ghost-button" type="button" onClick={handleLogout} title="Sign out">
+                <LogOut size={16} />
+                <span>Sign out</span>
+              </button>
+            </div>
+          ) : (
+            <button className="ghost-button" type="button" onClick={() => { void handleLogin(); }} title="Sign in with GitHub">
+              <LogIn size={16} />
+              <span>Sign in with GitHub</span>
+            </button>
+          )}
+          {authError ? <div className="submit-feedback submit-feedback--error auth-control__error">{authError}</div> : null}
         </div>
       </header>
 
@@ -547,6 +561,13 @@ export default function App() {
           onClick={() => setActiveTab('create')}
         >
           Theme creator
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'icons' ? 'tab-button--active' : ''}`}
+          type="button"
+          onClick={() => setActiveTab('icons')}
+        >
+          Icon workshop
         </button>
       </nav>
 
@@ -685,6 +706,8 @@ export default function App() {
               ) : null}
             </section>
           </>
+        ) : activeTab === 'icons' ? (
+          <IconWorkshop />
         ) : (
           <>
             <section className="panel panel--spotlight">
@@ -746,8 +769,9 @@ export default function App() {
               onLoadTemplate={loadRecordInStudio}
               onReset={resetStudio}
               linkedProposal={linkedProposal}
-              editorUnlocked={Boolean(activeProposalEditCode.trim())}
-              onUnlockEditor={async () => Boolean(requestProposalEditCode())}
+              authUser={authUser}
+              editorUnlocked={editorUnlocked}
+              onLogin={handleLogin}
               onUpdateProposal={handleUpdateLinkedProposal}
               onProposalCreated={handleProposalCreated}
             />

@@ -1,6 +1,7 @@
 import {
   Download,
   LockKeyhole,
+  LogIn,
   Music4,
   Send,
   Sparkles,
@@ -8,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { downloadDraftArchive, submitThemeProposal, type ProposalMode, type ProposalResult, type ProposalUpdateResult } from '../github/proposals';
+import type { AuthUser } from '../github/auth';
 import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
 import {
@@ -34,8 +36,9 @@ interface ThemeStudioProps {
     branchName: string;
     proposalMode: ProposalMode;
   } | null;
+  authUser?: AuthUser | null;
   editorUnlocked?: boolean;
-  onUnlockEditor?: () => Promise<boolean>;
+  onLogin?: () => void;
   onUpdateProposal?: (draft: StudioDraft, previewNode: HTMLElement) => Promise<ProposalUpdateResult>;
   onProposalCreated?: (result: ProposalResult, draft: StudioDraft) => void;
 }
@@ -43,7 +46,6 @@ interface ThemeStudioProps {
 interface SubmitSuccessState {
   message: string;
   href?: string;
-  editCode?: string;
 }
 
 type StudioEditorTab = 'setup' | 'palette' | 'background' | 'audio' | 'publish';
@@ -284,8 +286,9 @@ export function ThemeStudio({
   onLoadTemplate,
   onReset,
   linkedProposal = null,
+  authUser = null,
   editorUnlocked = false,
-  onUnlockEditor,
+  onLogin,
   onUpdateProposal,
   onProposalCreated,
 }: ThemeStudioProps) {
@@ -319,22 +322,6 @@ export function ThemeStudio({
     setArchiveSuccess(null);
     setSubmitError(null);
     setSubmitSuccess(null);
-  }
-
-  async function handleUnlockEditor() {
-    if (!onUnlockEditor) {
-      setSubmitError('Editor unlock is not available for this proposal.');
-      return false;
-    }
-
-    const unlocked = await onUnlockEditor();
-    if (!unlocked) {
-      setSubmitError('The personal edit code is required to update this linked proposal.');
-      return false;
-    }
-
-    setSubmitError(null);
-    return true;
   }
 
   function patch<K extends keyof StudioDraft>(key: K, value: StudioDraft[K]) {
@@ -461,10 +448,13 @@ export function ThemeStudio({
       }
 
       if (!editorUnlocked) {
-        const unlocked = await handleUnlockEditor();
-        if (!unlocked) {
-          return;
+        if (!authUser) {
+          onLogin?.();
+          setSubmitError('Sign in with GitHub to update this proposal.');
+        } else {
+          setSubmitError('You are not the author of this proposal.');
         }
+        return;
       }
 
       if (!onUpdateProposal) {
@@ -489,6 +479,12 @@ export function ThemeStudio({
       return;
     }
 
+    if (!authUser) {
+      onLogin?.();
+      setSubmitError('Sign in with GitHub to submit a theme.');
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
@@ -498,7 +494,6 @@ export function ThemeStudio({
       setSubmitSuccess({
         message: 'Pull request created.',
         href: result.editUrl ?? result.pullRequestUrl,
-        editCode: result.editCode,
       });
     } catch (cause) {
       setSubmitError(cause instanceof Error ? cause.message : 'Unknown submission error');
@@ -580,16 +575,24 @@ export function ThemeStudio({
             {controlsLocked ? (
               <div className="studio-lock-overlay">
                 <LockKeyhole size={22} />
-                <strong>{linkedProposal?.proposalMode === 'edit' ? 'Editing is locked' : 'Preview-only link'}</strong>
+                <strong>
+                  {linkedProposal?.proposalMode === 'edit'
+                    ? authUser
+                      ? 'Not the author'
+                      : 'Sign in to edit'
+                    : 'Preview-only link'}
+                </strong>
                 <span>
                   {linkedProposal?.proposalMode === 'edit'
-                    ? "Enter this proposal's personal edit code to unlock changes and update the same PR branch."
+                    ? authUser
+                      ? 'Only the proposal author can update this PR branch.'
+                      : 'Sign in with GitHub to edit this proposal.'
                     : 'This PR link only loads the draft for inspection. Use the edit link from the PR if you need to save changes.'}
                 </span>
-                  {linkedProposal?.proposalMode === 'edit' ? (
-                  <button className="submit-button submit-button--secondary" type="button" onClick={() => { void handleUnlockEditor(); }}>
-                    <LockKeyhole size={18} />
-                    <span>{editorUnlocked ? 'Editor unlocked' : 'Enter edit code'}</span>
+                {linkedProposal?.proposalMode === 'edit' && !authUser ? (
+                  <button className="submit-button submit-button--secondary" type="button" onClick={onLogin}>
+                    <LogIn size={18} />
+                    <span>Sign in with GitHub</span>
                   </button>
                 ) : null}
               </div>
@@ -865,12 +868,6 @@ export function ThemeStudio({
                     <div className="submit-feedback submit-feedback--success">
                       {submitSuccess.message}
                       {submitSuccess.href ? <> <a href={submitSuccess.href} target="_blank" rel="noreferrer">{submitSuccess.href}</a></> : null}
-                      {submitSuccess.editCode ? (
-                        <span className="proposal-edit-code">
-                          <LockKeyhole size={16} />
-                          <strong>{submitSuccess.editCode}</strong>
-                        </span>
-                      ) : null}
                     </div>
                   ) : null}
                 </div>
