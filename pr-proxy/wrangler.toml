@@ -14,3 +14,5 @@ GITHUB_DEFAULT_BRANCH = "main"
 ALLOWED_ORIGIN = "https://polonx.github.io"
 ICON_PACK_REPO_OWNER = "PoloNX"
 ICON_PACK_REPO_NAME = "SwitchU"
+# Public OAuth client id (sent to the browser by GET /api/auth, not a secret).
+GITHUB_OAUTH_CLIENT_ID = "Ov23lisNBjpXiBZNrlBL"

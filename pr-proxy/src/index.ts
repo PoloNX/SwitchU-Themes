@@ -175,7 +175,7 @@ function corsHeaders(request: Request, env: Env): HeadersInit {
   return {
     'access-control-allow-origin': finalOrigin,
     'access-control-allow-methods': 'GET,POST,OPTIONS',
-    'access-control-allow-headers': 'Content-Type, X-Editor-Token, X-Proposal-Edit-Code',
+    'access-control-allow-headers': 'Content-Type, Authorization, X-Editor-Token',
   };
 }
 
