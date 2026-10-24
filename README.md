@@ -6,6 +6,9 @@ The client can fetch the full list of available themes with a single request to 
 
 ## Theme site and PR flow
 
+> Deploying for the first time? See [DEPLOY.md](./DEPLOY.md) for the full
+> step-by-step guide (OAuth app, GitHub App, Worker, Pages).
+
 This repository now also contains the web stack for the public theme browser and the browser-based theme creator.
 
 ### What ships in this repo
