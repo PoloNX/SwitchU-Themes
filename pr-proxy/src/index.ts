@@ -1,4 +1,4 @@
-import { importPKCS8, SignJWT } from 'jose';
+import { importPKCS8, jwtVerify, SignJWT } from 'jose';
 
 interface Env {
   GITHUB_APP_ID: string;
@@ -11,6 +11,9 @@ interface Env {
   EDITOR_TOKEN?: string;
   ICON_PACK_REPO_OWNER?: string;
   ICON_PACK_REPO_NAME?: string;
+  GITHUB_OAUTH_CLIENT_ID?: string;
+  GITHUB_OAUTH_CLIENT_SECRET?: string;
+  SESSION_SECRET?: string;
 }
 
 interface CatalogEntry {
@@ -112,6 +115,14 @@ interface StoredProposalDraft {
   draftSnapshot: ProposalDraftSnapshot;
   editCodeHash?: string;
   editCodeCreatedAt?: string;
+  authorLogin?: string;
+}
+
+interface SessionUser {
+  login: string;
+  name: string;
+  avatarUrl: string;
+  accessToken: string;
 }
 
 interface ProposalLinks {
@@ -345,24 +356,8 @@ function decodeContent(content: string): string {
   return atob(content.replace(/\n/g, ''));
 }
 
-function createEditCode(): string {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const bytes = new Uint8Array(12);
-  crypto.getRandomValues(bytes);
-
-  return Array.from(bytes, (byte, index) => {
-    const separator = index > 0 && index % 4 === 0 ? '-' : '';
-    return `${separator}${alphabet[byte % alphabet.length]}`;
-  }).join('');
-}
-
-async function sha256Hex(value: string): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
-  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
-}
-
-async function hashEditCode(branch: string, proposalId: string, editCode: string): Promise<string> {
-  return sha256Hex(`${sanitizeBranchName(branch)}:${sanitizeThemeId(proposalId)}:${editCode.trim().toUpperCase()}`);
+function normalizeLogin(value: string): string {
+  return value.trim().toLowerCase();
 }
 
 async function createGitHubAppJwt(env: Env): Promise<string> {
@@ -424,6 +419,109 @@ async function getInstallationToken(env: Env): Promise<string> {
     { method: 'POST' },
   );
   return payload.token;
+}
+
+function sessionSecretKey(env: Env): Uint8Array {
+  const secret = env.SESSION_SECRET?.trim() || env.GITHUB_PRIVATE_KEY?.trim();
+  if (!secret) {
+    throw new Error('Missing SESSION_SECRET (or GITHUB_PRIVATE_KEY) to sign sessions.');
+  }
+  return new TextEncoder().encode(secret);
+}
+
+async function createSessionToken(env: Env, user: SessionUser): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  return new SignJWT({
+    login: user.login,
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+    token: user.accessToken,
+  })
+    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+    .setSubject(user.login)
+    .setIssuedAt(now - 30)
+    .setExpirationTime(now + 7 * 24 * 60 * 60)
+    .sign(sessionSecretKey(env));
+}
+
+async function verifySessionToken(env: Env, token: string): Promise<SessionUser | null> {
+  try {
+    const { payload } = await jwtVerify(token, sessionSecretKey(env), { algorithms: ['HS256'] });
+    const login = typeof payload.sub === 'string' ? payload.sub : '';
+    if (!login || typeof payload.token !== 'string') {
+      return null;
+    }
+    return {
+      login,
+      name: typeof payload.name === 'string' ? payload.name : login,
+      avatarUrl: typeof payload.avatarUrl === 'string' ? payload.avatarUrl : '',
+      accessToken: payload.token,
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function readSession(request: Request, env: Env): Promise<SessionUser | null> {
+  const header = request.headers.get('Authorization')?.trim();
+  if (!header?.startsWith('Bearer ')) {
+    return null;
+  }
+  return verifySessionToken(env, header.slice('Bearer '.length).trim());
+}
+
+async function exchangeOAuthCode(env: Env, code: string): Promise<string> {
+  if (!env.GITHUB_OAUTH_CLIENT_ID?.trim() || !env.GITHUB_OAUTH_CLIENT_SECRET?.trim()) {
+    throw new Error('GitHub OAuth is not configured.');
+  }
+
+  const response = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'switchu-themes-pr-proxy',
+    },
+    body: JSON.stringify({
+      client_id: env.GITHUB_OAUTH_CLIENT_ID.trim(),
+      client_secret: env.GITHUB_OAUTH_CLIENT_SECRET.trim(),
+      code,
+    }),
+  });
+
+  const payload = await response.json() as { access_token?: string; error?: string };
+  if (!response.ok || !payload.access_token) {
+    throw new Error(payload.error || `OAuth token exchange failed (${response.status})`);
+  }
+  return payload.access_token;
+}
+
+async function fetchGitHubUser(accessToken: string): Promise<SessionUser> {
+  const response = await fetch('https://api.github.com/user', {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      Authorization: `Bearer ${accessToken}`,
+      'User-Agent': 'switchu-themes-pr-proxy',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`GitHub user fetch failed (${response.status}): ${text}`);
+  }
+
+  const payload = await response.json() as { login: string; name?: string | null; avatar_url?: string };
+  if (!payload.login) {
+    throw new Error('GitHub user response is missing a login.');
+  }
+
+  return {
+    login: payload.login,
+    name: payload.name || payload.login,
+    avatarUrl: payload.avatar_url || '',
+    accessToken,
+  };
 }
 
 function repoPath(env: Env): string {
@@ -655,7 +753,7 @@ function buildPullRequestBody(baseBody: string, links: ProposalLinks | undefined
     'Edit this proposal:',
     links.editUrl,
     '',
-    'The edit link saves changes with the personal proposal code shown to the submitter after creation.',
+    'The edit link lets the submitter update the proposal after signing in with GitHub.',
   ].filter(Boolean).join('\n');
 }
 
@@ -664,12 +762,13 @@ async function writeProposalDraftMetadata(
   token: string,
   branch: string,
   proposal: ProposalPayload,
-  options: { ensureSha?: boolean; editCodeHash?: string } = {},
+  options: { ensureSha?: boolean; authorLogin?: string; editCodeHash?: string } = {},
 ): Promise<void> {
   const metadata: StoredProposalDraft = {
-    schemaVersion: options.editCodeHash ? 2 : 1,
+    schemaVersion: 3,
     branchName: branch,
     draftSnapshot: proposal.draftSnapshot,
+    authorLogin: options.authorLogin,
     editCodeHash: options.editCodeHash,
     editCodeCreatedAt: options.editCodeHash ? new Date().toISOString() : undefined,
   };
@@ -716,25 +815,27 @@ function guessContentType(path: string): string {
 async function hasEditorAccess(
   request: Request,
   env: Env,
-  branch: string,
-  proposalId: string,
   metadata: StoredProposalDraft,
 ): Promise<boolean> {
-  const expected = env.EDITOR_TOKEN?.trim();
-  const provided = request.headers.get('X-Proposal-Edit-Code')?.trim() || request.headers.get('X-Editor-Token')?.trim();
-  if (!provided) {
-    return false;
-  }
-
-  if (expected && provided === expected) {
+  // Admin override for maintainers.
+  const editorToken = request.headers.get('X-Editor-Token')?.trim();
+  if (env.EDITOR_TOKEN?.trim() && editorToken && editorToken === env.EDITOR_TOKEN.trim()) {
     return true;
   }
 
-  if (!metadata.editCodeHash) {
+  // Session-based authorization: the authenticated GitHub user must be the
+  // proposal author. Legacy proposals fall back to the recorded contributor.
+  const session = await readSession(request, env);
+  if (!session) {
     return false;
   }
 
-  return await hashEditCode(branch, proposalId, provided) === metadata.editCodeHash;
+  if (metadata.authorLogin) {
+    return normalizeLogin(session.login) === normalizeLogin(metadata.authorLogin);
+  }
+
+  const contributor = metadata.draftSnapshot.contributor?.trim();
+  return Boolean(contributor) && normalizeLogin(session.login) === normalizeLogin(contributor);
 }
 
 function validateProposal(input: unknown): ProposalPayload {
@@ -787,6 +888,11 @@ function validateProposal(input: unknown): ProposalPayload {
 }
 
 async function handleCreateProposal(request: Request, env: Env): Promise<Response> {
+  const session = await readSession(request, env);
+  if (!session) {
+    return jsonResponse({ error: 'Authentication required. Sign in with GitHub to submit a theme.' }, 401, corsHeaders(request, env));
+  }
+
   const formData = await request.formData();
   const proposalRaw = formData.get('proposal');
   if (typeof proposalRaw !== 'string') {
@@ -794,6 +900,8 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
   }
 
   const proposal = validateProposal(JSON.parse(proposalRaw));
+  // Attribute the proposal to the authenticated GitHub user.
+  proposal.draftSnapshot.contributor = session.login;
   const token = await getInstallationToken(env);
   const defaultBranch = await getDefaultBranch(env, token);
   const existingCatalog = await getContent(env, token, 'index.json', defaultBranch);
@@ -818,8 +926,6 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
   const root = themeRoot(proposal.id);
   const commitPrefix = `[theme-studio] ${proposal.id}`;
   const commitVerb = isUpdate ? 'update' : 'add';
-  const editCode = createEditCode();
-  const editCodeHash = await hashEditCode(branch, proposal.id, editCode);
 
   await uploadBinaryFile(
     env,
@@ -924,7 +1030,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     existingManifestSha,
   );
 
-  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: isUpdate, editCodeHash });
+  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: isUpdate, authorLogin: session.login });
 
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: ${isUpdate ? 'update' : 'register'} theme in catalog`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
@@ -939,7 +1045,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     proposal.prTitle,
     buildPullRequestBody(proposal.prBody, proposalLinks),
   );
-  return jsonResponse({ pullRequestUrl, branchName: branch, editCode, ...proposalLinks }, 200, corsHeaders(request, env));
+  return jsonResponse({ pullRequestUrl, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
 }
 
 async function handleGetProposalDraft(request: Request, env: Env, url: URL): Promise<Response> {
@@ -952,6 +1058,7 @@ async function handleGetProposalDraft(request: Request, env: Env, url: URL): Pro
     {
       proposalId,
       branchName: branch,
+      authorLogin: metadata.authorLogin || metadata.draftSnapshot.contributor || '',
       draftSnapshot: metadata.draftSnapshot,
     },
     200,
@@ -1043,6 +1150,7 @@ async function handleListProposals(request: Request, env: Env, url: URL): Promis
           mode: metadata.draftSnapshot.mode,
           proposalMode: metadata.draftSnapshot.proposalMode ?? 'create',
           contributor: metadata.draftSnapshot.contributor || pull.user?.login || '',
+          authorLogin: metadata.authorLogin || metadata.draftSnapshot.contributor || pull.user?.login || '',
           createdAt: pull.created_at,
           updatedAt: pull.updated_at,
           coverUrl: buildProposalAssetUrl(request, pull.head.ref, metadata.draftSnapshot.id, 'media/screenshots/00.png'),
@@ -1073,8 +1181,8 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
   const proposal = validateProposal(JSON.parse(proposalRaw));
   const token = await getInstallationToken(env);
   const currentMetadata = await readProposalDraftMetadata(env, token, branch, proposal.id);
-  if (!await hasEditorAccess(request, env, branch, proposal.id, currentMetadata)) {
-    return jsonResponse({ error: 'Forbidden: missing or invalid proposal edit code.' }, 403, corsHeaders(request, env));
+  if (!await hasEditorAccess(request, env, currentMetadata)) {
+    return jsonResponse({ error: 'Forbidden: you are not the author of this proposal.' }, 403, corsHeaders(request, env));
   }
 
   const root = themeRoot(proposal.id);
@@ -1182,7 +1290,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
     }
   }
 
-  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: true, editCodeHash: currentMetadata.editCodeHash });
+  await writeProposalDraftMetadata(env, token, branch, proposal, { ensureSha: true, authorLogin: currentMetadata.authorLogin });
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: update catalog entry`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
   });
@@ -1257,6 +1365,89 @@ async function handleCreateIconPack(request: Request, env: Env): Promise<Respons
   return jsonResponse({ ok: true, branchName: branch, pullRequestUrl }, 200, corsHeaders(request, env));
 }
 
+function safeRedirectTarget(value: string | undefined): string {
+  const target = value?.trim();
+  if (!target) {
+    return '';
+  }
+
+  try {
+    const url = new URL(target);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+      return '';
+    }
+    return url.toString();
+  } catch {
+    return '';
+  }
+}
+
+async function handleAuthToken(request: Request, env: Env): Promise<Response> {
+  const body = await request.json().catch(() => ({})) as { code?: string };
+  const code = body.code?.trim();
+  if (!code) {
+    return jsonResponse({ error: 'Missing OAuth code.' }, 400, corsHeaders(request, env));
+  }
+
+  const accessToken = await exchangeOAuthCode(env, code);
+  const user = await fetchGitHubUser(accessToken);
+  const session = await createSessionToken(env, user);
+
+  return jsonResponse(
+    {
+      session,
+      user: { login: user.login, name: user.name, avatarUrl: user.avatarUrl },
+    },
+    200,
+    corsHeaders(request, env),
+  );
+}
+
+async function handleAuthCallback(request: Request, env: Env, url: URL): Promise<Response> {
+  const code = url.searchParams.get('code')?.trim();
+  const stateRaw = url.searchParams.get('state') ?? '';
+  const state = stateRaw ? JSON.parse(decodeURIComponent(stateRaw)) : {};
+  const site = safeRedirectTarget(typeof state === 'object' && state !== null ? (state as { site?: string }).site : undefined);
+
+  if (!code) {
+    return jsonResponse({ error: 'Missing OAuth code.' }, 400, corsHeaders(request, env));
+  }
+
+  try {
+    const accessToken = await exchangeOAuthCode(env, code);
+    const user = await fetchGitHubUser(accessToken);
+    const session = await createSessionToken(env, user);
+
+    if (!site) {
+      return jsonResponse({ session, user: { login: user.login, name: user.name, avatarUrl: user.avatarUrl } }, 200, corsHeaders(request, env));
+    }
+
+    const redirect = new URL(site);
+    redirect.searchParams.set('session', session);
+    return Response.redirect(redirect.toString(), 302);
+  } catch (cause) {
+    if (site) {
+      const redirect = new URL(site);
+      redirect.searchParams.set('auth_error', encodeURIComponent(cause instanceof Error ? cause.message : 'OAuth failed'));
+      return Response.redirect(redirect.toString(), 302);
+    }
+    return jsonResponse({ error: cause instanceof Error ? cause.message : 'OAuth failed' }, 500, corsHeaders(request, env));
+  }
+}
+
+async function handleAuthSession(request: Request, env: Env): Promise<Response> {
+  const session = await readSession(request, env);
+  if (!session) {
+    return jsonResponse({ error: 'Not authenticated.' }, 401, corsHeaders(request, env));
+  }
+
+  return jsonResponse(
+    { user: { login: session.login, name: session.name, avatarUrl: session.avatarUrl } },
+    200,
+    corsHeaders(request, env),
+  );
+}
+
 export default {
   async fetch(request, env): Promise<Response> {
     const url = new URL(request.url);
@@ -1268,6 +1459,22 @@ export default {
     try {
       if (request.method === 'GET' && url.pathname === '/api/health') {
         return jsonResponse({ ok: true, repo: `${env.GITHUB_REPO_OWNER}/${env.GITHUB_REPO_NAME}` }, 200, corsHeaders(request, env));
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/auth') {
+        return jsonResponse({ clientId: env.GITHUB_OAUTH_CLIENT_ID?.trim() || '' }, 200, corsHeaders(request, env));
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/auth/callback') {
+        return await handleAuthCallback(request, env, url);
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/auth/token') {
+        return await handleAuthToken(request, env);
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/auth/session') {
+        return await handleAuthSession(request, env);
       }
 
       if (request.method === 'GET' && url.pathname === '/api/proposals/draft') {
