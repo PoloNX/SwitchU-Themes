@@ -248,6 +248,23 @@ If `/api/auth` returns an empty `clientId`, the OAuth secrets are missing. If it
 returns a single control character (e.g. `"\u0016"`), the secret was stored
 corrupt — see the bulk-upload note in step 3.3 and set it again.
 
+Check the **client secret** without going through the browser — exchange a bogus
+code and read the error:
+
+```bash
+curl -s -X POST -H "Content-Type: application/json" \
+  -d '{"code":"dummy-code-for-diagnosis"}' \
+  https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth/token
+```
+
+| Error | Meaning |
+| --- | --- |
+| `bad_verification_code` | ✅ credentials are valid (only the fake code is rejected) |
+| `incorrect_client_credentials` | ❌ secret mismatch — set the current secret and redeploy |
+
+If you get `redirect_uri_mismatch` in the browser, the callback URL registered on
+the OAuth App differs from `<WORKER_URL>/api/auth/callback`.
+
 ---
 
 ## 4. Configure and deploy the site (GitHub Pages)
@@ -363,6 +380,7 @@ npm run sync:catalog        # regenerate site/public/catalog from index.json + t
 | `/api/auth` returns `{"clientId":"\u0016"}` or another 1-char value | The secret was stored truncated. Re-set it with `wrangler secret bulk`, then `npm run deploy`. |
 | `/api/auth` returns `{"error":"Not found"}` | The Worker is running old code — redeploy with `cd pr-proxy && npm run deploy`. |
 | Redirected back with `auth_error` | Callback URL mismatch, or the OAuth secret is wrong. |
+| `incorrect_client_credentials` after login | The Worker's `GITHUB_OAUTH_CLIENT_SECRET` does not match the OAuth App. Set the current secret and **redeploy**. |
 | `Sign in` works but submits return **401** | The site is not sending the session; clear `localStorage` and sign in again. |
 | Submit returns **403 Forbidden** | You are not the proposal author. Use the author account or `X-Editor-Token`. |
 | Theme PR fails with **404** | GitHub App not installed on `PoloNX/SwitchU-Themes`. |
