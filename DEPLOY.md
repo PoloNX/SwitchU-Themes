@@ -13,6 +13,41 @@ You need **three** GitHub/Cloudflare objects:
 2. A **GitHub App** → for creating branches, committing files and opening PRs.
 3. A **Cloudflare Worker** → the proxy that holds the credentials.
 
+## Known deployment values
+
+These are already in use for this project — reuse them instead of inventing new ones.
+
+| Item | Value |
+| --- | --- |
+| Worker name | `switchu-themes-pr-proxy` |
+| Workers subdomain | `switchu` |
+| Worker URL | `https://switchu-themes-pr-proxy.switchu.workers.dev` |
+| OAuth callback URL | `https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth/callback` |
+| Site URL | `https://polonx.github.io/SwitchU-Themes/` |
+| `ALLOWED_ORIGIN` | `https://polonx.github.io` |
+| Repo variable `VITE_PR_PROXY_URL` | already set on `PoloNX/SwitchU-Themes` |
+
+> To re-check the repo variable at any time:
+> `gh variable list -R PoloNX/SwitchU-Themes`
+
+## Current state (what is left to do)
+
+`https://switchu-themes-pr-proxy.switchu.workers.dev/api/health` already answers,
+so the Worker **exists**. But `/api/auth` returns `404 Not found`, which means it
+is still running the **old** code without the OAuth routes.
+
+Remaining work:
+
+1. Add `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET` and `SESSION_SECRET`
+   as Worker secrets (step 3.3).
+2. Create the GitHub OAuth App with callback
+   `https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth/callback` (step 1).
+3. Run `npm run deploy` in `pr-proxy/` to publish the new Worker code (step 3.4).
+4. Confirm the GitHub App is installed on **both** `PoloNX/SwitchU-Themes` and
+   `PoloNX/SwitchU` (step 2).
+5. Merge this branch to `main` so Pages rebuilds the site with the sign-in UI.
+6. Re-run `curl .../api/auth` — it should return a `clientId`, not a 404.
+
 ---
 
 ## 0. Prerequisites
@@ -37,8 +72,8 @@ GitHub → **Settings → Developer settings → OAuth Apps → New OAuth App**
 | Field | Value |
 | --- | --- |
 | Application name | `SwitchU Themes` |
-| Homepage URL | `https://<owner>.github.io/SwitchU-Themes/` |
-| Authorization callback URL | `https://<worker-name>.<subdomain>.workers.dev/api/auth/callback` |
+| Homepage URL | `https://polonx.github.io/SwitchU-Themes/` |
+| Authorization callback URL | `https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth/callback` |
 
 > The callback URL must match the Worker URL exactly. If you do not know it yet,
 > deploy the Worker first (step 3), then come back and set it.
@@ -59,7 +94,7 @@ GitHub → **Settings → Developer settings → GitHub Apps → New GitHub App*
 | Field | Value |
 | --- | --- |
 | GitHub App name | `SwitchU Themes Studio` |
-| Homepage URL | `https://<owner>.github.io/SwitchU-Themes/` |
+| Homepage URL | `https://polonx.github.io/SwitchU-Themes/` |
 | Webhook | **disable** ("Active" unchecked) |
 | Repository permissions → Contents | **Read and write** |
 | Repository permissions → Pull requests | **Read and write** |
@@ -101,13 +136,13 @@ GITHUB_INSTALLATION_ID = "12345678"
 GITHUB_REPO_OWNER = "PoloNX"
 GITHUB_REPO_NAME = "SwitchU-Themes"
 GITHUB_DEFAULT_BRANCH = "main"
-ALLOWED_ORIGIN = "https://<owner>.github.io"
+ALLOWED_ORIGIN = "https://polonx.github.io"
 ICON_PACK_REPO_OWNER = "PoloNX"
 ICON_PACK_REPO_NAME = "SwitchU"
 ```
 
 > `ALLOWED_ORIGIN` is the **origin only** (scheme + host, no path). For GitHub
-> Pages project sites this is `https://<owner>.github.io`.
+> Pages project sites this is `https://polonx.github.io`.
 
 ### 3.3 Set the secrets
 
@@ -137,18 +172,18 @@ npm run deploy          # wrangler deploy
 ```
 
 Wrangler prints the URL, e.g.
-`https://switchu-themes-pr-proxy.<subdomain>.workers.dev`.
+`https://switchu-themes-pr-proxy.switchu.workers.dev`.
 
 **Now go back to step 1** and set the OAuth callback to
-`https://switchu-themes-pr-proxy.<subdomain>.workers.dev/api/auth/callback`.
+`https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth/callback`.
 
 ### 3.5 Smoke-test the Worker
 
 ```bash
-curl https://<worker-url>/api/health
+curl https://switchu-themes-pr-proxy.switchu.workers.dev/api/health
 # {"ok":true,"repo":"PoloNX/SwitchU-Themes"}
 
-curl https://<worker-url>/api/auth
+curl https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth
 # {"clientId":"Iv1.xxxxx"}
 ```
 
@@ -160,11 +195,20 @@ If `/api/auth` returns an empty `clientId`, the OAuth secrets are missing.
 
 ### 4.1 Add the proxy URL as a repository variable
 
-Repo → **Settings → Secrets and variables → Actions → Variables → New repository variable**
+**Already done** on `PoloNX/SwitchU-Themes`. Verify with:
+
+```bash
+gh variable list -R PoloNX/SwitchU-Themes
+```
+
+Expected:
 
 | Name | Value |
 | --- | --- |
-| `VITE_PR_PROXY_URL` | `https://switchu-themes-pr-proxy.<subdomain>.workers.dev` |
+| `VITE_PR_PROXY_URL` | `https://switchu-themes-pr-proxy.switchu.workers.dev` |
+
+If it is missing, add it under
+**Settings → Secrets and variables → Actions → Variables → New repository variable**.
 
 The workflow already reads `${{ vars.VITE_PR_PROXY_URL }}`.
 
@@ -180,7 +224,7 @@ and publishes it on every push to `main` (or manual **Run workflow**).
 Merge into `main` (or run the workflow manually). The site ends up at:
 
 ```
-https://<owner>.github.io/SwitchU-Themes/
+https://polonx.github.io/SwitchU-Themes/
 ```
 
 ---
@@ -257,6 +301,7 @@ npm run sync:catalog        # regenerate site/public/catalog from index.json + t
 | --- | --- |
 | `Missing VITE_PR_PROXY_URL` | The repository variable is unset, or the workflow was not re-run after adding it. |
 | `GitHub OAuth is not configured on the proxy.` | `GITHUB_OAUTH_CLIENT_ID` / `_SECRET` missing on the Worker. |
+| `/api/auth` returns `{"error":"Not found"}` | The Worker is running old code — redeploy with `cd pr-proxy && npm run deploy`. |
 | Redirected back with `auth_error` | Callback URL mismatch, or the OAuth secret is wrong. |
 | `Sign in` works but submits return **401** | The site is not sending the session; clear `localStorage` and sign in again. |
 | Submit returns **403 Forbidden** | You are not the proposal author. Use the author account or `X-Editor-Token`. |
