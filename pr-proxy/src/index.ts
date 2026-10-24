@@ -723,6 +723,45 @@ function upsertCatalogEntry(current: unknown, entry: CatalogEntry): { schemaVers
   };
 }
 
+interface IconCatalogEntry {
+  id: string;
+  name: string;
+  author: string;
+  version: string;
+  description: string;
+  path: string;
+  manifest: string;
+  cover: string;
+  builtin: boolean;
+  colour: boolean;
+}
+
+function upsertIconCatalogEntry(
+  current: unknown,
+  entry: IconCatalogEntry,
+): { schemaVersion: number; themes: unknown[]; icons: IconCatalogEntry[] } {
+  const catalog = current && typeof current === 'object'
+    ? current as { schemaVersion?: number; themes?: unknown[]; icons?: IconCatalogEntry[] }
+    : {};
+
+  const icons = Array.isArray(catalog.icons)
+    ? catalog.icons.filter((item) => item.id !== entry.id)
+    : [];
+  icons.push(entry);
+  icons.sort((left, right) => {
+    if (left.builtin !== right.builtin) {
+      return left.builtin ? -1 : 1;
+    }
+    return left.name.localeCompare(right.name);
+  });
+
+  return {
+    schemaVersion: typeof catalog.schemaVersion === 'number' ? catalog.schemaVersion : 1,
+    themes: Array.isArray(catalog.themes) ? catalog.themes : [],
+    icons,
+  };
+}
+
 function buildProposalLinks(siteBaseUrl: string | undefined, themeId: string, branchName: string): ProposalLinks | undefined {
   if (!siteBaseUrl) {
     return undefined;
@@ -1328,30 +1367,69 @@ async function handleCreateIconPack(request: Request, env: Env): Promise<Respons
     return jsonResponse({ error: 'No glyph files provided.' }, 400, corsHeaders(request, env));
   }
 
-  const iconEnv: Env = {
-    ...env,
-    GITHUB_REPO_OWNER: env.ICON_PACK_REPO_OWNER?.trim() || 'PoloNX',
-    GITHUB_REPO_NAME: env.ICON_PACK_REPO_NAME?.trim() || 'SwitchU',
-  };
-
-  const token = await getInstallationToken(iconEnv);
-  const base = await getDefaultBranch(iconEnv, token);
+  // Icon packs live in this catalog repo (icons/<id>/), next to the themes, so
+  // the console can list and download them like themes.
+  const token = await getInstallationToken(env);
+  const base = await getDefaultBranch(env, token);
   const branch = `icon-pack/${id}-${Date.now().toString(36)}`;
-  await createBranch(iconEnv, token, branch, await getBranchSha(iconEnv, token, base));
+  await createBranch(env, token, branch, await getBranchSha(env, token, base));
 
+  const glyphNames: string[] = [];
   for (const glyph of glyphs) {
     const contentBase64 = arrayBufferToBase64(await glyph.file.arrayBuffer());
-    await putFile(iconEnv, token, branch, `romfs/icons/${id}/${glyph.fileName}`, `icon pack ${id}: add ${glyph.fileName}`, contentBase64);
+    await putFile(env, token, branch, `icons/${id}/${glyph.fileName}`, `icon pack ${id}: add ${glyph.fileName}`, contentBase64);
+    glyphNames.push(glyph.fileName);
   }
+
+  const coverName = glyphNames.find((fileName) => fileName === 'preview.png')
+    ?? glyphNames.find((fileName) => fileName === 'album.png')
+    ?? glyphNames[0];
+  const packManifest = {
+    id,
+    name,
+    author: author || 'Community',
+    version: '1.0.0',
+    description: 'Community icon pack submitted from SwitchU Themes Studio.',
+    colour: true,
+    builtin: false,
+    preview: coverName,
+    glyphs: glyphNames,
+  };
+  const manifestBytes = new TextEncoder().encode(`${JSON.stringify(packManifest, null, 2)}\n`);
+  await putFile(
+    env,
+    token,
+    branch,
+    `icons/${id}/pack.json`,
+    `icon pack ${id}: add manifest`,
+    arrayBufferToBase64(manifestBytes.buffer as ArrayBuffer),
+  );
+
+  await updateJsonFile(env, token, branch, 'index.json', `icon pack ${id}: update catalog`, (current) => {
+    return upsertIconCatalogEntry(current, {
+      id,
+      name,
+      author: packManifest.author,
+      version: packManifest.version,
+      description: packManifest.description,
+      path: `icons/${id}`,
+      manifest: `icons/${id}/pack.json`,
+      cover: `icons/${id}/${coverName}`,
+      builtin: false,
+      colour: true,
+    });
+  });
 
   const prBody = [
     'Icon pack submitted from SwitchU Themes Studio.',
     '',
     `Pack: ${name}`,
     author ? `Author: ${author}` : '',
+    '',
+    'Published under `icons/<id>/` and listed in `index.json` so the console shop can install it.',
   ].filter(Boolean).join('\n');
 
-  const pullRequestUrl = await openPullRequest(iconEnv, token, base, branch, `Add icon pack ${id}`, prBody);
+  const pullRequestUrl = await openPullRequest(env, token, base, branch, `Add icon pack ${id}`, prBody);
 
   return jsonResponse({ ok: true, branchName: branch, pullRequestUrl }, 200, corsHeaders(request, env));
 }

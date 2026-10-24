@@ -1,0 +1,20 @@
+{
+  "id": "grayscale",
+  "name": "Grayscale",
+  "author": "SwitchU",
+  "version": "1.0.0",
+  "description": "Monochrome glyphs that follow the active theme chrome.",
+  "colour": false,
+  "builtin": true,
+  "preview": "preview.png",
+  "glyphs": [
+    "album.png",
+    "mii_editor.png",
+    "settings.png",
+    "controller.png",
+    "power.png",
+    "themes.png",
+    "change_view.png",
+    "preview.png"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "tinted",
+  "name": "Tinted",
+  "author": "SwitchU",
+  "version": "1.0.0",
+  "description": "Coloured glyphs with an optional on-device HSL tint.",
+  "colour": true,
+  "builtin": true,
+  "preview": "preview.png",
+  "glyphs": [
+    "album.png",
+    "mii_editor.png",
+    "settings.png",
+    "controller.png",
+    "power.png",
+    "themes.png",
+    "change_view.png",
+    "preview.png"
+  ]
+}

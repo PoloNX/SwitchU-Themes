@@ -1,0 +1,26 @@
+{
+  "id": "default",
+  "name": "Default",
+  "author": "SwitchU",
+  "version": "1.0.0",
+  "description": "The stock coloured SwitchU glyphs.",
+  "colour": true,
+  "builtin": true,
+  "preview": "preview.png",
+  "glyphs": [
+    "album.png",
+    "mii_editor.png",
+    "settings.png",
+    "controller.png",
+    "power.png",
+    "themes.png",
+    "gamecard.png",
+    "change_view.png",
+    "page_arrow_left.png",
+    "page_arrow_right.png",
+    "widget_battery_switch.png",
+    "widget_battery_joycon_left.png",
+    "widget_battery_joycon_right.png",
+    "preview.png"
+  ]
+}

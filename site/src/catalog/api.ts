@@ -1,4 +1,12 @@
-import type { ThemeCatalog, ThemeCatalogEntry, ThemeCatalogRecord, ThemeManifest } from '../theme/schema';
+import type {
+  IconCatalogEntry,
+  IconPackManifest,
+  IconPackRecord,
+  ThemeCatalog,
+  ThemeCatalogEntry,
+  ThemeCatalogRecord,
+  ThemeManifest,
+} from '../theme/schema';
 
 export function catalogBaseUrl(): string {
   return `${import.meta.env.BASE_URL}catalog/`;
@@ -60,4 +68,31 @@ export async function loadThemeCatalog(): Promise<ThemeCatalogRecord[]> {
   );
 
   return records;
+}
+
+
+export async function loadIconCatalog(): Promise<IconPackRecord[]> {
+  const catalog = await fetchJson<ThemeCatalog>(buildCatalogUrl('index.json'));
+  const entries = catalog.icons ?? [];
+
+  return Promise.all(
+    entries.map(async (entry) => {
+      const manifestUrl = buildCatalogUrl(entry.manifest);
+      let manifest: IconPackManifest = { id: entry.id, name: entry.name };
+      try {
+        manifest = await fetchJson<IconPackManifest>(manifestUrl);
+      } catch {
+        // A pack without a readable manifest still lists; the cover falls back
+        // to the icon convention below.
+      }
+
+      const coverPath = entry.cover ?? (manifest.preview ? `${entry.path}/${manifest.preview}` : undefined);
+      return {
+        entry,
+        manifest,
+        manifestUrl,
+        coverUrl: coverPath ? buildCatalogUrl(coverPath) : undefined,
+      } satisfies IconPackRecord;
+    }),
+  );
 }

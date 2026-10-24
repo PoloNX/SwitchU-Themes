@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import { buildCatalogUrl } from './api';
-import type { ThemeCatalogRecord } from '../theme/schema';
+import type { IconPackRecord, ThemeCatalogRecord } from '../theme/schema';
 
 interface ThemeFileIndex {
   files: string[];
@@ -64,4 +64,30 @@ export async function downloadThemeArchive(record: ThemeCatalogRecord): Promise<
   });
 
   triggerBrowserDownload(archive, `${rootName}-${record.entry.version}.zip`);
+}
+// Icon packs unpack straight into sdmc:/switch/SwitchU/icons/, so the archive
+// root is the pack folder name (same layout as the console expects).
+export async function downloadIconPackArchive(record: IconPackRecord): Promise<void> {
+  const fileIndexUrl = buildCatalogUrl(`${record.entry.path}/file-index.json`);
+  const fileIndex = await fetchJson<ThemeFileIndex>(fileIndexUrl);
+
+  const zip = new JSZip();
+  const rootName = record.entry.path.split('/').filter(Boolean).pop() ?? record.entry.id;
+  const root = zip.folder(rootName) ?? zip;
+
+  await Promise.all(
+    fileIndex.files.map(async (relativePath) => {
+      const fileUrl = buildCatalogUrl(`${record.entry.path}/${relativePath}`);
+      const binary = await fetchBinary(fileUrl);
+      root.file(relativePath, binary);
+    }),
+  );
+
+  const archive = await zip.generateAsync({
+    type: 'blob',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 },
+  });
+
+  triggerBrowserDownload(archive, `icon-pack-${rootName}-${record.entry.version ?? '1.0.0'}.zip`);
 }

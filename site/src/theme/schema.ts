@@ -10,9 +10,44 @@ export interface ThemeCatalogEntry {
   cover?: string;
 }
 
+export interface IconCatalogEntry {
+  id: string;
+  name: string;
+  author: string;
+  version: string;
+  description?: string;
+  path: string;
+  manifest: string;
+  cover?: string;
+  builtin?: boolean;
+  colour?: boolean;
+  theme?: string;
+}
+
 export interface ThemeCatalog {
   schemaVersion: number;
   themes: ThemeCatalogEntry[];
+  icons?: IconCatalogEntry[];
+}
+
+export interface IconPackManifest {
+  id: string;
+  name: string;
+  author?: string;
+  version?: string;
+  description?: string;
+  colour?: boolean;
+  builtin?: boolean;
+  preview?: string;
+  theme?: string;
+  glyphs?: string[];
+}
+
+export interface IconPackRecord {
+  entry: IconCatalogEntry;
+  manifest: IconPackManifest;
+  manifestUrl: string;
+  coverUrl?: string;
 }
 
 export interface ThemePreviewConfig {

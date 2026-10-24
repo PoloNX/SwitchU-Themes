@@ -13,6 +13,7 @@ mkdirSync(publicCatalogRoot, { recursive: true });
 const entries = [
   ['index.json', 'index.json'],
   ['themes', 'themes'],
+  ['icons', 'icons'],
   ['templates', 'templates'],
 ];
 
@@ -40,18 +41,24 @@ for (const [sourceName, destName] of entries) {
   cpSync(source, destination, { recursive: true });
 }
 
-const themesRoot = join(publicCatalogRoot, 'themes');
-for (const entry of readdirSync(themesRoot, { withFileTypes: true })) {
-  if (!entry.isDirectory()) {
+for (const collection of ['themes', 'icons']) {
+  const collectionRoot = join(publicCatalogRoot, collection);
+  if (!existsSync(collectionRoot)) {
     continue;
   }
 
-  const themeRoot = join(themesRoot, entry.name);
-  const fileIndex = {
-    files: collectRelativeFiles(themeRoot),
-  };
+  for (const entry of readdirSync(collectionRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
 
-  writeFileSync(join(themeRoot, 'file-index.json'), `${JSON.stringify(fileIndex, null, 2)}\n`);
+    const itemRoot = join(collectionRoot, entry.name);
+    const fileIndex = {
+      files: collectRelativeFiles(itemRoot),
+    };
+
+    writeFileSync(join(itemRoot, 'file-index.json'), `${JSON.stringify(fileIndex, null, 2)}\n`);
+  }
 }
 
 console.log('Synced SwitchU theme catalog into site/public/catalog');

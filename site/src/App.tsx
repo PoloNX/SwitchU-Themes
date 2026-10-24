@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { downloadThemeArchive } from './catalog/download';
 import { ThemeStudio } from './components/ThemeStudio';
+import { IconCatalog } from './components/IconCatalog';
 import { IconWorkshop } from './components/IconWorkshop';
 import { beginGitHubLogin, clearSessionToken, completeAuthFromUrl, fetchCurrentUser, type AuthUser } from './github/auth';
 import { loadOpenProposals, loadProposalDraft, readProposalRouteState, updateThemeProposal, type OpenProposalSummary, type ProposalResult, type ProposalRouteState } from './github/proposals';
@@ -707,7 +708,10 @@ export default function App() {
             </section>
           </>
         ) : activeTab === 'icons' ? (
-          <IconWorkshop />
+          <>
+            <IconCatalog />
+            <IconWorkshop />
+          </>
         ) : (
           <>
             <section className="panel panel--spotlight">

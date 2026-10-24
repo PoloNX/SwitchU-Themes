@@ -50,8 +50,8 @@ Create `pr-proxy/.dev.vars` from `pr-proxy/.dev.vars.example` and provide:
 - `GITHUB_REPO_NAME`
 - `GITHUB_DEFAULT_BRANCH` optional
 - `ALLOWED_ORIGIN` optional
-- `ICON_PACK_REPO_OWNER` optional — repo that receives icon-pack PRs (defaults to `PoloNX`)
-- `ICON_PACK_REPO_NAME` optional — defaults to `SwitchU`
+- `ICON_PACK_REPO_OWNER` / `ICON_PACK_REPO_NAME` — deprecated: icon packs are now
+  published in this repository, so these are ignored.
 - `GITHUB_OAUTH_CLIENT_ID` — GitHub OAuth app client ID (sign-in)
 - `GITHUB_OAUTH_CLIENT_SECRET` — GitHub OAuth app client secret
 - `SESSION_SECRET` — secret used to sign session tokens
@@ -63,7 +63,7 @@ Recommended GitHub App permissions:
 
 The worker endpoint is `POST /api/proposals`. It creates a branch, uploads `theme.json`, the generated preview screenshot, every uploaded asset, updates `index.json`, and opens a PR back to the default branch.
 
-The worker also exposes `POST /api/icon-packs`. It creates a branch on the icon-pack repo, uploads each glyph under `romfs/icons/<id>/`, and opens a PR. The GitHub App must also be installed on the icon-pack repo (defaults to `PoloNX/SwitchU`).
+The worker also exposes `POST /api/icon-packs`. It creates a branch on **this** repo, uploads each glyph under `icons/<id>/`, writes `icons/<id>/pack.json`, adds the pack to the `icons` array of `index.json`, and opens a PR.
 
 ### GitHub sign-in (OAuth)
 
@@ -83,6 +83,10 @@ Proposal ownership is stored as `authorLogin` in each proposal's `.switchu-studi
 ```text
 SwitchU-Themes/
 ├── index.json
+├── icons/
+│   └── <pack-id>/
+│       ├── pack.json
+│       └── *.png
 ├── themes/
 │   └── <theme-id>/
 │       ├── theme.json
@@ -141,6 +145,73 @@ Example:
 
 `cover` is optional. Add it when preview assets are available.
 If `cover` is omitted, the client can fall back to the first entry in `preview.screenshots` from the theme manifest.
+
+### Icon packs
+
+Icon packs are published in the same catalog under an `icons` array, so the console
+can list and install them from Theme Library → Icons exactly like themes.
+
+```json
+{
+  "schemaVersion": 1,
+  "themes": [ ... ],
+  "icons": [
+    {
+      "id": "default",
+      "name": "Default",
+      "author": "SwitchU",
+      "version": "1.0.0",
+      "description": "The stock coloured SwitchU glyphs.",
+      "path": "icons/default",
+      "manifest": "icons/default/pack.json",
+      "cover": "icons/default/preview.png",
+      "builtin": true,
+      "colour": true
+    }
+  ]
+}
+```
+
+- `builtin`: the pack also ships inside SwitchU, so the console already has it.
+- `colour`: colour artwork (spectrum badge + custom tint UI). Monochrome packs follow the theme chrome.
+- `theme`: optional; set it when the pack carries the icons of a theme package. New
+  theme submissions should **not** bundle `assets/icons` any more — publish the glyphs
+  as a pack instead. Themes that still ship icons keep working: the console copies them
+  into its own icon directory on install.
+
+Each pack folder holds a `pack.json` plus the PNG glyphs:
+
+```text
+icons/<pack-id>/
+├── pack.json
+├── album.png
+├── mii_editor.png
+├── settings.png
+├── controller.png
+├── power.png
+├── themes.png
+└── preview.png
+```
+
+`pack.json`:
+
+```json
+{
+  "id": "default",
+  "name": "Default",
+  "author": "SwitchU",
+  "version": "1.0.0",
+  "description": "The stock coloured SwitchU glyphs.",
+  "colour": true,
+  "builtin": true,
+  "preview": "preview.png",
+  "glyphs": ["album.png", "mii_editor.png", "settings.png", "controller.png", "power.png", "themes.png", "preview.png"]
+}
+```
+
+Missing glyphs fall back to the `default` pack on the console, so a partial pack is
+valid. Shared chrome (`gamecard.png`, `change_view.png`, page arrows, battery widgets)
+only has to be provided by `default`.
 
 ## Theme folder rules
 
