@@ -127,6 +127,15 @@
       "manifest": "themes/forest/theme.json"
     },
     {
+      "id": "frutigeraero",
+      "name": "Frutiger Aero",
+      "author": "PoloNX",
+      "version": "1.0.0",
+      "path": "themes/frutigeraero",
+      "manifest": "themes/frutigeraero/theme.json",
+      "cover": "themes/frutigeraero/media/screenshots/00.png"
+    },
+    {
       "id": "hatsune-miku",
       "name": "Hatsune Miku",
       "author": "Five39s",
