@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/frutigeraero-1792871151318",
+  "draftSnapshot": {
+    "basedOnThemeId": "tealleaves",
+    "proposalMode": "create",
+    "id": "frutigeraero",
+    "name": "Frutiger Aero",
+    "author": "PoloNX",
+    "version": "1.0.0",
+    "summary": "Add theme Frutiger Aero",
+    "notes": "",
+    "contributor": "PoloNX",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.48701298701298695,
+        "s": 0.41621621621621613,
+        "l": 0.6372549019607843
+      },
+      "accent": {
+        "h": 0.4889807162534436,
+        "s": 1,
+        "l": 0.2372549019607843
+      },
+      "background": {
+        "h": 0.4889807162534436,
+        "s": 1,
+        "l": 0.2372549019607843
+      },
+      "backgroundAccent": {
+        "h": 0.4889807162534436,
+        "s": 1,
+        "l": 0.2372549019607843
+      },
+      "shapes": {
+        "h": 0.48701298701298695,
+        "s": 0.41621621621621613,
+        "l": 0.6372549019607843
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 1,
+      "sizeMax": 40,
+      "speedMin": 5,
+      "speedMax": 40,
+      "wobble": 15,
+      "rotationSpeed": 0.2,
+      "opacity": 0.35,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "thumb-1920-1349540.png",
+        "relativePath": "media/backgrounds/thumb-1920-1349540.png"
+      }
+    },
+    "fonts": {
+      "regular": {
+        "name": "font.ttf",
+        "relativePath": "fonts/font.ttf"
+      }
+    },
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "9jackjack8-aqua-frutiger-aero-chillwave-532669.mp3",
+        "relativePath": "sounds/music/9jackjack8-aqua-frutiger-aero-chillwave-532669.mp3"
+      },
+      "sfx": {}
+    }
+  },
+  "authorLogin": "PoloNX"
+}
