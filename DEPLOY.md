@@ -146,15 +146,35 @@ ICON_PACK_REPO_NAME = "SwitchU"
 
 ### 3.3 Set the secrets
 
-Never put these in `wrangler.toml`. Use `wrangler secret put`:
+`wrangler secret put` reads **one line** per prompt, so pasting a multi-line PEM
+(or piping a value) easily stores a truncated/corrupt secret. Use
+`wrangler secret bulk` with a JSON file instead — it handles newlines correctly
+and sets everything at once.
+
+**Recommended: bulk upload**
 
 ```bash
-npx wrangler secret put GITHUB_PRIVATE_KEY        # paste the whole .pem (with newlines)
-npx wrangler secret put GITHUB_OAUTH_CLIENT_ID
-npx wrangler secret put GITHUB_OAUTH_CLIENT_SECRET
-npx wrangler secret put SESSION_SECRET            # long random string
-npx wrangler secret put EDITOR_TOKEN              # optional maintainer override
+cd pr-proxy
+
+python3 - <<'PY'
+import json, glob, pathlib
+pems = sorted(glob.glob("/home/charlie/Downloads/*.private-key.pem"))
+pem = pathlib.Path(pems[-1]).read_text().strip() if pems else ""
+json.dump({
+    "GITHUB_PRIVATE_KEY": pem,
+    "GITHUB_OAUTH_CLIENT_SECRET": "COLLE_TON_SECRET_ICI",
+    "SESSION_SECRET": "COLLE_TA_VALEUR_ICI",
+}, open("/tmp/switchu-secrets.json", "w"), indent=2)
+print("private key found:", bool(pem))
+PY
+
+npx wrangler secret bulk /tmp/switchu-secrets.json
+rm /tmp/switchu-secrets.json
 ```
+
+> `GITHUB_OAUTH_CLIENT_ID` is **public** (the site fetches it from `/api/auth`),
+> so keep it in `[vars]` in `wrangler.toml` rather than as a secret. That way you
+> can read and fix it.
 
 Generate a strong session secret:
 
@@ -162,8 +182,26 @@ Generate a strong session secret:
 node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
 ```
 
-> `EDITOR_TOKEN` is optional. When set, a request sending `X-Editor-Token`
-> with this value can update *any* proposal (maintainer override).
+**Alternative: one secret at a time**
+
+Pipe from a file rather than pasting, and never go through `npm run`:
+
+```bash
+npx wrangler secret put GITHUB_PRIVATE_KEY < ~/Downloads/<app>.private-key.pem
+npx wrangler secret put GITHUB_OAUTH_CLIENT_SECRET
+npx wrangler secret put SESSION_SECRET
+```
+
+`EDITOR_TOKEN` is optional. When set, a request sending `X-Editor-Token` with
+this value can update *any* proposal (maintainer override):
+
+```bash
+npx wrangler secret put EDITOR_TOKEN
+```
+
+> Secrets are **write-only** — Cloudflare never returns them. Verify a secret is
+> correct through behaviour (`curl .../api/auth`), not by re-reading it. Clear a
+> bad one with `npx wrangler secret delete <NAME>`.
 
 ### 3.4 Deploy
 
@@ -173,6 +211,9 @@ npm run deploy          # wrangler deploy
 
 Wrangler prints the URL, e.g.
 `https://switchu-themes-pr-proxy.switchu.workers.dev`.
+
+> You must redeploy after changing secrets — `secret put` alone does not update
+> the running Worker.
 
 **Now go back to step 1** and set the OAuth callback to
 `https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth/callback`.
@@ -187,7 +228,9 @@ curl https://switchu-themes-pr-proxy.switchu.workers.dev/api/auth
 # {"clientId":"Iv1.xxxxx"}
 ```
 
-If `/api/auth` returns an empty `clientId`, the OAuth secrets are missing.
+If `/api/auth` returns an empty `clientId`, the OAuth secrets are missing. If it
+returns a single control character (e.g. `"\u0016"`), the secret was stored
+corrupt — see the bulk-upload note in step 3.3 and set it again.
 
 ---
 
@@ -301,6 +344,7 @@ npm run sync:catalog        # regenerate site/public/catalog from index.json + t
 | --- | --- |
 | `Missing VITE_PR_PROXY_URL` | The repository variable is unset, or the workflow was not re-run after adding it. |
 | `GitHub OAuth is not configured on the proxy.` | `GITHUB_OAUTH_CLIENT_ID` / `_SECRET` missing on the Worker. |
+| `/api/auth` returns `{"clientId":"\u0016"}` or another 1-char value | The secret was stored truncated. Re-set it with `wrangler secret bulk`, then `npm run deploy`. |
 | `/api/auth` returns `{"error":"Not found"}` | The Worker is running old code — redeploy with `cd pr-proxy && npm run deploy`. |
 | Redirected back with `auth_error` | Callback URL mismatch, or the OAuth secret is wrong. |
 | `Sign in` works but submits return **401** | The site is not sending the session; clear `localStorage` and sign in again. |
