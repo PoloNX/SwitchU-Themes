@@ -238,26 +238,31 @@ async function buildProposalFormData(draft: StudioDraft, previewNode: HTMLElemen
   const previewBlob = await capturePreviewBlob(previewNode);
   const payload = buildProposalPayload(draft);
   const formData = new FormData();
+  // Two fields can resolve to the same repository path (the small font falls
+  // back to the regular one). Upload each destination only once.
+  const uploadedPaths = new Set<string>();
 
   formData.set('proposal', JSON.stringify(payload));
   formData.set('previewScreenshot', new File([previewBlob], '00.png', { type: 'image/png' }));
 
-  if (draft.background.image?.proposalReady && draft.background.image.file) {
-    formData.set('backgroundImage', draft.background.image.file);
-  }
-  if (draft.fonts.regular?.proposalReady && draft.fonts.regular.file) {
-    formData.set('regularFont', draft.fonts.regular.file);
-  }
-  if (draft.fonts.small?.proposalReady && draft.fonts.small.file) {
-    formData.set('smallFont', draft.fonts.small.file);
-  }
-  if (draft.audio.music?.proposalReady && draft.audio.music.file) {
-    formData.set('music', draft.audio.music.file);
-  }
+  const addAsset = (field: string, asset: StudioAsset | undefined) => {
+    if (!asset?.proposalReady || !asset.file || uploadedPaths.has(asset.relativePath)) {
+      return;
+    }
+    uploadedPaths.add(asset.relativePath);
+    formData.set(field, asset.file);
+  };
+
+  addAsset('backgroundImage', draft.background.image);
+  addAsset('regularFont', draft.fonts.regular);
+  addAsset('smallFont', draft.fonts.small);
+  addAsset('music', draft.audio.music);
 
   DEFAULT_SFX_NAMES.forEach((name) => {
     const asset = draft.audio.sfx[name];
-    if (asset?.proposalReady && asset.file) {
+    const target = asset?.relativePath ?? '';
+    if (asset?.proposalReady && asset.file && !uploadedPaths.has(target)) {
+      uploadedPaths.add(target);
       formData.set(`sfx:${name}`, asset.file);
     }
   });
