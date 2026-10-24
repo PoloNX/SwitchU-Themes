@@ -569,6 +569,11 @@ async function createBranch(env: Env, token: string, branch: string, sha: string
   );
 }
 
+// Best-effort cleanup so a failed submission does not leave an orphan branch.
+async function deleteBranch(env: Env, token: string, branch: string): Promise<void> {
+  await githubRequest(env, token, `${repoPath(env)}/git/refs/heads/${branch}`, { method: 'DELETE' });
+}
+
 async function getContent(env: Env, token: string, path: string, branch: string): Promise<GitHubContentResponse> {
   return githubFetch<GitHubContentResponse>(
     env,
@@ -916,121 +921,128 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
   await createBranch(env, token, branch, defaultSha);
 
   const isUpdate = proposal.proposalMode === 'update';
-  const root = themeRoot(proposal.id);
-  const commitPrefix = `[theme-studio] ${proposal.id}`;
-  const commitVerb = isUpdate ? 'update' : 'add';
+  try {
+    const root = themeRoot(proposal.id);
+    const commitPrefix = `[theme-studio] ${proposal.id}`;
+    const commitVerb = isUpdate ? 'update' : 'add';
 
-  await uploadBinaryFile(
-    env,
-    token,
-    branch,
-    root,
-    proposal.files.previewScreenshot,
-    requireFile(formData, 'previewScreenshot'),
-    `${commitPrefix}: ${commitVerb} preview screenshot`,
-  );
-
-  const backgroundImage = optionalFile(formData, 'backgroundImage');
-  if (backgroundImage && proposal.files.backgroundImage) {
     await uploadBinaryFile(
       env,
       token,
       branch,
       root,
-      proposal.files.backgroundImage,
-      backgroundImage,
-      `${commitPrefix}: ${commitVerb} background image`,
-      );
-  }
+      proposal.files.previewScreenshot,
+      requireFile(formData, 'previewScreenshot'),
+      `${commitPrefix}: ${commitVerb} preview screenshot`,
+    );
 
-  const regularFont = optionalFile(formData, 'regularFont');
-  if (regularFont && proposal.files.regularFont) {
-    await uploadBinaryFile(
-      env,
-      token,
-      branch,
-      root,
-      proposal.files.regularFont,
-      regularFont,
-      `${commitPrefix}: ${commitVerb} regular font`,
-      );
-  }
-
-  const smallFont = optionalFile(formData, 'smallFont');
-  if (smallFont && proposal.files.smallFont) {
-    await uploadBinaryFile(
-      env,
-      token,
-      branch,
-      root,
-      proposal.files.smallFont,
-      smallFont,
-      `${commitPrefix}: ${commitVerb} small font`,
-      );
-  }
-
-  const music = optionalFile(formData, 'music');
-  if (music && proposal.files.music) {
-    await uploadBinaryFile(
-      env,
-      token,
-      branch,
-      root,
-      proposal.files.music,
-      music,
-      `${commitPrefix}: ${commitVerb} background music`,
-      );
-  }
-
-  if (proposal.files.sfx) {
-    for (const [name, relativePath] of Object.entries(proposal.files.sfx)) {
-      if (!relativePath) {
-        continue;
-      }
-
-      const file = optionalFile(formData, `sfx:${name}`);
-      if (!file) {
-        continue;
-      }
-
+    const backgroundImage = optionalFile(formData, 'backgroundImage');
+    if (backgroundImage && proposal.files.backgroundImage) {
       await uploadBinaryFile(
         env,
         token,
         branch,
         root,
-        relativePath,
-        file,
-        `${commitPrefix}: ${commitVerb} ${name} sfx`,
-          );
+        proposal.files.backgroundImage,
+        backgroundImage,
+        `${commitPrefix}: ${commitVerb} background image`,
+      );
     }
+
+    const regularFont = optionalFile(formData, 'regularFont');
+    if (regularFont && proposal.files.regularFont) {
+      await uploadBinaryFile(
+        env,
+        token,
+        branch,
+        root,
+        proposal.files.regularFont,
+        regularFont,
+        `${commitPrefix}: ${commitVerb} regular font`,
+      );
+    }
+
+    const smallFont = optionalFile(formData, 'smallFont');
+    if (smallFont && proposal.files.smallFont) {
+      await uploadBinaryFile(
+        env,
+        token,
+        branch,
+        root,
+        proposal.files.smallFont,
+        smallFont,
+        `${commitPrefix}: ${commitVerb} small font`,
+      );
+    }
+
+    const music = optionalFile(formData, 'music');
+    if (music && proposal.files.music) {
+      await uploadBinaryFile(
+        env,
+        token,
+        branch,
+        root,
+        proposal.files.music,
+        music,
+        `${commitPrefix}: ${commitVerb} background music`,
+      );
+    }
+
+    if (proposal.files.sfx) {
+      for (const [name, relativePath] of Object.entries(proposal.files.sfx)) {
+        if (!relativePath) {
+          continue;
+        }
+
+        const file = optionalFile(formData, `sfx:${name}`);
+        if (!file) {
+          continue;
+        }
+
+        await uploadBinaryFile(
+          env,
+          token,
+          branch,
+          root,
+          relativePath,
+          file,
+          `${commitPrefix}: ${commitVerb} ${name} sfx`,
+        );
+      }
+    }
+
+    const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
+    await putFileEnsuringSha(
+      env,
+      token,
+      branch,
+      `${root}/theme.json`,
+      `${commitPrefix}: ${commitVerb} theme manifest`,
+      textToBase64(manifestJson),
+    );
+
+    await writeProposalDraftMetadata(env, token, branch, proposal, { authorLogin: session.login });
+
+    await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: ${isUpdate ? 'update' : 'register'} theme in catalog`, (current) => {
+      return upsertCatalogEntry(current, proposal.catalogEntry);
+    });
+
+    const proposalLinks = buildProposalLinks(proposal.siteBaseUrl, proposal.id, branch);
+    const pullRequestUrl = await openPullRequest(
+      env,
+      token,
+      defaultBranch,
+      branch,
+      proposal.prTitle,
+      buildPullRequestBody(proposal.prBody, proposalLinks),
+    );
+    return jsonResponse({ pullRequestUrl, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
+  } catch (cause) {
+    if (!isUpdate) {
+      await deleteBranch(env, token, branch).catch(() => undefined);
+    }
+    throw cause;
   }
-
-  const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
-  await putFileEnsuringSha(
-    env,
-    token,
-    branch,
-    `${root}/theme.json`,
-    `${commitPrefix}: ${commitVerb} theme manifest`,
-    textToBase64(manifestJson),
-  );
-
-  await writeProposalDraftMetadata(env, token, branch, proposal, { authorLogin: session.login });
-
-  await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: ${isUpdate ? 'update' : 'register'} theme in catalog`, (current) => {
-    return upsertCatalogEntry(current, proposal.catalogEntry);
-  });
-
-  const proposalLinks = buildProposalLinks(proposal.siteBaseUrl, proposal.id, branch);
-  const pullRequestUrl = await openPullRequest(
-    env,
-    token,
-    defaultBranch,
-    branch,
-    proposal.prTitle,
-    buildPullRequestBody(proposal.prBody, proposalLinks),
-  );
-  return jsonResponse({ pullRequestUrl, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
 }
 
 async function handleGetProposalDraft(request: Request, env: Env, url: URL): Promise<Response> {
@@ -1142,7 +1154,7 @@ async function handleListProposals(request: Request, env: Env, url: URL): Promis
           ...links,
         };
       }),
-  );
+        );
 
   return jsonResponse(
     { proposals: proposals.filter(Boolean) },
@@ -1204,7 +1216,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.backgroundImage,
       backgroundImage,
       `${commitPrefix}: update background image`,
-      );
+    );
   }
 
   const regularFont = optionalFile(formData, 'regularFont');
@@ -1217,7 +1229,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.regularFont,
       regularFont,
       `${commitPrefix}: update regular font`,
-      );
+    );
   }
 
   const smallFont = optionalFile(formData, 'smallFont');
@@ -1230,7 +1242,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.smallFont,
       smallFont,
       `${commitPrefix}: update small font`,
-      );
+    );
   }
 
   const music = optionalFile(formData, 'music');
@@ -1243,7 +1255,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
       proposal.files.music,
       music,
       `${commitPrefix}: update background music`,
-      );
+    );
   }
 
   if (proposal.files.sfx) {
@@ -1265,7 +1277,7 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
         relativePath,
         file,
         `${commitPrefix}: update ${name} sfx`,
-          );
+      );
     }
   }
 
