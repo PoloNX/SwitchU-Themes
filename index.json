@@ -329,6 +329,15 @@
       "cover": "themes/supermariobros/media/screenshots/00.png"
     },
     {
+      "id": "xbox360-nxe",
+      "name": "Switch 360",
+      "author": "daniel.sox",
+      "version": "1.1.0",
+      "path": "themes/xbox360-nxe",
+      "manifest": "themes/xbox360-nxe/theme.json",
+      "cover": "themes/xbox360-nxe/media/screenshots/00.png"
+    },
+    {
       "id": "wii-ish",
       "name": "Wii ish",
       "author": "Duckyboy33",
@@ -336,15 +345,6 @@
       "path": "themes/wii-ish",
       "manifest": "themes/wii-ish/theme.json",
       "cover": "themes/wii-ish/media/screenshots/00.png"
-    },
-    {
-      "id": "xbox360-nxe",
-      "name": "Xbox 360 in Switch",
-      "author": "daniel.sox",
-      "version": "1.0.0",
-      "path": "themes/xbox360-nxe",
-      "manifest": "themes/xbox360-nxe/theme.json",
-      "cover": "themes/xbox360-nxe/media/screenshots/00.png"
     },
     {
       "id": "zelda-botw-theme",
@@ -363,69 +363,6 @@
       "path": "themes/zeldaminimalist",
       "manifest": "themes/zeldaminimalist/theme.json",
       "cover": "themes/zeldaminimalist/media/screenshots/00.png"
-    }
-  ],
-  "icons": [
-    {
-      "id": "default",
-      "name": "Default",
-      "author": "SwitchU",
-      "version": "1.0.0",
-      "description": "The stock coloured SwitchU glyphs.",
-      "path": "icons/default",
-      "manifest": "icons/default/pack.json",
-      "cover": "icons/default/preview.png",
-      "builtin": true,
-      "colour": true
-    },
-    {
-      "id": "grayscale",
-      "name": "Grayscale",
-      "author": "SwitchU",
-      "version": "1.0.0",
-      "description": "Monochrome glyphs that follow the active theme chrome.",
-      "path": "icons/grayscale",
-      "manifest": "icons/grayscale/pack.json",
-      "cover": "icons/grayscale/preview.png",
-      "builtin": true,
-      "colour": false
-    },
-    {
-      "id": "solid",
-      "name": "Solid",
-      "author": "SwitchU",
-      "version": "1.0.0",
-      "description": "Flat solid monochrome glyphs.",
-      "path": "icons/solid",
-      "manifest": "icons/solid/pack.json",
-      "cover": "icons/solid/preview.png",
-      "builtin": true,
-      "colour": false
-    },
-    {
-      "id": "tinted",
-      "name": "Tinted",
-      "author": "SwitchU",
-      "version": "1.0.0",
-      "description": "Coloured glyphs with an optional on-device HSL tint.",
-      "path": "icons/tinted",
-      "manifest": "icons/tinted/pack.json",
-      "cover": "icons/tinted/preview.png",
-      "builtin": true,
-      "colour": true
-    },
-    {
-      "id": "iisu",
-      "name": "iiSU",
-      "author": "iiSU Team",
-      "version": "1.1.0",
-      "description": "Sidebar glyphs bundled with the iiSU theme. Album falls back to Default.",
-      "path": "icons/iisu",
-      "manifest": "icons/iisu/pack.json",
-      "cover": "icons/iisu/preview.png",
-      "builtin": false,
-      "colour": true,
-      "theme": "iisu"
     }
   ]
 }

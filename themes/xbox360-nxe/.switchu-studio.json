@@ -1,15 +1,16 @@
 {
-  "schemaVersion": 1,
-  "branchName": "theme-studio/xbox360-nxe-1782365346010",
+  "schemaVersion": 3,
+  "branchName": "theme-studio/update-xbox360-nxe-1792916043835",
   "draftSnapshot": {
-    "proposalMode": "create",
+    "basedOnThemeId": "xbox360-nxe",
+    "proposalMode": "update",
     "id": "xbox360-nxe",
-    "name": "Xbox 360 in Switch",
+    "name": "Switch 360",
     "author": "daniel.sox",
-    "version": "1.0.0",
-    "summary": "Add a new SwitchU theme",
-    "notes": "",
-    "contributor": "",
+    "version": "1.1.0",
+    "summary": "Xbox 360 theme updated to Switch 360",
+    "notes": "Sound effects and wallpaper and effects were modified. :)",
+    "contributor": "daniel-sox",
     "mode": "light",
     "colors": {
       "cursor": {
@@ -40,27 +41,40 @@
     },
     "background": {
       "layout": "floating",
-      "shape": "mixed",
-      "symmetry": "vertical",
-      "count": 76,
+      "shape": "square",
+      "symmetry": "none",
+      "count": 0,
       "fixedOrientation": true,
       "orientation": 0,
       "roundness": 0.18,
-      "columns": 16,
-      "rows": 10,
-      "spacingX": 74,
-      "spacingY": 74,
-      "sizeMin": 11,
-      "sizeMax": 17,
+      "columns": 5,
+      "rows": 3,
+      "spacingX": 50,
+      "spacingY": 50,
+      "sizeMin": 10,
+      "sizeMax": 15,
       "speedMin": 4,
-      "speedMax": 8,
-      "wobble": 24,
-      "rotationSpeed": 0.41,
+      "speedMax": 5,
+      "wobble": 30,
+      "rotationSpeed": 0.5,
       "opacity": 0.5,
-      "imageOpacity": 0.73,
-      "imageFit": "cover"
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "Switch-360-Theme-Switch-U-1.png",
+        "relativePath": "media/backgrounds/Switch-360-Theme-Switch-U-1.png"
+      }
     },
-    "fonts": {},
+    "fonts": {
+      "regular": {
+        "name": "X360.ttf",
+        "relativePath": "fonts/X360.ttf"
+      },
+      "small": {
+        "name": "X360.ttf",
+        "relativePath": "fonts/X360.ttf"
+      }
+    },
     "audio": {
       "bundled": true,
       "music": {
@@ -118,5 +132,6 @@
         }
       }
     }
-  }
+  },
+  "authorLogin": "daniel-sox"
 }
