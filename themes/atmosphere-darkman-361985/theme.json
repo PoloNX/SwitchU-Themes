@@ -2,7 +2,7 @@
   "id": "atmosphere-darkman-361985",
   "name": "Atmosphere (DarkMan_361985)",
   "author": "bshurikan",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png"
@@ -69,6 +69,19 @@
         "opacity": 1,
         "fit": "cover"
       }
+    },
+    "icons": {
+      "path": "assets/icons",
+      "files": [
+        "assets/icons/album.png",
+        "assets/icons/change_view.png",
+        "assets/icons/controller.png",
+        "assets/icons/mii_editor.png",
+        "assets/icons/power.png",
+        "assets/icons/settings.png",
+        "assets/icons/themes.png",
+        "assets/icons/preview.png"
+      ]
     }
   },
   "audio": {
