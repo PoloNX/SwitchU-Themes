@@ -508,40 +508,16 @@
       "description": "The stock coloured SwitchU glyphs."
     },
     {
-      "id": "grayscale",
-      "name": "Grayscale",
+      "id": "atmos",
+      "name": "Atmos",
       "author": "SwitchU",
-      "version": "1.0.0",
-      "path": "icons/grayscale",
-      "manifest": "icons/grayscale/pack.json",
-      "cover": "icons/grayscale/preview.png",
-      "builtin": true,
-      "colour": false,
-      "description": "Monochrome glyphs that follow the active theme chrome."
-    },
-    {
-      "id": "solid",
-      "name": "Solid",
-      "author": "SwitchU",
-      "version": "1.0.0",
-      "path": "icons/solid",
-      "manifest": "icons/solid/pack.json",
-      "cover": "icons/solid/preview.png",
-      "builtin": true,
-      "colour": false,
-      "description": "Flat solid monochrome glyphs."
-    },
-    {
-      "id": "tinted",
-      "name": "Tinted",
-      "author": "SwitchU",
-      "version": "1.0.0",
-      "path": "icons/tinted",
-      "manifest": "icons/tinted/pack.json",
-      "cover": "icons/tinted/preview.png",
+      "version": "1.1.0",
+      "path": "icons/atmos",
+      "manifest": "icons/atmos/pack.json",
+      "cover": "icons/atmos/preview.png",
       "builtin": true,
       "colour": true,
-      "description": "Coloured glyphs with an optional on-device HSL tint."
+      "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins."
     },
     {
       "id": "iisu",
