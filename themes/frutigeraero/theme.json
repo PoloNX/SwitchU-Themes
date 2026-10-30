@@ -41,10 +41,10 @@
       "layout": "floating",
       "shape": "mixed",
       "symmetry": "none",
-      "count": 100,
+      "count": 50,
       "fixedOrientation": true,
       "orientation": 0,
-      "roundness": 0.18,
+      "roundness": 1,
       "grid": {
         "columns": 16,
         "rows": 9,
@@ -65,7 +65,7 @@
       "rotationSpeed": 0.2,
       "opacity": 0.35,
       "image": {
-        "path": "media/backgrounds/thumb-1920-1349540.png",
+        "path": "media/backgrounds/wiiulaunch.png",
         "opacity": 1,
         "fit": "cover"
       }
