@@ -28,9 +28,8 @@ export interface BuiltInPack {
   description: string;
 }
 
-// Built-in packs that ship with SwitchU. The workshop references these so
-// users can see what a complete pack looks like, but the glyphs themselves
-// live in the SwitchU repo (romfs/icons/<id>/).
+// Built-in packs that ship with SwitchU (romfs/icons/<id>/).
+// Legacy tinted/grayscale/solid ids remap to atmos on the console.
 export const BUILT_IN_PACKS: BuiltInPack[] = [
   {
     id: 'default',
@@ -38,19 +37,9 @@ export const BUILT_IN_PACKS: BuiltInPack[] = [
     description: 'The stock coloured glyphs that ship with SwitchU.',
   },
   {
-    id: 'grayscale',
-    name: 'Grayscale',
-    description: 'Monochrome glyphs that adapt to the active theme chrome.',
-  },
-  {
-    id: 'solid',
-    name: 'Solid',
-    description: 'Flat, solid monochrome glyphs.',
-  },
-  {
-    id: 'tinted',
-    name: 'Tinted',
-    description: 'Coloured glyphs supporting a custom on-device HSL tint.',
+    id: 'atmos',
+    name: 'Atmos',
+    description: 'Coloured glyphs with optional on-device HSL tint.',
   },
 ];
 

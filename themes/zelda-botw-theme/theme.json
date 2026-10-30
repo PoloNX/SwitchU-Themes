@@ -2,7 +2,7 @@
   "id": "zelda-botw-theme",
   "name": "Zelda BOTW theme",
   "author": "Adan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png"
@@ -66,7 +66,7 @@
       "opacity": 0,
       "image": {
         "path": "media/backgrounds/1000273472.png",
-        "opacity": 500,
+        "opacity": 1,
         "fit": "cover"
       }
     }
@@ -75,7 +75,7 @@
     "preset": "bundled",
     "bundled": true,
     "music": [
-      "sounds/music/Sheikah-Tower-The-Legend-of-Zelda_-Breath-of-the-Wild-OST.mp3"
+      "sounds/music/sheikah-tower.mp3"
     ]
   }
 }

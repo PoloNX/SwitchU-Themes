@@ -66,7 +66,7 @@
       "opacity": 0,
       "image": {
         "path": "media/backgrounds/1000272180.png",
-        "opacity": 200,
+        "opacity": 1,
         "fit": "cover"
       }
     }
@@ -75,7 +75,7 @@
     "preset": "bundled",
     "bundled": true,
     "music": [
-      "sounds/music/The-Legend-of-Zelda_-Ocarina-of-Time-_-Title-Theme-_-近藤浩治-[Koji-Kondo].mp3"
+      "sounds/music/home.mp3"
     ],
     "sfx": {
       "activation": "sounds/sfx/activation.wav",

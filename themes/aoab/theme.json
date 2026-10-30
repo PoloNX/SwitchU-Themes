@@ -72,10 +72,7 @@
     }
   },
   "audio": {
-    "preset": "bundled",
-    "bundled": true,
-    "music": [
-      "sounds/music/Pages_-_Little_Glee_Monster.mp3"
-    ]
+    "preset": "wiiu",
+    "bundled": false
   }
 }

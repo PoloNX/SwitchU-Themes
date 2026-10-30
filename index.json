@@ -8,7 +8,10 @@
       "version": "1.0.0",
       "path": "themes/acnh-boat-light",
       "manifest": "themes/acnh-boat-light/theme.json",
-      "cover": "themes/acnh-boat-light/media/screenshots/00.png"
+      "cover": "themes/acnh-boat-light/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "pinkleaves",
@@ -17,7 +20,10 @@
       "version": "1.0.0",
       "path": "themes/pinkleaves",
       "manifest": "themes/pinkleaves/theme.json",
-      "cover": "themes/pinkleaves/media/screenshots/00.png"
+      "cover": "themes/pinkleaves/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "tealleaves",
@@ -26,7 +32,10 @@
       "version": "1.0.0",
       "path": "themes/tealleaves",
       "manifest": "themes/tealleaves/theme.json",
-      "cover": "themes/tealleaves/media/screenshots/00.png"
+      "cover": "themes/tealleaves/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "crossing",
@@ -35,7 +44,10 @@
       "version": "1.0.0",
       "path": "themes/crossing",
       "manifest": "themes/crossing/theme.json",
-      "cover": "themes/crossing/media/screenshots/00.png"
+      "cover": "themes/crossing/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "aoab",
@@ -44,7 +56,10 @@
       "version": "1.0.0",
       "path": "themes/aoab",
       "manifest": "themes/aoab/theme.json",
-      "cover": "themes/aoab/media/screenshots/00.png"
+      "cover": "themes/aoab/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "astral-observatory",
@@ -53,7 +68,10 @@
       "version": "1.0.0",
       "path": "themes/astral-observatory",
       "manifest": "themes/astral-observatory/theme.json",
-      "cover": "themes/astral-observatory/media/screenshots/00.png"
+      "cover": "themes/astral-observatory/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "atmosphere-darkman-361985",
@@ -62,7 +80,10 @@
       "version": "1.0.0",
       "path": "themes/atmosphere-darkman-361985",
       "manifest": "themes/atmosphere-darkman-361985/theme.json",
-      "cover": "themes/atmosphere-darkman-361985/media/screenshots/00.png"
+      "cover": "themes/atmosphere-darkman-361985/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "black",
@@ -71,7 +92,10 @@
       "version": "1.1.0",
       "path": "themes/black",
       "manifest": "themes/black/theme.json",
-      "cover": "themes/black/media/screenshots/00.png"
+      "cover": "themes/black/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "bowsette",
@@ -80,7 +104,10 @@
       "version": "1.0.0",
       "path": "themes/bowsette",
       "manifest": "themes/bowsette/theme.json",
-      "cover": "themes/bowsette/media/screenshots/00.png"
+      "cover": "themes/bowsette/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "cammy-minimalist",
@@ -89,7 +116,10 @@
       "version": "1.1.0",
       "path": "themes/cammy-minimalist",
       "manifest": "themes/cammy-minimalist/theme.json",
-      "cover": "themes/cammy-minimalist/media/screenshots/00.png"
+      "cover": "themes/cammy-minimalist/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "ch4r1z4rd-th3m3",
@@ -98,7 +128,10 @@
       "version": "1.2.0",
       "path": "themes/ch4r1z4rd-th3m3",
       "manifest": "themes/ch4r1z4rd-th3m3/theme.json",
-      "cover": "themes/ch4r1z4rd-th3m3/media/screenshots/00.png"
+      "cover": "themes/ch4r1z4rd-th3m3/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "cubesque",
@@ -107,7 +140,10 @@
       "version": "1.0.0",
       "path": "themes/cubesque",
       "manifest": "themes/cubesque/theme.json",
-      "cover": "themes/cubesque/media/screenshots/00.png"
+      "cover": "themes/cubesque/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "cyan-theme",
@@ -116,7 +152,10 @@
       "version": "0.1.0",
       "path": "themes/cyan-theme",
       "manifest": "themes/cyan-theme/theme.json",
-      "cover": "themes/cyan-theme/media/screenshots/00.png"
+      "cover": "themes/cyan-theme/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "forest",
@@ -124,7 +163,11 @@
       "author": "PoloNX",
       "version": "1.2.0",
       "path": "themes/forest",
-      "manifest": "themes/forest/theme.json"
+      "manifest": "themes/forest/theme.json",
+      "cover": "themes/forest/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "frutigeraero",
@@ -133,7 +176,10 @@
       "version": "1.0.0",
       "path": "themes/frutigeraero",
       "manifest": "themes/frutigeraero/theme.json",
-      "cover": "themes/frutigeraero/media/screenshots/00.png"
+      "cover": "themes/frutigeraero/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "hatsune-miku",
@@ -142,7 +188,10 @@
       "version": "1.0.0",
       "path": "themes/hatsune-miku",
       "manifest": "themes/hatsune-miku/theme.json",
-      "cover": "themes/hatsune-miku/media/screenshots/00.png"
+      "cover": "themes/hatsune-miku/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "hello-kitty-pink",
@@ -151,15 +200,22 @@
       "version": "1.0.0",
       "path": "themes/hello-kitty-pink",
       "manifest": "themes/hello-kitty-pink/theme.json",
-      "cover": "themes/hello-kitty-pink/media/screenshots/00.png"
+      "cover": "themes/hello-kitty-pink/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "iisu",
       "name": "iiSU",
       "author": "iiSU Team",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "path": "themes/iisu",
-      "manifest": "themes/iisu/theme.json"
+      "manifest": "themes/iisu/theme.json",
+      "cover": "themes/iisu/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": true
     },
     {
       "id": "kasaneteto",
@@ -168,7 +224,10 @@
       "version": "1.0.0",
       "path": "themes/kasaneteto",
       "manifest": "themes/kasaneteto/theme.json",
-      "cover": "themes/kasaneteto/media/screenshots/00.png"
+      "cover": "themes/kasaneteto/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "lusamine",
@@ -177,7 +236,10 @@
       "version": "1.0.0",
       "path": "themes/lusamine",
       "manifest": "themes/lusamine/theme.json",
-      "cover": "themes/lusamine/media/screenshots/00.png"
+      "cover": "themes/lusamine/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "majoras-theme",
@@ -186,7 +248,10 @@
       "version": "1.1.0",
       "path": "themes/majoras-theme",
       "manifest": "themes/majoras-theme/theme.json",
-      "cover": "themes/majoras-theme/media/screenshots/00.png"
+      "cover": "themes/majoras-theme/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "metalsonic-om",
@@ -195,7 +260,10 @@
       "version": "1.0.0",
       "path": "themes/metalsonic-om",
       "manifest": "themes/metalsonic-om/theme.json",
-      "cover": "themes/metalsonic-om/media/screenshots/00.png"
+      "cover": "themes/metalsonic-om/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "nier-minimalist",
@@ -204,7 +272,10 @@
       "version": "1.1.0",
       "path": "themes/nier-minimalist",
       "manifest": "themes/nier-minimalist/theme.json",
-      "cover": "themes/nier-minimalist/media/screenshots/00.png"
+      "cover": "themes/nier-minimalist/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "ocarina-of-time-theme",
@@ -213,7 +284,10 @@
       "version": "1.0.0",
       "path": "themes/ocarina-of-time-theme",
       "manifest": "themes/ocarina-of-time-theme/theme.json",
-      "cover": "themes/ocarina-of-time-theme/media/screenshots/00.png"
+      "cover": "themes/ocarina-of-time-theme/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "ocean",
@@ -221,7 +295,11 @@
       "author": "PoloNX",
       "version": "1.2.0",
       "path": "themes/ocean",
-      "manifest": "themes/ocean/theme.json"
+      "manifest": "themes/ocean/theme.json",
+      "cover": "themes/ocean/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "pikmin",
@@ -229,7 +307,11 @@
       "author": "Charlie",
       "version": "1.1.0",
       "path": "themes/pikmin",
-      "manifest": "themes/pikmin/theme.json"
+      "manifest": "themes/pikmin/theme.json",
+      "cover": "themes/pikmin/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "pku",
@@ -238,7 +320,10 @@
       "version": "1.0.0",
       "path": "themes/pku",
       "manifest": "themes/pku/theme.json",
-      "cover": "themes/pku/media/screenshots/00.png"
+      "cover": "themes/pku/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "psp",
@@ -247,7 +332,10 @@
       "version": "1.0.0",
       "path": "themes/psp",
       "manifest": "themes/psp/theme.json",
-      "cover": "themes/psp/media/screenshots/00.png"
+      "cover": "themes/psp/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "roses-and-pain",
@@ -256,7 +344,10 @@
       "version": "1.1.0",
       "path": "themes/roses-and-pain",
       "manifest": "themes/roses-and-pain/theme.json",
-      "cover": "themes/roses-and-pain/media/screenshots/00.png"
+      "cover": "themes/roses-and-pain/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "sakura",
@@ -264,7 +355,11 @@
       "author": "PoloNX",
       "version": "1.2.0",
       "path": "themes/sakura",
-      "manifest": "themes/sakura/theme.json"
+      "manifest": "themes/sakura/theme.json",
+      "cover": "themes/sakura/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "slenditubbies-clasic",
@@ -273,7 +368,10 @@
       "version": "1.0.0",
       "path": "themes/slenditubbies-clasic",
       "manifest": "themes/slenditubbies-clasic/theme.json",
-      "cover": "themes/slenditubbies-clasic/media/screenshots/00.png"
+      "cover": "themes/slenditubbies-clasic/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "smash-ult",
@@ -282,7 +380,10 @@
       "version": "1.0.0",
       "path": "themes/smash-ult",
       "manifest": "themes/smash-ult/theme.json",
-      "cover": "themes/smash-ult/media/screenshots/00.png"
+      "cover": "themes/smash-ult/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "sonicadventure2",
@@ -291,7 +392,10 @@
       "version": "1.0.0",
       "path": "themes/sonicadventure2",
       "manifest": "themes/sonicadventure2/theme.json",
-      "cover": "themes/sonicadventure2/media/screenshots/00.png"
+      "cover": "themes/sonicadventure2/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "sonicfrontiers",
@@ -300,7 +404,10 @@
       "version": "1.0.0",
       "path": "themes/sonicfrontiers",
       "manifest": "themes/sonicfrontiers/theme.json",
-      "cover": "themes/sonicfrontiers/media/screenshots/00.png"
+      "cover": "themes/sonicfrontiers/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "srcmiku",
@@ -309,7 +416,10 @@
       "version": "1.0.0",
       "path": "themes/srcmiku",
       "manifest": "themes/srcmiku/theme.json",
-      "cover": "themes/srcmiku/media/screenshots/00.png"
+      "cover": "themes/srcmiku/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "sunset",
@@ -317,7 +427,11 @@
       "author": "PoloNX",
       "version": "1.2.0",
       "path": "themes/sunset",
-      "manifest": "themes/sunset/theme.json"
+      "manifest": "themes/sunset/theme.json",
+      "cover": "themes/sunset/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "supermariobros",
@@ -326,7 +440,10 @@
       "version": "1.1.0",
       "path": "themes/supermariobros",
       "manifest": "themes/supermariobros/theme.json",
-      "cover": "themes/supermariobros/media/screenshots/00.png"
+      "cover": "themes/supermariobros/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "xbox360-nxe",
@@ -335,7 +452,10 @@
       "version": "1.1.0",
       "path": "themes/xbox360-nxe",
       "manifest": "themes/xbox360-nxe/theme.json",
-      "cover": "themes/xbox360-nxe/media/screenshots/00.png"
+      "cover": "themes/xbox360-nxe/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "wii-ish",
@@ -344,16 +464,22 @@
       "version": "1.0.0",
       "path": "themes/wii-ish",
       "manifest": "themes/wii-ish/theme.json",
-      "cover": "themes/wii-ish/media/screenshots/00.png"
+      "cover": "themes/wii-ish/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": true,
+      "hasIcons": false
     },
     {
       "id": "zelda-botw-theme",
       "name": "Zelda BOTW theme",
       "author": "Adan",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "path": "themes/zelda-botw-theme",
       "manifest": "themes/zelda-botw-theme/theme.json",
-      "cover": "themes/zelda-botw-theme/media/screenshots/00.png"
+      "cover": "themes/zelda-botw-theme/media/screenshots/00.png",
+      "hasMusic": true,
+      "hasSounds": false,
+      "hasIcons": false
     },
     {
       "id": "zeldaminimalist",
@@ -362,7 +488,49 @@
       "version": "1.0.0",
       "path": "themes/zeldaminimalist",
       "manifest": "themes/zeldaminimalist/theme.json",
-      "cover": "themes/zeldaminimalist/media/screenshots/00.png"
+      "cover": "themes/zeldaminimalist/media/screenshots/00.png",
+      "hasMusic": false,
+      "hasSounds": false,
+      "hasIcons": false
+    }
+  ],
+  "icons": [
+    {
+      "id": "default",
+      "name": "Default",
+      "author": "SwitchU",
+      "version": "1.0.0",
+      "path": "icons/default",
+      "manifest": "icons/default/pack.json",
+      "cover": "icons/default/preview.png",
+      "builtin": true,
+      "colour": true,
+      "description": "The stock coloured SwitchU glyphs."
+    },
+    {
+      "id": "atmos",
+      "name": "Atmos",
+      "author": "SwitchU",
+      "version": "1.1.0",
+      "path": "icons/atmos",
+      "manifest": "icons/atmos/pack.json",
+      "cover": "icons/atmos/preview.png",
+      "builtin": true,
+      "colour": true,
+      "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins."
+    },
+    {
+      "id": "iisu",
+      "name": "iiSU",
+      "author": "iiSU Team",
+      "version": "1.1.1",
+      "path": "icons/iisu",
+      "manifest": "icons/iisu/pack.json",
+      "cover": "icons/iisu/preview.png",
+      "builtin": false,
+      "colour": true,
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
+      "theme": "iisu"
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "id": "tinted",
-  "name": "Tinted",
+  "id": "atmos",
+  "name": "Atmos",
   "author": "SwitchU",
-  "version": "1.0.0",
-  "description": "Coloured glyphs with an optional on-device HSL tint.",
+  "version": "1.1.0",
+  "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins.",
   "colour": true,
   "builtin": true,
   "preview": "preview.png",
@@ -14,7 +14,6 @@
     "controller.png",
     "power.png",
     "themes.png",
-    "change_view.png",
-    "preview.png"
+    "change_view.png"
   ]
 }

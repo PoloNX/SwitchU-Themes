@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { buildCatalogUrl } from './api';
+import { assertLegitAsset } from './verifyAsset';
 import type { IconPackRecord, ThemeCatalogRecord } from '../theme/schema';
 
 interface ThemeFileIndex {
@@ -53,6 +54,7 @@ export async function downloadThemeArchive(record: ThemeCatalogRecord): Promise<
     fileIndex.files.map(async (relativePath) => {
       const fileUrl = buildCatalogUrl(`${record.entry.path}/${relativePath}`);
       const binary = await fetchBinary(fileUrl);
+      assertLegitAsset(relativePath, binary);
       root.file(relativePath, binary);
     }),
   );
@@ -79,6 +81,7 @@ export async function downloadIconPackArchive(record: IconPackRecord): Promise<v
     fileIndex.files.map(async (relativePath) => {
       const fileUrl = buildCatalogUrl(`${record.entry.path}/${relativePath}`);
       const binary = await fetchBinary(fileUrl);
+      assertLegitAsset(relativePath, binary);
       root.file(relativePath, binary);
     }),
   );

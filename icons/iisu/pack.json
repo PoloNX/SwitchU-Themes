@@ -2,8 +2,8 @@
   "id": "iisu",
   "name": "iiSU",
   "author": "iiSU Team",
-  "version": "1.1.0",
-  "description": "Sidebar glyphs bundled with the iiSU theme. Album falls back to Default.",
+  "version": "1.1.1",
+  "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
   "colour": true,
   "builtin": false,
   "preview": "preview.png",
@@ -12,7 +12,6 @@
     "mii_editor.png",
     "controller.png",
     "themes.png",
-    "gamecard.png",
-    "preview.png"
+    "gamecard.png"
   ]
 }

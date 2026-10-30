@@ -122,5 +122,13 @@
         }
       }
     }
+  },
+  "assets": {
+    "music": [
+      {
+        "name": "home.mp3",
+        "relativePath": "sounds/music/home.mp3"
+      }
+    ]
   }
 }
