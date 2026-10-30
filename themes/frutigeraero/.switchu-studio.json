@@ -1,16 +1,16 @@
 {
   "schemaVersion": 3,
-  "branchName": "theme-studio/frutigeraero-1792871151318",
+  "branchName": "theme-studio/update-frutigeraero-1793344026489",
   "draftSnapshot": {
-    "basedOnThemeId": "tealleaves",
-    "proposalMode": "create",
+    "basedOnThemeId": "frutigeraero",
+    "proposalMode": "update",
     "id": "frutigeraero",
     "name": "Frutiger Aero",
     "author": "PoloNX",
     "version": "1.0.0",
-    "summary": "Add theme Frutiger Aero",
+    "summary": "Update theme Frutiger Aero",
     "notes": "",
-    "contributor": "PoloNX",
+    "contributor": "chadrickalt-ops",
     "mode": "light",
     "colors": {
       "cursor": {
@@ -43,10 +43,10 @@
       "layout": "floating",
       "shape": "mixed",
       "symmetry": "none",
-      "count": 100,
+      "count": 50,
       "fixedOrientation": true,
       "orientation": 0,
-      "roundness": 0.18,
+      "roundness": 1,
       "columns": 16,
       "rows": 9,
       "spacingX": 74,
@@ -61,12 +61,16 @@
       "imageOpacity": 1,
       "imageFit": "cover",
       "image": {
-        "name": "thumb-1920-1349540.png",
-        "relativePath": "media/backgrounds/thumb-1920-1349540.png"
+        "name": "wiiulaunch.png",
+        "relativePath": "media/backgrounds/wiiulaunch.png"
       }
     },
     "fonts": {
       "regular": {
+        "name": "font.ttf",
+        "relativePath": "fonts/font.ttf"
+      },
+      "small": {
         "name": "font.ttf",
         "relativePath": "fonts/font.ttf"
       }
@@ -80,5 +84,5 @@
       "sfx": {}
     }
   },
-  "authorLogin": "PoloNX"
+  "authorLogin": "chadrickalt-ops"
 }
