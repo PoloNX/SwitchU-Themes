@@ -1,6 +1,7 @@
-import { AudioLines, Download, ExternalLink, Eye, GitPullRequest, ImageIcon, LoaderCircle, LogIn, LogOut, Palette, PenLine, RefreshCw, Search, Sparkles, Wand2, X } from 'lucide-react';
+import { AudioLines, Download, ExternalLink, Eye, GitPullRequest, LoaderCircle, LogIn, LogOut, Palette, PenLine, RefreshCw, Search, Sparkles, Volume2, Wand2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
+import { themeCapabilities, themeDeclaresIcons, themeDeclaresMusic, themeDeclaresSounds } from './catalog/capabilities';
 import { downloadThemeArchive } from './catalog/download';
 import { ThemeStudio } from './components/ThemeStudio';
 import { IconCatalog } from './components/IconCatalog';
@@ -24,8 +25,7 @@ function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string
 }
 
 function hasCustomIcons(record: ThemeCatalogRecord): boolean {
-  const icons = record.manifest.theme?.icons;
-  return Boolean(icons?.path || icons?.basePath || icons?.base_path);
+  return themeDeclaresIcons(record.manifest);
 }
 
 function loginMatches(a: string | undefined, b: string | undefined): boolean {
@@ -66,7 +66,7 @@ function ThemeCard({
   onDownload: () => void;
 }) {
   const background = record.manifest.theme?.background;
-  const hasAudio = Boolean(record.manifest.audio?.bundled);
+  const caps = themeCapabilities(record);
   const hasBackgroundImage = Boolean(background?.image);
   const layout = background?.layout ?? 'floating';
 
@@ -84,7 +84,9 @@ function ThemeCard({
         <div className="theme-card__badges">
           <span>{record.manifest.theme?.mode ?? 'dark'}</span>
           <span>{layout}</span>
-          {hasAudio ? <span>audio</span> : null}
+          {caps.music ? <span>music</span> : null}
+          {caps.sounds ? <span>sounds</span> : null}
+          {caps.icons ? <span>icons</span> : null}
         </div>
       </div>
       <div className="theme-card__body">
@@ -97,7 +99,7 @@ function ThemeCard({
         </div>
         <div className="theme-card__flags">
           <span>{hasBackgroundImage ? 'background image' : 'procedural background'}</span>
-          <span>{hasCustomIcons(record) ? 'custom icons' : 'default icons'}</span>
+          <span>{caps.icons ? 'custom icons' : 'default icons'}</span>
           <span>{record.manifest.theme?.fonts?.regular ? 'custom fonts' : 'bundled fonts'}</span>
         </div>
         <div className="theme-card__actions">
@@ -325,14 +327,14 @@ export default function App() {
   }, [activeTab, openProposalsLoaded, openProposalsLoading]);
 
   const stats = useMemo(() => {
-    const withAudio = records.filter((record) => record.manifest.audio?.bundled).length;
-    const withImages = records.filter((record) => record.manifest.theme?.background?.image).length;
+    const withMusic = records.filter((record) => themeDeclaresMusic(record.manifest)).length;
+    const withSounds = records.filter((record) => themeDeclaresSounds(record.manifest)).length;
     const withCustomIcons = records.filter(hasCustomIcons).length;
 
     return {
       total: records.length,
-      withAudio,
-      withImages,
+      withMusic,
+      withSounds,
       withCustomIcons,
     };
   }, [records]);
@@ -516,9 +518,9 @@ export default function App() {
 
         <div className="hero__stats">
           <StatChip icon={<Palette size={18} />} label="Themes" value={String(stats.total)} />
-          <StatChip icon={<AudioLines size={18} />} label="Audio" value={String(stats.withAudio)} />
-          <StatChip icon={<ImageIcon size={18} />} label="Backgrounds" value={String(stats.withImages)} />
-          <StatChip icon={<Sparkles size={18} />} label="Custom icons" value={String(stats.withCustomIcons)} />
+          <StatChip icon={<AudioLines size={18} />} label="Music" value={String(stats.withMusic)} />
+          <StatChip icon={<Volume2 size={18} />} label="Sounds" value={String(stats.withSounds)} />
+          <StatChip icon={<Sparkles size={18} />} label="Icons" value={String(stats.withCustomIcons)} />
         </div>
 
         <div className="auth-control">
@@ -816,7 +818,9 @@ export default function App() {
                 <div className="preview-overlay__facts">
                   <span>{previewRecord.manifest.theme?.mode ?? 'dark'} mode</span>
                   <span>{previewRecord.manifest.theme?.background?.layout ?? 'floating'} layout</span>
-                  <span>{previewRecord.manifest.audio?.bundled ? 'bundled audio' : 'no bundled audio'}</span>
+                  <span>{themeDeclaresMusic(previewRecord.manifest) ? 'music' : 'no music'}</span>
+                  <span>{themeDeclaresSounds(previewRecord.manifest) ? 'sounds' : 'no sounds'}</span>
+                  <span>{themeDeclaresIcons(previewRecord.manifest) ? 'custom icons' : 'default icons'}</span>
                   <span>{previewRecord.manifest.theme?.background?.image ? 'background image' : 'procedural background'}</span>
                   <span>{previewRecord.manifest.theme?.fonts?.regular ? 'custom fonts' : 'default fonts'}</span>
                 </div>

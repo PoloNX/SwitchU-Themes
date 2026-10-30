@@ -7,7 +7,8 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace site",
-    "build": "npm run build --workspace site && npm run build --workspace pr-proxy",
-    "preview": "npm run preview --workspace site"
+    "build": "npm run validate && npm run build --workspace site && npm run build --workspace pr-proxy",
+    "preview": "npm run preview --workspace site",
+    "validate": "node ./scripts/validate-catalog.mjs"
   }
 }

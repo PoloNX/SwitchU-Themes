@@ -66,7 +66,7 @@
       "opacity": 0.82,
       "image": {
         "path": "media/backgrounds/1000272539.png",
-        "opacity": 1000,
+        "opacity": 1,
         "fit": "cover"
       }
     }
@@ -75,7 +75,7 @@
     "preset": "bundled",
     "bundled": true,
     "music": [
-      "sounds/music/Song-of-Healing---The-Legend-of-Zelda_-Majora's-Mask-OST-_-Remastered.mp3"
+      "sounds/music/home.mp3"
     ],
     "sfx": {
       "activation": "sounds/sfx/activation.wav",

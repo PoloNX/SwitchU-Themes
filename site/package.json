@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "sync:catalog": "node ./scripts/sync-catalog.mjs",
-    "predev": "npm run sync:catalog",
-    "prebuild": "npm run sync:catalog",
+    "validate:catalog": "node ../scripts/validate-catalog.mjs",
+    "predev": "npm run validate:catalog && npm run sync:catalog",
+    "prebuild": "npm run validate:catalog && npm run sync:catalog",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
