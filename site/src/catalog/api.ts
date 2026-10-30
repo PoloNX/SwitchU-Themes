@@ -57,12 +57,20 @@ export async function loadThemeCatalog(): Promise<ThemeCatalogRecord[]> {
     catalog.themes.map(async (entry) => {
       const manifestUrl = buildCatalogUrl(entry.manifest);
       const manifest = await fetchJson<ThemeManifest>(manifestUrl);
+      // Prefer theme.json for title/version so studio cards match the package
+      // even when a cached index.json lags a rename.
+      const resolvedEntry: ThemeCatalogEntry = {
+        ...entry,
+        name: (manifest.name && manifest.name.trim()) || entry.name,
+        version: (manifest.version && String(manifest.version).trim()) || entry.version,
+        author: (manifest.author && manifest.author.trim()) || entry.author,
+      };
 
       return {
-        entry,
+        entry: resolvedEntry,
         manifest,
         manifestUrl,
-        coverUrl: resolveCoverUrl(entry, manifest),
+        coverUrl: resolveCoverUrl(resolvedEntry, manifest),
       } satisfies ThemeCatalogRecord;
     }),
   );

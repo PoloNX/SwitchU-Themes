@@ -4,10 +4,10 @@
   "draftSnapshot": {
     "proposalMode": "create",
     "id": "atmosphere-darkman-361985",
-    "name": "Atmosphere (DarkMan_361985)",
+    "name": "Atmosphere",
     "author": "bshurikan",
-    "version": "1.0.0",
-    "summary": "Atmosphere (DarkMan_361985)",
+    "version": "1.1.1",
+    "summary": "Atmosphere",
     "notes": "This is a port of DarkMan_361985's Atmosphere theme from Themezer",
     "contributor": "",
     "mode": "dark",
