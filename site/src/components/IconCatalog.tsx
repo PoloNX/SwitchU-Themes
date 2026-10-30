@@ -81,11 +81,11 @@ export function IconCatalog() {
               const id = packId(record);
               const isBusy = downloading === id;
               return (
-                <article className="theme-card" key={record.entry.id}>
-                  <div className="theme-card__cover-wrap">
+                <article className="theme-card theme-card--icons" key={record.entry.id}>
+                  <div className="theme-card__cover-wrap theme-card__cover-wrap--icons">
                     {record.coverUrl ? (
                       <img
-                        className="theme-card__cover"
+                        className="theme-card__cover theme-card__cover--icons"
                         src={record.coverUrl}
                         alt={`Glyphs of ${record.entry.name}`}
                       />
@@ -95,11 +95,6 @@ export function IconCatalog() {
                         <span>No preview yet</span>
                       </div>
                     )}
-                    <div className="theme-card__badges">
-                      {record.entry.builtin ? <span>built-in</span> : <span>community</span>}
-                      {record.manifest.colour === false ? <span>mono</span> : <span>colour</span>}
-                      {record.manifest.theme ? <span>theme: {record.manifest.theme}</span> : null}
-                    </div>
                   </div>
                   <div className="theme-card__body">
                     <div>
@@ -108,6 +103,11 @@ export function IconCatalog() {
                       <p className="theme-card__meta">
                         by {record.entry.author} · v{record.entry.version}
                       </p>
+                      <div className="theme-card__flags">
+                        {record.entry.builtin ? <span>built-in</span> : <span>community</span>}
+                        {record.manifest.colour === false ? <span>mono</span> : <span>colour</span>}
+                        {record.manifest.theme ? <span>theme: {record.manifest.theme}</span> : null}
+                      </div>
                       {record.entry.description ? (
                         <p className="theme-card__meta">{record.entry.description}</p>
                       ) : null}
