@@ -2,7 +2,7 @@
   "id": "iisu",
   "name": "iiSU",
   "author": "iiSU Team",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png"
@@ -69,7 +69,13 @@
       "small": "fonts/Digital-Serial-Regular.ttf"
     },
     "icons": {
-      "path": "assets/icons"
+      "path": "assets/icons",
+      "files": [
+        "assets/icons/controller.png",
+        "assets/icons/gamecard.png",
+        "assets/icons/mii_editor.png",
+        "assets/icons/themes.png"
+      ]
     }
   },
   "audio": {
