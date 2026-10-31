@@ -137,9 +137,11 @@ GITHUB_REPO_OWNER = "PoloNX"
 GITHUB_REPO_NAME = "SwitchU-Themes"
 GITHUB_DEFAULT_BRANCH = "main"
 ALLOWED_ORIGIN = "https://polonx.github.io"
-ICON_PACK_REPO_OWNER = "PoloNX"
-ICON_PACK_REPO_NAME = "SwitchU"
 ```
+
+> Do **not** set `ICON_PACK_REPO_*` to `PoloNX/SwitchU`. That repo’s default
+> branch is `master`; combining it with `GITHUB_DEFAULT_BRANCH=main` makes icon
+> submissions 404 on `git/ref/heads/main`. Packs PR against this Themes repo.
 
 > `ALLOWED_ORIGIN` is the **origin only** (scheme + host, no path). For GitHub
 > Pages project sites this is `https://polonx.github.io`.
@@ -311,10 +313,10 @@ https://polonx.github.io/SwitchU-Themes/
 2. Click **Sign in with GitHub** → GitHub consent → you come back signed in
    (avatar + `@login` visible).
 3. **Icon workshop** → upload one glyph → **Download icon pack** (zip works
-   without any credentials) → **Submit to SwitchU** (needs the GitHub App
-   installed on `PoloNX/SwitchU`).
-4. **Theme creator** → make a change → **Create pull request** (needs the
-   GitHub App on `PoloNX/SwitchU-Themes`).
+ without any credentials) → **Submit to SwitchU** (needs the GitHub App
+ installed on `PoloNX/SwitchU-Themes`; opens a PR under `icons/<id>/`).
+4. **Theme creator** → make a change → **Create pull request** (same App /
+ repo as icon packs).
 5. Open that PR's **edit link** from the PR body → you can edit because you are
    the signed-in author.
 
@@ -384,7 +386,8 @@ npm run sync:catalog        # regenerate site/public/catalog from index.json + t
 | `Sign in` works but submits return **401** | The site is not sending the session; clear `localStorage` and sign in again. |
 | Submit returns **403 Forbidden** | You are not the proposal author. Use the author account or `X-Editor-Token`. |
 | Theme PR fails with **404** | GitHub App not installed on `PoloNX/SwitchU-Themes`. |
-| Icon-pack PR fails with **404** | GitHub App not installed on `PoloNX/SwitchU`, or `ICON_PACK_REPO_*` wrong. |
+| Icon-pack PR fails with **404** on `PoloNX/SwitchU/.../heads/main` | Stale Worker still targeting `ICON_PACK_REPO=PoloNX/SwitchU` with `GITHUB_DEFAULT_BRANCH=main`. SwitchU’s default branch is **`master`**. Redeploy current `pr-proxy` (packs go to `SwitchU-Themes` `icons/<id>/`), or clear `ICON_PACK_REPO_*` in Worker vars. |
+| Icon-pack PR fails with **404** on Themes | GitHub App not installed on `PoloNX/SwitchU-Themes`. |
 | `Bad credentials` / `GitHub API ... 401` | Private key or App ID / installation id is wrong. |
 | CORS error in the browser | `ALLOWED_ORIGIN` does not match the site origin (scheme + host only). |
 | Catalog shows 0 themes | `npm run sync:catalog` did not run, or `themes/` / `index.json` are missing. |
