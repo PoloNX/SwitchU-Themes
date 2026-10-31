@@ -529,8 +529,20 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack \u2014 missing glyphs (album, settings, power, \u2026) fall back to Default.",
       "theme": "iisu"
+    },
+    {
+      "id": "hallows-eve",
+      "name": "Hallows Eve",
+      "author": "bshurikan",
+      "version": "1.0.0",
+      "description": "Halloween-themed colour sidebar glyphs.",
+      "path": "icons/hallows-eve",
+      "manifest": "icons/hallows-eve/pack.json",
+      "cover": "icons/hallows-eve/preview.png",
+      "builtin": false,
+      "colour": true
     }
   ]
 }
