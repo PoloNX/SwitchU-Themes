@@ -1437,13 +1437,23 @@ async function handleCreateIconPack(request: Request, env: Env): Promise<Respons
     });
   });
 
+  // Embed the mosaic (or fallback cover) from this PR branch so reviewers can
+  // see the pack before merge without checking out locally.
+  const previewRawUrl =
+    `https://raw.githubusercontent.com/${env.GITHUB_REPO_OWNER}/${env.GITHUB_REPO_NAME}/${branch}/icons/${id}/${coverName}`;
   const prBody = [
     'Icon pack submitted from SwitchU Themes Studio.',
     '',
-    `Pack: ${name}`,
+    `Pack: **${name}** (\`${id}\`)`,
     author ? `Author: ${author}` : '',
     '',
-    'Published under `icons/<id>/` and listed in `index.json` so the console shop can install it.',
+    '### Preview',
+    '',
+    `![${name} icon pack](${previewRawUrl})`,
+    '',
+    `<sub>Source: \`icons/${id}/${coverName}\` on branch \`${branch}\`</sub>`,
+    '',
+    `Published under \`icons/${id}/\` and listed in \`index.json\` so the console shop can install it.`,
   ].filter(Boolean).join('\n');
 
   const pullRequestUrl = await openPullRequest(env, token, base, branch, `Add icon pack ${id}`, prBody);
