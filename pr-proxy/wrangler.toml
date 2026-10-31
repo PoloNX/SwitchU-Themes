@@ -12,7 +12,11 @@ GITHUB_REPO_OWNER = "PoloNX"
 GITHUB_REPO_NAME = "SwitchU-Themes"
 GITHUB_DEFAULT_BRANCH = "main"
 ALLOWED_ORIGIN = "https://polonx.github.io"
-ICON_PACK_REPO_OWNER = "PoloNX"
-ICON_PACK_REPO_NAME = "SwitchU"
+# Icon packs are PRs against this same catalog repo (icons/<id>/). Do not point
+# ICON_PACK_REPO_* at PoloNX/SwitchU — that repo's default branch is `master`,
+# and an older proxy build combined with GITHUB_DEFAULT_BRANCH=main 404'd on
+# git/ref/heads/main. Leave these unset (or matching this repo) after deploy.
+# ICON_PACK_REPO_OWNER = "PoloNX"
+# ICON_PACK_REPO_NAME = "SwitchU-Themes"
 # Public OAuth client id (sent to the browser by GET /api/auth, not a secret).
 GITHUB_OAUTH_CLIENT_ID = "Ov23lisNBjpXiBZNrlBL"

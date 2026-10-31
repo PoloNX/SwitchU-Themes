@@ -10,7 +10,5 @@ GITHUB_OAUTH_CLIENT_SECRET=your_oauth_client_secret
 # Signs the session tokens returned to the browser. Use a long random string.
 SESSION_SECRET=change-me-to-a-long-random-string
 ALLOWED_ORIGIN=https://polonx.github.io
-# Icon packs are submitted as pull requests to the SwitchU repo (romfs/icons/<id>/).
-# The GitHub App must also be installed on this repo. Defaults to PoloNX/SwitchU.
-ICON_PACK_REPO_OWNER=PoloNX
-ICON_PACK_REPO_NAME=SwitchU
+# Icon packs open PRs against THIS catalog repo under icons/<id>/. Leave unset.
+# (An older build used PoloNX/SwitchU + branch main → 404; SwitchU uses master.)

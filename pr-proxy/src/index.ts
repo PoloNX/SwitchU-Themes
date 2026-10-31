@@ -536,13 +536,30 @@ function proposalMetadataPath(themeId: string): string {
   return `${themeRoot(themeId)}/.switchu-studio.json`;
 }
 
-async function getDefaultBranch(env: Env, token: string): Promise<string> {
+async function getDefaultBranch(
+  env: Env,
+  token: string,
+  targetRepoPath: string = repoPath(env),
+): Promise<string> {
+  // Always ask GitHub for the target repo's default branch. Blindly trusting
+  // GITHUB_DEFAULT_BRANCH=main breaks when ICON_PACK_REPO points at PoloNX/SwitchU
+  // (default branch is `master`) — studio submissions 404 on git/ref/heads/main.
+  try {
+    const repo = await githubFetch<GitHubRepoResponse>(env, token, targetRepoPath);
+    if (repo.default_branch?.trim()) {
+      return repo.default_branch.trim();
+    }
+  } catch (cause) {
+    if (!env.GITHUB_DEFAULT_BRANCH?.trim()) {
+      throw cause;
+    }
+  }
+
   if (env.GITHUB_DEFAULT_BRANCH?.trim()) {
     return env.GITHUB_DEFAULT_BRANCH.trim();
   }
 
-  const repo = await githubFetch<GitHubRepoResponse>(env, token, repoPath(env));
-  return repo.default_branch;
+  throw new Error(`Could not resolve default branch for ${targetRepoPath}`);
 }
 
 async function getBranchSha(env: Env, token: string, branch: string): Promise<string> {
