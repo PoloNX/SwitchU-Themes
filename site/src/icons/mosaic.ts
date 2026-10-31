@@ -8,8 +8,6 @@ export const MOSAIC_PAD = 12;
 export const MOSAIC_WIDTH = MOSAIC_CELL * MOSAIC_COLS;
 export const MOSAIC_HEIGHT = MOSAIC_CELL * MOSAIC_ROWS;
 
-const MOSAIC_BG = '#101820';
-
 function loadImage(source: Blob | string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -32,7 +30,8 @@ function loadImage(source: Blob | string): Promise<HTMLImageElement> {
 
 /**
  * Build a 384×256 PNG mosaic of the six sidebar glyphs (same layout as
- * default / atmos catalog covers). Missing slots stay empty on the plate.
+ * default / atmos catalog covers). Transparent plate — empty slots and
+ * padding stay see-through so console HSL tint does not colour a backdrop.
  */
 export async function buildIconPackMosaicPng(
   glyphs: PackGlyphFile[],
@@ -41,13 +40,14 @@ export async function buildIconPackMosaicPng(
   const canvas = document.createElement('canvas');
   canvas.width = MOSAIC_WIDTH;
   canvas.height = MOSAIC_HEIGHT;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { alpha: true });
   if (!ctx) {
     throw new Error('Canvas is not available to build the icon mosaic.');
   }
 
-  ctx.fillStyle = MOSAIC_BG;
-  ctx.fillRect(0, 0, MOSAIC_WIDTH, MOSAIC_HEIGHT);
+  // Transparent plate — matches default/atmos/iisu covers so on-device HSL
+  // tint only hits glyph pixels, not a solid mosaic backdrop.
+  ctx.clearRect(0, 0, MOSAIC_WIDTH, MOSAIC_HEIGHT);
 
   const box = MOSAIC_CELL - MOSAIC_PAD * 2;
   for (let index = 0; index < SIDEBAR_GLYPHS.length; index += 1) {
