@@ -20,7 +20,7 @@ import {
   slugifyPackId,
   type IconPackGlyph,
 } from '../icons/pack';
-import { submitIconPack } from '../icons/submit';
+import { submitIconPack, withMosaicPreview } from '../icons/submit';
 
 interface GlyphState {
   url: string;
@@ -101,14 +101,16 @@ export function IconWorkshop() {
     setBuilding(true);
     setFeedback(null);
     try {
+      const packFiles = await withMosaicPreview(
+        PACK_GLYPHS.flatMap((glyph) => {
+          const entry = glyphs[glyph.file];
+          return entry ? [{ fileName: glyph.file, file: entry.file }] : [];
+        }),
+      );
       const zip = new JSZip();
       const root = zip.folder(`icons/${normalizedId}`) ?? zip;
-      for (const glyph of PACK_GLYPHS) {
-        const entry = glyphs[glyph.file];
-        if (!entry) {
-          continue;
-        }
-        root.file(glyph.file, entry.file);
+      for (const file of packFiles) {
+        root.file(file.fileName, file.file);
       }
 
       const archive = await zip.generateAsync({
@@ -120,7 +122,7 @@ export function IconWorkshop() {
       triggerDownload(archive, `${normalizedId}-icons.zip`);
       setFeedback({
         kind: 'success',
-        text: `Pack exported. Extract it to ${packInstallPath(normalizedId)} on your SD card.`,
+        text: `Pack exported (includes 3×2 preview.png). Extract it to ${packInstallPath(normalizedId)} on your SD card.`,
       });
     } catch (cause) {
       setFeedback({ kind: 'error', text: cause instanceof Error ? cause.message : 'Failed to build the pack.' });

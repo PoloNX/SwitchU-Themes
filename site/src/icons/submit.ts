@@ -1,3 +1,4 @@
+import { buildIconPackMosaicPng } from './mosaic';
 import type { PackGlyphFile } from './pack';
 
 export interface IconPackSubmitResult {
@@ -14,19 +15,27 @@ export function iconPackProxyBaseUrl(): string {
   return apiBase.replace(/\/$/, '');
 }
 
+/** Glyphs plus a generated 3×2 preview.png for the catalog cover. */
+export async function withMosaicPreview(glyphs: PackGlyphFile[]): Promise<PackGlyphFile[]> {
+  const withoutPreview = glyphs.filter((glyph) => glyph.fileName !== 'preview.png');
+  const mosaic = await buildIconPackMosaicPng(withoutPreview);
+  return [...withoutPreview, { fileName: 'preview.png', file: mosaic }];
+}
+
 export async function submitIconPack(
   packId: string,
   name: string,
   author: string,
   glyphs: PackGlyphFile[],
 ): Promise<IconPackSubmitResult> {
+  const files = await withMosaicPreview(glyphs);
   const formData = new FormData();
   formData.set('id', packId);
   formData.set('name', name.trim());
   formData.set('author', author.trim());
-  formData.set('glyphFiles', JSON.stringify(glyphs.map((glyph) => glyph.fileName)));
+  formData.set('glyphFiles', JSON.stringify(files.map((glyph) => glyph.fileName)));
 
-  for (const glyph of glyphs) {
+  for (const glyph of files) {
     formData.set(`glyph:${glyph.fileName}`, glyph.file, glyph.fileName);
   }
 
