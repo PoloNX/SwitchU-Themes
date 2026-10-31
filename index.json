@@ -496,18 +496,6 @@
   ],
   "icons": [
     {
-      "id": "default",
-      "name": "Default",
-      "author": "SwitchU",
-      "version": "1.0.0",
-      "path": "icons/default",
-      "manifest": "icons/default/pack.json",
-      "cover": "icons/default/preview.png",
-      "builtin": true,
-      "colour": true,
-      "description": "The stock coloured SwitchU glyphs."
-    },
-    {
       "id": "atmos",
       "name": "Atmos",
       "author": "SwitchU",
@@ -520,6 +508,30 @@
       "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins."
     },
     {
+      "id": "default",
+      "name": "Default",
+      "author": "SwitchU",
+      "version": "1.0.0",
+      "path": "icons/default",
+      "manifest": "icons/default/pack.json",
+      "cover": "icons/default/preview.png",
+      "builtin": true,
+      "colour": true,
+      "description": "The stock coloured SwitchU glyphs."
+    },
+    {
+      "id": "hallows-eve",
+      "name": "Hallows Eve",
+      "author": "bshurikan",
+      "version": "1.0.0",
+      "description": "Community icon pack submitted from SwitchU Themes Studio.",
+      "path": "icons/hallows-eve",
+      "manifest": "icons/hallows-eve/pack.json",
+      "cover": "icons/hallows-eve/preview.png",
+      "builtin": false,
+      "colour": true
+    },
+    {
       "id": "iisu",
       "name": "iiSU",
       "author": "iiSU Team",
@@ -529,7 +541,7 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack \u2014 missing glyphs (album, settings, power, \u2026) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
       "theme": "iisu"
     }
   ]
