@@ -104,12 +104,8 @@ Then:
 1. **Create app**.
 2. Note the **App ID** → `GITHUB_APP_ID`.
 3. **Generate a private key** → downloads a `.pem` → `GITHUB_PRIVATE_KEY`.
-4. **Install App** and select **both** repositories:
-   - `PoloNX/SwitchU-Themes` (themes + catalog)
-   - `PoloNX/SwitchU` (icon packs → `romfs/icons/<id>/`)
-
-   If you skip the second repo, theme PRs still work but **icon-pack PRs will
-   fail** with a 404.
+4. **Install App** on `PoloNX/SwitchU-Themes` (themes, catalog, and icon packs
+   under `icons/<id>/`). Icon-pack submissions no longer target `PoloNX/SwitchU`.
 5. After installing, the URL contains the installation id:
    `https://github.com/settings/installations/<INSTALLATION_ID>`
    → `GITHUB_INSTALLATION_ID`.
