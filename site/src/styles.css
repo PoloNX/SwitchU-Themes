@@ -1379,39 +1379,50 @@ select {
   gap: 24px;
 }
 
+/* Keep multi-column glyphs beside a narrower sticky preview — the shared
+   studio-layout min (380px) left the glyph grid overflowing under Live preview. */
+.icon-workshop .studio-layout {
+  grid-template-columns: minmax(0, 1.45fr) minmax(240px, 0.7fr);
+}
+
+.icon-workshop .studio-panel--controls {
+  overflow: hidden;
+}
+
 .icon-glyph-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 8px;
 }
 
 .icon-glyph-card {
   display: grid;
-  gap: 10px;
-  padding: 12px;
+  gap: 6px;
+  padding: 8px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.07);
+  min-width: 0;
 }
 
 .icon-glyph-card__preview {
   display: grid;
   place-items: center;
-  min-height: 64px;
+  min-height: 48px;
   border-radius: 8px;
   background: #101820;
   color: var(--text-soft);
 }
 
 .icon-glyph-card__preview img {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
 }
 
 .icon-glyph-card__body {
   display: grid;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
 }
 
@@ -1419,35 +1430,41 @@ select {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 0.88rem;
 }
 
 .icon-glyph-card__file {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--text-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .icon-glyph-card__actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .icon-glyph-card__upload {
   flex: 1;
-  min-height: 38px;
+  min-height: 32px;
+  padding: 0 8px;
+  font-size: 0.8rem;
   cursor: pointer;
 }
 
 .icon-glyph-card__clear {
-  min-height: 38px;
-  padding: 0 12px;
+  min-height: 32px;
+  padding: 0 8px;
 }
 
 .icon-pack-preview {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 20px;
-  padding: 24px;
+  gap: 14px;
+  padding: 16px;
   border-radius: 12px;
   background: #0b1118;
   border: 1px solid var(--panel-border);
@@ -1455,22 +1472,23 @@ select {
 
 .icon-pack-preview__column {
   display: grid;
-  gap: 16px;
+  gap: 10px;
 }
 
 .icon-pack-preview__spacer {
   flex: 1;
+  min-width: 8px;
 }
 
 .icon-pack-preview .sidebar-button {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
 }
 
 .icon-pack-preview .sidebar-button img {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 
@@ -1523,7 +1541,8 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .studio-layout {
+  .studio-layout,
+  .icon-workshop .studio-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1534,6 +1553,10 @@ select {
   .studio-panel--preview {
     position: static;
     top: auto;
+  }
+
+  .icon-glyph-grid {
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
   }
 
   .studio-grid--three {
