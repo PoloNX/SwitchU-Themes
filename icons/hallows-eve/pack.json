@@ -2,11 +2,11 @@
   "id": "hallows-eve",
   "name": "Hallows Eve",
   "author": "bshurikan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Halloween-themed colour sidebar glyphs.",
   "colour": true,
   "builtin": false,
-  "preview": "preview.png",
+  "preview": "cover.png",
   "glyphs": [
     "album.png",
     "mii_editor.png",
@@ -14,6 +14,7 @@
     "controller.png",
     "power.png",
     "themes.png",
-    "preview.png"
+    "preview.png",
+    "cover.png"
   ]
 }

@@ -536,11 +536,11 @@
       "id": "hallows-eve",
       "name": "Hallows Eve",
       "author": "bshurikan",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "description": "Halloween-themed colour sidebar glyphs.",
       "path": "icons/hallows-eve",
       "manifest": "icons/hallows-eve/pack.json",
-      "cover": "icons/hallows-eve/preview.png",
+      "cover": "icons/hallows-eve/cover.png",
       "builtin": false,
       "colour": true
     }
