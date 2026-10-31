@@ -1,0 +1,19 @@
+{
+  "id": "hallows-eve",
+  "name": "Hallows Eve",
+  "author": "bshurikan",
+  "version": "1.0.0",
+  "description": "Community icon pack submitted from SwitchU Themes Studio.",
+  "colour": true,
+  "builtin": false,
+  "preview": "preview.png",
+  "glyphs": [
+    "album.png",
+    "mii_editor.png",
+    "settings.png",
+    "controller.png",
+    "power.png",
+    "themes.png",
+    "preview.png"
+  ]
+}
