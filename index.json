@@ -523,11 +523,11 @@
       "id": "hallows-eve",
       "name": "Hallows Eve",
       "author": "bshurikan",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "description": "Community icon pack submitted from SwitchU Themes Studio.",
       "path": "icons/hallows-eve",
       "manifest": "icons/hallows-eve/pack.json",
-      "cover": "icons/hallows-eve/cover.png",
+      "cover": "icons/hallows-eve/mosaic.png",
       "builtin": false,
       "colour": true
     },
