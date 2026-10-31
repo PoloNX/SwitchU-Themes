@@ -798,22 +798,41 @@ function buildProposalLinks(siteBaseUrl: string | undefined, themeId: string, br
   };
 }
 
-function buildPullRequestBody(baseBody: string, links: ProposalLinks | undefined): string {
-  if (!links) {
-    return baseBody;
+function buildPullRequestBody(
+  baseBody: string,
+  links: ProposalLinks | undefined,
+  previewImage?: { owner: string; repo: string; branch: string; path: string; alt: string },
+): string {
+  const sections = [baseBody.trim()];
+
+  if (previewImage?.path) {
+    const rawUrl =
+      `https://raw.githubusercontent.com/${previewImage.owner}/${previewImage.repo}/` +
+      `${previewImage.branch}/${previewImage.path.replace(/^\/+/, '')}`;
+    sections.push(
+      '',
+      '### Preview',
+      '',
+      `![${previewImage.alt || 'Theme preview'}](${rawUrl})`,
+      '',
+      `<sub>Source: \`${previewImage.path}\` on branch \`${previewImage.branch}\`</sub>`,
+    );
   }
 
-  return [
-    baseBody.trim(),
-    '',
-    'Preview this proposal:',
-    links.previewUrl,
-    '',
-    'Edit this proposal:',
-    links.editUrl,
-    '',
-    'The edit link lets the submitter update the proposal after signing in with GitHub.',
-  ].filter(Boolean).join('\n');
+  if (links) {
+    sections.push(
+      '',
+      'Preview this proposal in the studio:',
+      links.previewUrl,
+      '',
+      'Edit this proposal:',
+      links.editUrl,
+      '',
+      'The edit link lets the submitter update the proposal after signing in with GitHub.',
+    );
+  }
+
+  return sections.filter(Boolean).join('\n');
 }
 
 async function writeProposalDraftMetadata(
@@ -1084,13 +1103,20 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
     });
 
     const proposalLinks = buildProposalLinks(proposal.siteBaseUrl, proposal.id, branch);
+    const screenshotPath = `${root}/${sanitizeRelativePath(proposal.files.previewScreenshot)}`;
     const pullRequestUrl = await openPullRequest(
       env,
       token,
       defaultBranch,
       branch,
       proposal.prTitle,
-      buildPullRequestBody(proposal.prBody, proposalLinks),
+      buildPullRequestBody(proposal.prBody, proposalLinks, {
+        owner: env.GITHUB_REPO_OWNER,
+        repo: env.GITHUB_REPO_NAME,
+        branch,
+        path: screenshotPath,
+        alt: proposal.name,
+      }),
     );
     return jsonResponse({ pullRequestUrl, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
   } catch (cause) {
