@@ -1,0 +1,81 @@
+{
+  "id": "my-theme",
+  "name": "My Theme",
+  "author": "",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.983048403162559,
+        1,
+        0.62
+      ],
+      "accent": [
+        0.6012246978357239,
+        1,
+        0.55
+      ],
+      "background": [
+        0.9795488120518322,
+        1,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.5832149205894754,
+        1,
+        0.14
+      ],
+      "shapes": [
+        0.56,
+        0.4,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "image": {
+        "path": "media/backgrounds/asio2epwz6b91.png",
+        "opacity": 0.24,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Xenoblade-Chronicles-OST---Main-Theme.mp3"
+    ]
+  }
+}
