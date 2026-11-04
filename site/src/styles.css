@@ -316,6 +316,10 @@ select {
   color: var(--text-soft);
 }
 
+.panel__note--flush {
+  margin-bottom: 0;
+}
+
 .panel__note code {
   padding: 1px 6px;
   border-radius: 6px;

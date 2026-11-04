@@ -11,7 +11,7 @@ function packId(record: IconPackRecord): string {
 /// Online icon packs published in the catalog (`icons/`). Same flow as themes:
 /// the catalog lists them, the site downloads them, the console installs them
 /// under sdmc:/switch/SwitchU/icons/<id>/.
-export function IconCatalog() {
+export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}) {
   const [records, setRecords] = useState<IconPackRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -47,7 +47,26 @@ export function IconCatalog() {
   };
 
   return (
-    <section className="panel">
+    <>
+      <section className="panel panel--spotlight">
+        <div className="panel__header">
+          <div>
+            <p className="panel__eyebrow">Icon catalog</p>
+            <h2>Explore and download icon packs</h2>
+          </div>
+          {onCreatePack ? (
+            <button className="ghost-button" type="button" onClick={onCreatePack}>
+              Create your own pack
+            </button>
+          ) : null}
+        </div>
+        <p className="panel__note panel__note--flush">
+          Packs listed here are installable from the console (Theme Library → Icons).
+          Download gives you the same folder for <code>sdmc:/switch/SwitchU/icons/</code>.
+        </p>
+      </section>
+
+      <section className="panel">
       <div className="panel__header">
         <div>
           <p className="panel__eyebrow">Online shop</p>
@@ -58,12 +77,6 @@ export function IconCatalog() {
           <span>{loading ? 'Refreshing…' : 'Refresh'}</span>
         </button>
       </div>
-
-      <p className="panel__note">
-        Packs listed here are installable straight from the console
-        (Theme Library → Icons). Downloading gives you the same folder to drop into
-        <code> sdmc:/switch/SwitchU/icons/</code> manually.
-      </p>
 
       {loading ? (
         <div className="loading-state">
@@ -134,5 +147,6 @@ export function IconCatalog() {
         )
       ) : null}
     </section>
+    </>
   );
 }

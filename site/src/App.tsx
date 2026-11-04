@@ -20,7 +20,7 @@ import {
 } from './theme/draftSession';
 import type { ThemeCatalogRecord } from './theme/schema';
 
-type AppTab = 'explore' | 'pending' | 'create' | 'icons';
+type AppTab = 'explore' | 'create' | 'explore-icons' | 'icon-workshop' | 'pending';
 type ValidationFilter = 'all' | 'themes' | 'icons';
 
 type ValidationItem =
@@ -787,9 +787,16 @@ export default function App() {
           Theme creator
         </button>
         <button
-          className={`tab-button ${activeTab === 'icons' ? 'tab-button--active' : ''}`}
+          className={`tab-button ${activeTab === 'explore-icons' ? 'tab-button--active' : ''}`}
           type="button"
-          onClick={() => setActiveTab('icons')}
+          onClick={() => setActiveTab('explore-icons')}
+        >
+          Explore icons
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'icon-workshop' ? 'tab-button--active' : ''}`}
+          type="button"
+          onClick={() => setActiveTab('icon-workshop')}
         >
           Icon workshop
         </button>
@@ -973,11 +980,10 @@ export default function App() {
               ) : null}
             </section>
           </>
-        ) : activeTab === 'icons' ? (
-          <>
-            <IconCatalog />
-            <IconWorkshop />
-          </>
+        ) : activeTab === 'explore-icons' ? (
+          <IconCatalog onCreatePack={() => setActiveTab('icon-workshop')} />
+        ) : activeTab === 'icon-workshop' ? (
+          <IconWorkshop />
         ) : (
           <>
             <section className="panel panel--spotlight">
