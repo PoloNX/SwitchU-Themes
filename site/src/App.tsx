@@ -736,7 +736,7 @@ export default function App() {
       <header className="hero">
         <div className="hero__copy">
           <div className="hero__title-row">
-            <img className="hero__brand" src="/brand-themes.png" alt="" width={72} height={72} />
+            <img className="hero__brand" src={`${import.meta.env.BASE_URL}brand-themes.png`} alt="" width={72} height={72} />
             <h1>SwitchU Themes</h1>
           </div>
           <p className="hero__lede">
