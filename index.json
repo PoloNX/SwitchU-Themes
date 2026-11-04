@@ -498,7 +498,7 @@
     {
       "id": "atmos",
       "name": "Atmos",
-      "author": "SwitchU",
+      "author": "bshurikan",
       "version": "1.1.0",
       "path": "icons/atmos",
       "manifest": "icons/atmos/pack.json",

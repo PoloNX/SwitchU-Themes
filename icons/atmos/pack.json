@@ -1,7 +1,7 @@
 {
   "id": "atmos",
   "name": "Atmos",
-  "author": "SwitchU",
+  "author": "bshurikan",
   "version": "1.1.0",
   "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins.",
   "colour": true,
