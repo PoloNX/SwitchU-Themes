@@ -1,3 +1,5 @@
+import { PACK_GLYPHS } from '../icons/pack';
+import { createUploadAsset, type StudioAsset } from '../theme/draft';
 import type {
   IconCatalogEntry,
   IconPackManifest,
@@ -116,4 +118,65 @@ export async function loadIconCatalog(): Promise<IconPackRecord[]> {
       } satisfies IconPackRecord;
     }),
   );
+}
+
+function isPngBytes(bytes: ArrayBuffer): boolean {
+  if (bytes.byteLength < 8) {
+    return false;
+  }
+  const header = new Uint8Array(bytes, 0, 8);
+  return header[0] === 0x89
+    && header[1] === 0x50
+    && header[2] === 0x4e
+    && header[3] === 0x47
+    && header[4] === 0x0d
+    && header[5] === 0x0a
+    && header[6] === 0x1a
+    && header[7] === 0x0a;
+}
+
+/** Download an Icon Shop pack's PNGs as proposal-ready theme assets (Atmosphere-style light bundle). */
+export async function loadIconPackGlyphAssets(record: IconPackRecord): Promise<StudioAsset[]> {
+  const listedGlyphs = (record.manifest.glyphs ?? [])
+    .filter((glyph): glyph is string => typeof glyph === 'string' && glyph.toLowerCase().endsWith('.png'))
+    .map((glyph) => glyph.replace(/^.*\//, ''));
+
+  // Prefer the pack's declared glyph list so partial packs don't probe missing
+  // files (Vite can 200 HTML for misses → broken <img>). Fall back to probing
+  // the standard set only when the manifest doesn't list glyphs.
+  const fileNames = new Set<string>(
+    listedGlyphs.length > 0 ? listedGlyphs : PACK_GLYPHS.map((glyph) => glyph.file),
+  );
+  if (record.manifest.preview) {
+    fileNames.add(record.manifest.preview.replace(/^.*\//, ''));
+  }
+
+  const assets: StudioAsset[] = [];
+  await Promise.all(
+    Array.from(fileNames).map(async (fileName) => {
+      const url = buildCatalogUrl(`${record.entry.path}/${fileName}`);
+      try {
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+        const bytes = await response.arrayBuffer();
+        const contentType = (response.headers.get('content-type') ?? '').toLowerCase();
+        // Skip SPA HTML / non-image responses for missing pack slots.
+        if (!isPngBytes(bytes) && !contentType.includes('image/png') && !contentType.includes('image/')) {
+          return;
+        }
+        if (!isPngBytes(bytes)) {
+          return;
+        }
+        const file = new File([bytes], fileName, { type: 'image/png' });
+        assets.push(createUploadAsset(file, `assets/icons/${fileName}`));
+      } catch {
+        // Partial packs (e.g. iisu) omit some glyphs — skip missing files.
+      }
+    }),
+  );
+
+  assets.sort((left, right) => left.name.localeCompare(right.name));
+  return assets;
 }

@@ -2,19 +2,32 @@ import {
   Download,
   FileAudio2,
   FolderInput,
+  Gamepad2,
+  Grid3x3,
   ImageIcon,
   LockKeyhole,
   LogIn,
   Music4,
+  Power,
   Send,
+  Settings2,
+  Smile,
   Sparkles,
   Type,
   Upload,
   X,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react';
+import { loadIconCatalog, loadIconPackGlyphAssets } from '../catalog/api';
 import { downloadDraftArchive, submitThemeProposal, type ProposalMode, type ProposalResult, type ProposalUpdateResult } from '../github/proposals';
 import type { AuthUser } from '../github/auth';
+import {
+  LEFT_SIDEBAR_VISUAL,
+  PACK_GLYPHS,
+  RIGHT_SIDEBAR_VISUAL,
+  glyphsInVisualOrder,
+  type IconPackGlyph,
+} from '../icons/pack';
 import { themeInstallPath } from '../install/paths';
 import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
@@ -23,13 +36,105 @@ import {
   cloneDraft,
   createOptimizedBackgroundUploadAsset,
   createUploadAsset,
+  inferIconSource,
   normalizeDraftId,
+  themeIconsPackId,
   type DefaultSfxName,
+  type StudioAsset,
   type StudioDraft,
   type StudioTriplet,
 } from '../theme/draft';
 import { draftFromThemeZip } from '../theme/importZip';
-import type { ThemeCatalogRecord } from '../theme/schema';
+import type { IconPackRecord, ThemeCatalogRecord } from '../theme/schema';
+
+const THEME_EDITOR_GLYPHS: IconPackGlyph[] = [
+  ...glyphsInVisualOrder(LEFT_SIDEBAR_VISUAL),
+  ...glyphsInVisualOrder(RIGHT_SIDEBAR_VISUAL),
+  ...PACK_GLYPHS.filter((glyph) => glyph.sidebar === 'chrome'),
+];
+
+const THEME_GLYPH_FALLBACKS: Record<string, typeof ImageIcon> = {
+  'album.png': ImageIcon,
+  'mii_editor.png': Smile,
+  'settings.png': Settings2,
+  'controller.png': Gamepad2,
+  'power.png': Power,
+  'themes.png': Grid3x3,
+};
+
+function themeGlyphFallback(glyph: IconPackGlyph) {
+  return THEME_GLYPH_FALLBACKS[glyph.file] ?? ImageIcon;
+}
+
+function GlyphPreview({
+  url,
+  label,
+  Fallback,
+}: {
+  url?: string;
+  label: string;
+  Fallback: typeof ImageIcon;
+}) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setFailed(false);
+  }, [url]);
+  if (!url || failed) {
+    return <Fallback size={28} />;
+  }
+  return (
+    <img
+      src={url}
+      alt={label}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+function glyphFileName(asset: StudioAsset): string {
+  return asset.relativePath.replace(/\\/g, '/').split('/').pop() ?? asset.name;
+}
+
+function findThemeGlyph(draft: StudioDraft, fileName: string): StudioAsset | undefined {
+  return (draft.iconGlyphs ?? []).find((asset) => glyphFileName(asset) === fileName);
+}
+
+function withThemeGlyphs(
+  draft: StudioDraft,
+  glyphs: StudioAsset[],
+  options: { iconSource?: 'none' | 'pack' | 'custom'; packId?: string } = {},
+): StudioDraft {
+  const next = cloneDraft(draft);
+  next.iconGlyphs = glyphs;
+  const iconSource = options.iconSource
+    ?? (options.packId || themeIconsPackId(draft.icons)
+      ? 'pack'
+      : glyphs.length > 0
+        ? 'custom'
+        : 'none');
+  next.iconSource = iconSource;
+
+  if (iconSource === 'none') {
+    next.icons = undefined;
+    next.iconGlyphs = [];
+    return next;
+  }
+
+  if (glyphs.length === 0) {
+    next.icons = iconSource === 'pack' && (options.packId || themeIconsPackId(draft.icons))
+      ? { path: 'assets/icons', packId: options.packId ?? themeIconsPackId(draft.icons) }
+      : undefined;
+    return next;
+  }
+
+  const packId = iconSource === 'pack' ? (options.packId ?? themeIconsPackId(draft.icons)) : undefined;
+  next.icons = {
+    path: 'assets/icons',
+    files: glyphs.map((asset) => asset.relativePath.replace(/\\/g, '/')),
+    ...(packId ? { packId } : {}),
+  };
+  return next;
+}
 
 interface ThemeStudioProps {
   draft: StudioDraft;
@@ -55,12 +160,13 @@ interface SubmitSuccessState {
   href?: string;
 }
 
-type StudioEditorTab = 'setup' | 'palette' | 'background' | 'audio' | 'publish';
+type StudioEditorTab = 'setup' | 'palette' | 'background' | 'icons' | 'audio' | 'publish';
 
 const studioEditorTabs: Array<{ id: StudioEditorTab; label: string }> = [
   { id: 'setup', label: 'Setup' },
   { id: 'palette', label: 'Palette' },
   { id: 'background', label: 'Background' },
+  { id: 'icons', label: 'Icons' },
   { id: 'audio', label: 'Audio' },
   { id: 'publish', label: 'Publish' },
 ];
@@ -421,7 +527,39 @@ export function ThemeStudio({
   const [submitSuccess, setSubmitSuccess] = useState<SubmitSuccessState | null>(null);
   const [assetError, setAssetError] = useState<string | null>(null);
   const [backgroundOptimizing, setBackgroundOptimizing] = useState(false);
+  const [iconDragOverFile, setIconDragOverFile] = useState<string | null>(null);
+  const [iconPacks, setIconPacks] = useState<IconPackRecord[]>([]);
+  const [iconPacksLoading, setIconPacksLoading] = useState(false);
+  const [iconPackApplying, setIconPackApplying] = useState(false);
   const controlsLocked = Boolean(linkedProposal && (linkedProposal.proposalMode === 'preview' || !editorUnlocked));
+
+  const iconSource = inferIconSource(draft);
+  const selectedIconPackId = themeIconsPackId(draft.icons) ?? '';
+  const iconGlyphCount = draft.iconGlyphs?.length ?? 0;
+
+  useEffect(() => {
+    let cancelled = false;
+    setIconPacksLoading(true);
+    void loadIconCatalog()
+      .then((packs) => {
+        if (!cancelled) {
+          setIconPacks(packs);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setIconPacks([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIconPacksLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const hasProposalAssets = useMemo(() => {
     return Boolean(
@@ -429,7 +567,8 @@ export function ThemeStudio({
       draft.fonts.regular?.proposalReady ||
       draft.fonts.small?.proposalReady ||
       draft.audio.music?.proposalReady ||
-      Object.values(draft.audio.sfx).some((asset) => asset?.proposalReady),
+      Object.values(draft.audio.sfx).some((asset) => asset?.proposalReady) ||
+      (draft.iconGlyphs ?? []).some((asset) => asset.proposalReady),
     );
   }, [draft]);
 
@@ -539,6 +678,113 @@ export function ThemeStudio({
         },
       },
     });
+  }
+
+  function pickThemeIconPng(fileList: FileList | null | undefined): File | undefined {
+    if (!fileList?.length) {
+      return undefined;
+    }
+    return Array.from(fileList).find((file) => {
+      const name = file.name.toLowerCase();
+      return file.type === 'image/png' || name.endsWith('.png');
+    });
+  }
+
+  function onThemeIconUpload(glyph: IconPackGlyph, file: File | undefined) {
+    if (!file) {
+      return;
+    }
+    const name = file.name.toLowerCase();
+    if (file.type && file.type !== 'image/png' && !name.endsWith('.png')) {
+      setAssetError(`${glyph.label} expects a .png file.`);
+      return;
+    }
+
+    const relativePath = `assets/icons/${glyph.file}`;
+    const remaining = (draft.iconGlyphs ?? []).filter((asset) => glyphFileName(asset) !== glyph.file);
+    // Uploading a glyph always switches to custom (drops packId so Icon Shop can mirror).
+    update(withThemeGlyphs(draft, [...remaining, createUploadAsset(file, relativePath)], { iconSource: 'custom' }));
+  }
+
+  function onThemeIconClear(glyph: IconPackGlyph) {
+    const remaining = (draft.iconGlyphs ?? []).filter((asset) => glyphFileName(asset) !== glyph.file);
+    update(withThemeGlyphs(draft, remaining, {
+      iconSource: remaining.length === 0 ? 'none' : (iconSource === 'pack' ? 'pack' : 'custom'),
+      packId: iconSource === 'pack' ? selectedIconPackId : undefined,
+    }));
+  }
+
+  function onIconSourceChange(nextSource: 'none' | 'pack' | 'custom') {
+    if (nextSource === 'none') {
+      update(withThemeGlyphs(draft, [], { iconSource: 'none' }));
+      return;
+    }
+    if (nextSource === 'custom') {
+      // Start custom from empty slots — don't keep the previous shop pack's glyphs.
+      update(withThemeGlyphs(draft, [], { iconSource: 'custom' }));
+      return;
+    }
+    if (selectedIconPackId) {
+      void onIconPackSelection(selectedIconPackId);
+      return;
+    }
+    const next = cloneDraft(draft);
+    next.iconSource = 'pack';
+    next.iconGlyphs = [];
+    next.icons = undefined;
+    update(next);
+  }
+
+  async function onIconPackSelection(packId: string) {
+    if (!packId) {
+      update(withThemeGlyphs(draft, [], { iconSource: 'none' }));
+      return;
+    }
+    const record = iconPacks.find((pack) => pack.entry.id === packId);
+    if (!record) {
+      setAssetError(`Icon pack “${packId}” is not in the catalog.`);
+      return;
+    }
+
+    setIconPackApplying(true);
+    setAssetError(null);
+    try {
+      const glyphs = await loadIconPackGlyphAssets(record);
+      if (glyphs.length === 0) {
+        setAssetError(`Could not load glyphs for “${record.entry.name}”.`);
+        return;
+      }
+      update(withThemeGlyphs(draft, glyphs, { iconSource: 'pack', packId: record.entry.id }));
+    } catch (cause) {
+      setAssetError(cause instanceof Error ? cause.message : 'Failed to load icon pack.');
+    } finally {
+      setIconPackApplying(false);
+    }
+  }
+
+  function onThemeIconDragOver(event: DragEvent<HTMLElement>, glyph: IconPackGlyph) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    setIconDragOverFile(glyph.file);
+  }
+
+  function onThemeIconDragLeave(event: DragEvent<HTMLElement>, glyph: IconPackGlyph) {
+    const next = event.relatedTarget as Node | null;
+    if (next && event.currentTarget.contains(next)) {
+      return;
+    }
+    setIconDragOverFile((current) => (current === glyph.file ? null : current));
+  }
+
+  function onThemeIconDrop(event: DragEvent<HTMLElement>, glyph: IconPackGlyph) {
+    event.preventDefault();
+    setIconDragOverFile(null);
+    const file = pickThemeIconPng(event.dataTransfer.files);
+    if (!file) {
+      setAssetError(`Drop a .png onto ${glyph.label}.`);
+      return;
+    }
+    onThemeIconUpload(glyph, file);
   }
 
   function onTemplateSelection(themeId: string) {
@@ -655,7 +901,12 @@ export function ThemeStudio({
       const imported = await draftFromThemeZip(file);
       update(imported);
       setActiveEditorTab('setup');
-      setImportSuccess(`Imported “${imported.name}” from ${file.name}. Draft autosave will keep it for 24 hours.`);
+      const importedIcons = imported.iconGlyphs?.length ?? 0;
+      setImportSuccess(
+        importedIcons > 0
+          ? `Imported “${imported.name}” from ${file.name} (${importedIcons} icon${importedIcons === 1 ? '' : 's'} — edit under Icons). Draft autosave will keep it for 24 hours.`
+          : `Imported “${imported.name}” from ${file.name}. Draft autosave will keep it for 24 hours.`,
+      );
     } catch (cause) {
       setImportError(cause instanceof Error ? cause.message : 'Unknown zip import error');
     } finally {
@@ -681,7 +932,7 @@ export function ThemeStudio({
         </div>
         <div className="studio-shell__status">
           <span><Sparkles size={16} /> live preview</span>
-          <span><Upload size={16} /> background + fonts + audio</span>
+          <span><Upload size={16} /> background + icons + fonts + audio</span>
         </div>
       </div>
 
@@ -976,6 +1227,125 @@ export function ThemeStudio({
               </div>
             ) : null}
 
+            {activeEditorTab === 'icons' ? (
+              <div className="studio-control-section">
+                <div className="studio-control-section__title">Sidebar icons</div>
+                <p className="studio-control-section__subtitle">
+                  Optional HOME menu glyphs. Use an Icon Shop pack (ships with the theme, no shop duplicate)
+                  or upload your own (auto-listed in Icon Shop on publish).
+                </p>
+
+                <Field
+                  label="Icon source"
+                  hint={
+                    iconSource === 'pack'
+                      ? 'Console applies this pack when the theme is installed.'
+                      : iconSource === 'custom'
+                        ? 'Custom glyphs ship with the theme and appear in Icon Shop.'
+                        : 'Leave empty to keep the console default icons.'
+                  }
+                >
+                  <select
+                    className="studio-input"
+                    value={iconSource}
+                    disabled={controlsLocked || iconPackApplying}
+                    onChange={(event) => onIconSourceChange(event.currentTarget.value as 'none' | 'pack' | 'custom')}
+                  >
+                    <option value="none">None (console defaults)</option>
+                    <option value="pack">Icon Shop pack…</option>
+                    <option value="custom">Custom uploads</option>
+                  </select>
+                </Field>
+
+                {iconSource === 'pack' ? (
+                  <Field
+                    label="Icon Shop pack"
+                    hint={iconPacksLoading ? 'Loading packs…' : iconPackApplying ? 'Copying pack glyphs into this theme…' : 'Copied into assets/icons for first install; packId avoids a duplicate listing.'}
+                  >
+                    <select
+                      className="studio-input"
+                      value={selectedIconPackId}
+                      disabled={controlsLocked || iconPacksLoading || iconPackApplying}
+                      onChange={(event) => { void onIconPackSelection(event.currentTarget.value); }}
+                    >
+                      <option value="">Select a pack…</option>
+                      {iconPacks.map((pack) => (
+                        <option key={pack.entry.id} value={pack.entry.id}>
+                          {pack.entry.name} · {pack.entry.author || 'Unknown'}
+                          {pack.entry.builtin ? ' (builtin)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                ) : null}
+
+                {assetError ? <div className="submit-feedback submit-feedback--error">{assetError}</div> : null}
+
+                {iconSource !== 'none' ? (
+                  <>
+                    {iconSource === 'pack' && iconGlyphCount > 0 ? (
+                      <p className="studio-control-section__subtitle">
+                        Preview of <code>{selectedIconPackId}</code> ({iconGlyphCount} glyphs). Switch to Custom to edit individual slots.
+                      </p>
+                    ) : null}
+                    <div className={`icon-glyph-grid${iconSource === 'pack' ? ' icon-glyph-grid--readonly' : ''}`}>
+                      {THEME_EDITOR_GLYPHS.map((glyph) => {
+                        const entry = findThemeGlyph(draft, glyph.file);
+                        const Fallback = themeGlyphFallback(glyph);
+                        const isDragOver = iconSource === 'custom' && iconDragOverFile === glyph.file;
+                        const packMode = iconSource === 'pack';
+                        return (
+                          <div
+                            className={`icon-glyph-card ${entry ? 'icon-glyph-card--filled' : 'icon-glyph-card--empty'} ${isDragOver ? 'icon-glyph-card--dragover' : ''}`}
+                            key={glyph.file}
+                            onDragEnter={packMode ? undefined : (event) => onThemeIconDragOver(event, glyph)}
+                            onDragOver={packMode ? undefined : (event) => onThemeIconDragOver(event, glyph)}
+                            onDragLeave={packMode ? undefined : (event) => onThemeIconDragLeave(event, glyph)}
+                            onDrop={packMode ? undefined : (event) => onThemeIconDrop(event, glyph)}
+                          >
+                            <div className="icon-glyph-card__preview">
+                              <GlyphPreview url={entry?.url} label={glyph.label} Fallback={Fallback} />
+                              {!entry && !packMode ? <span className="icon-glyph-card__drop-hint">Drop PNG</span> : null}
+                            </div>
+                            <div className="icon-glyph-card__body">
+                              <strong>{glyph.label}</strong>
+                              <span className="icon-glyph-card__file">{glyph.file}</span>
+                            </div>
+                            {packMode ? null : (
+                              <div className={`icon-glyph-card__actions${entry ? ' icon-glyph-card__actions--filled' : ''}`}>
+                                <label className="ghost-button icon-glyph-card__upload">
+                                  <Upload size={15} />
+                                  <span>{entry ? 'Replace' : 'Upload'}</span>
+                                  <input
+                                    type="file"
+                                    accept=".png,image/png"
+                                    hidden
+                                    disabled={controlsLocked}
+                                    onChange={(event) => onThemeIconUpload(glyph, event.currentTarget.files?.[0])}
+                                  />
+                                </label>
+                                {entry ? (
+                                  <button
+                                    className="ghost-button icon-glyph-card__clear"
+                                    type="button"
+                                    disabled={controlsLocked}
+                                    onClick={() => onThemeIconClear(glyph)}
+                                    title={`Remove ${glyph.label}`}
+                                  >
+                                    <X size={15} />
+                                  </button>
+                                ) : null}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            ) : null}
+
             {activeEditorTab === 'audio' ? (
               <div className="studio-control-section">
                 <div className="studio-control-section__title">Audio</div>
@@ -1036,6 +1406,22 @@ export function ThemeStudio({
                         ? 'The PR payload will update the existing theme folder, refresh `theme.json`, replace the generated preview screenshot, and upload any newly selected assets.'
                         : 'The PR payload will include `theme.json`, a generated preview screenshot, and every uploaded asset. Catalog assets loaded from an existing theme stay available in the preview, but only uploaded files are bundled into the proposal.'}
                   </p>
+                  {iconSource === 'pack' && selectedIconPackId ? (
+                    <p>
+                      Uses Icon Shop pack <code>{selectedIconPackId}</code>
+                      {iconGlyphCount > 0 ? ` (${iconGlyphCount} glyphs bundled for first install)` : ''}.
+                      The pack will not be re-listed.
+                    </p>
+                  ) : iconSource === 'custom' && iconGlyphCount > 0 ? (
+                    <p>
+                      {iconGlyphCount} custom sidebar icon{iconGlyphCount === 1 ? '' : 's'} will ship with the theme
+                      and also appear in the Icon Shop (skipped if already listed).
+                    </p>
+                  ) : (
+                    <p className="studio-field__hint">
+                      No sidebar icons yet — pick an Icon Shop pack or upload custom PNGs under Icons.
+                    </p>
+                  )}
                   <div className="submit-actions">
                     {linkedProposal?.proposalMode === 'preview' ? null : (
                       <button className="submit-button" type="button" disabled={submitting || downloadingArchive || importingZip || updatingProposal} onClick={() => { void handleSubmit(); }}>

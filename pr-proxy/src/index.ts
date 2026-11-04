@@ -24,6 +24,9 @@ interface CatalogEntry {
   path: string;
   manifest: string;
   cover?: string;
+  hasIcons?: boolean;
+  hasMusic?: boolean;
+  hasSounds?: boolean;
 }
 
 interface ProposalPayload {
@@ -725,9 +728,12 @@ async function uploadBinaryFile(
   await putFileEnsuringSha(env, token, branch, repoFilePath, message, contentBase64);
 }
 
-function upsertCatalogEntry(current: unknown, entry: CatalogEntry): { schemaVersion: number; themes: CatalogEntry[] } {
-  const catalog = current && typeof current === 'object' && 'themes' in current
-    ? current as { schemaVersion?: number; themes?: CatalogEntry[] }
+function upsertCatalogEntry(
+  current: unknown,
+  entry: CatalogEntry,
+): { schemaVersion: number; themes: CatalogEntry[]; icons: unknown[] } {
+  const catalog = current && typeof current === 'object'
+    ? current as { schemaVersion?: number; themes?: CatalogEntry[]; icons?: unknown[] }
     : {};
 
   const themes = Array.isArray(catalog.themes) ? catalog.themes.filter((item) => item.id !== entry.id) : [];
@@ -737,6 +743,8 @@ function upsertCatalogEntry(current: unknown, entry: CatalogEntry): { schemaVers
   return {
     schemaVersion: typeof catalog.schemaVersion === 'number' ? catalog.schemaVersion : 1,
     themes,
+    // Theme PRs must not wipe the Icon Shop catalog.
+    icons: Array.isArray(catalog.icons) ? catalog.icons : [],
   };
 }
 
@@ -751,6 +759,7 @@ interface IconCatalogEntry {
   cover: string;
   builtin: boolean;
   colour: boolean;
+  theme?: string;
 }
 
 function upsertIconCatalogEntry(
@@ -777,6 +786,199 @@ function upsertIconCatalogEntry(
     themes: Array.isArray(catalog.themes) ? catalog.themes : [],
     icons,
   };
+}
+
+const ICON_PACK_SLUG = /^[a-z0-9][a-z0-9-]*$/;
+const ICON_PACK_GLYPH_FILE = /^[a-z0-9_.-]+\.png$/i;
+
+function iconCatalogFromUnknown(current: unknown): IconCatalogEntry[] {
+  if (!current || typeof current !== 'object') {
+    return [];
+  }
+  const icons = (current as { icons?: unknown }).icons;
+  return Array.isArray(icons) ? icons as IconCatalogEntry[] : [];
+}
+
+function findIconShopListing(icons: IconCatalogEntry[], themeId: string): IconCatalogEntry | undefined {
+  return icons.find((entry) => entry.id === themeId || entry.theme === themeId);
+}
+
+function referencedThemeIconPackId(proposal: ProposalPayload): string | undefined {
+  const manifest = proposal.manifest && typeof proposal.manifest === 'object'
+    ? proposal.manifest as Record<string, unknown>
+    : undefined;
+  const theme = manifest?.theme && typeof manifest.theme === 'object'
+    ? manifest.theme as Record<string, unknown>
+    : undefined;
+  const icons = theme?.icons && typeof theme.icons === 'object'
+    ? theme.icons as Record<string, unknown>
+    : (manifest?.icons && typeof manifest.icons === 'object'
+      ? manifest.icons as Record<string, unknown>
+      : undefined);
+  if (!icons) {
+    return undefined;
+  }
+  for (const key of ['packId', 'pack_id', 'pack', 'iconPack', 'icon_pack']) {
+    const value = icons[key];
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim();
+    }
+  }
+  return undefined;
+}
+
+/** Copy theme-bundled glyphs into icons/<themeId>/ and list them in Icon Shop (skip if already present). */
+async function mirrorThemeIconsToIconShop(
+  env: Env,
+  token: string,
+  branch: string,
+  commitPrefix: string,
+  proposal: ProposalPayload,
+  glyphs: Array<{ fileName: string; bytes: ArrayBuffer }>,
+  existingIcons: IconCatalogEntry[],
+): Promise<string> {
+  if (glyphs.length === 0) {
+    return '';
+  }
+
+  // Atmosphere-style: theme references an existing shop pack — ship glyphs, don't re-list.
+  const referencedPackId = referencedThemeIconPackId(proposal);
+  if (referencedPackId) {
+    return `References Icon Shop pack \`${referencedPackId}\` — glyphs ship with the theme; pack not re-listed.`;
+  }
+
+  const packId = proposal.id;
+  const alreadyListed = findIconShopListing(existingIcons, packId);
+  if (alreadyListed) {
+    return alreadyListed.theme === proposal.id || alreadyListed.id === packId
+      ? `Icon Shop already lists \`${alreadyListed.id}\` for this theme — left unchanged.`
+      : `Skipped Icon Shop mirror: pack id \`${packId}\` is already used by \`${alreadyListed.id}\`.`;
+  }
+
+  const coverName = glyphs.find((glyph) => glyph.fileName === 'preview.png')?.fileName
+    ?? glyphs.find((glyph) => glyph.fileName === 'album.png')?.fileName
+    ?? glyphs[0]?.fileName;
+  const glyphNames = glyphs.map((glyph) => glyph.fileName);
+
+  for (const glyph of glyphs) {
+    await putFileEnsuringSha(
+      env,
+      token,
+      branch,
+      `icons/${packId}/${glyph.fileName}`,
+      `${commitPrefix}: mirror icon ${glyph.fileName} to Icon Shop`,
+      arrayBufferToBase64(glyph.bytes),
+    );
+  }
+
+  const packManifest = {
+    id: packId,
+    name: proposal.name,
+    author: proposal.catalogEntry.author || 'Community',
+    version: proposal.catalogEntry.version || '1.0.0',
+    description: `Icons from the ${proposal.name} theme.`,
+    colour: true,
+    builtin: false,
+    theme: proposal.id,
+    preview: coverName,
+    glyphs: glyphNames,
+  };
+  const packBytes = new TextEncoder().encode(`${JSON.stringify(packManifest, null, 2)}\n`);
+  await putFileEnsuringSha(
+    env,
+    token,
+    branch,
+    `icons/${packId}/pack.json`,
+    `${commitPrefix}: add Icon Shop pack manifest`,
+    arrayBufferToBase64(packBytes.buffer as ArrayBuffer),
+  );
+
+  await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: register theme icons in Icon Shop`, (current) => {
+    // Re-check inside the write in case a concurrent commit listed the pack.
+    const live = iconCatalogFromUnknown(current);
+    if (findIconShopListing(live, packId)) {
+      return current && typeof current === 'object'
+        ? current as { schemaVersion: number; themes: unknown[]; icons: IconCatalogEntry[] }
+        : { schemaVersion: 1, themes: [], icons: [] };
+    }
+    return upsertIconCatalogEntry(current, {
+      id: packId,
+      name: proposal.name,
+      author: packManifest.author,
+      version: packManifest.version,
+      description: packManifest.description,
+      path: `icons/${packId}`,
+      manifest: `icons/${packId}/pack.json`,
+      cover: `icons/${packId}/${coverName}`,
+      builtin: false,
+      colour: true,
+      theme: proposal.id,
+    });
+  });
+
+  return `Also listed in Icon Shop as \`${packId}\` (standalone download without the theme).`;
+}
+
+async function collectUploadedThemeIconGlyphs(
+  formData: FormData,
+  env: Env,
+  token: string,
+  branch: string,
+  root: string,
+  commitPrefix: string,
+  commitVerb: string,
+): Promise<Array<{ fileName: string; bytes: ArrayBuffer }>> {
+  let iconGlyphNames: string[] = [];
+  try {
+    const rawGlyphFiles = formData.get('iconGlyphFiles');
+    const parsed = typeof rawGlyphFiles === 'string' ? JSON.parse(rawGlyphFiles) : [];
+    iconGlyphNames = Array.isArray(parsed)
+      ? parsed.filter((item): item is string => typeof item === 'string' && ICON_PACK_GLYPH_FILE.test(item))
+      : [];
+  } catch {
+    iconGlyphNames = [];
+  }
+
+  const uploadedIconGlyphs: Array<{ fileName: string; bytes: ArrayBuffer }> = [];
+  for (const fileName of iconGlyphNames) {
+    const file = optionalFile(formData, `icon:${fileName}`);
+    if (!file) {
+      continue;
+    }
+    await uploadBinaryFile(
+      env,
+      token,
+      branch,
+      root,
+      `assets/icons/${fileName}`,
+      file,
+      `${commitPrefix}: ${commitVerb} icon ${fileName}`,
+    );
+    uploadedIconGlyphs.push({ fileName, bytes: await file.arrayBuffer() });
+  }
+  return uploadedIconGlyphs;
+}
+
+function applyThemeIconManifest(
+  proposal: ProposalPayload,
+  uploadedIconGlyphs: Array<{ fileName: string; bytes: ArrayBuffer }>,
+): void {
+  if (uploadedIconGlyphs.length === 0) {
+    return;
+  }
+  proposal.catalogEntry.hasIcons = true;
+  const manifestObject = (proposal.manifest && typeof proposal.manifest === 'object')
+    ? proposal.manifest as Record<string, unknown>
+    : {};
+  const themeObject = (manifestObject.theme && typeof manifestObject.theme === 'object')
+    ? { ...(manifestObject.theme as Record<string, unknown>) }
+    : {};
+  themeObject.icons = {
+    path: 'assets/icons',
+    files: uploadedIconGlyphs.map((glyph) => `assets/icons/${glyph.fileName}`),
+  };
+  manifestObject.theme = themeObject;
+  proposal.manifest = manifestObject;
 }
 
 function buildProposalLinks(siteBaseUrl: string | undefined, themeId: string, branchName: string): ProposalLinks | undefined {
@@ -979,8 +1181,12 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
   const defaultBranch = await getDefaultBranch(env, token);
   const existingCatalog = await getContent(env, token, 'index.json', defaultBranch);
   const catalog = existingCatalog.content
-    ? (JSON.parse(decodeContent(existingCatalog.content)) as { schemaVersion: number; themes: CatalogEntry[] })
-    : { schemaVersion: 1, themes: [] };
+    ? (JSON.parse(decodeContent(existingCatalog.content)) as {
+      schemaVersion: number;
+      themes: CatalogEntry[];
+      icons?: IconCatalogEntry[];
+    })
+    : { schemaVersion: 1, themes: [] as CatalogEntry[], icons: [] as IconCatalogEntry[] };
   const themeExists = catalog.themes.some((entry) => entry.id === proposal.id);
 
   if (proposal.proposalMode === 'create' && themeExists) {
@@ -1086,6 +1292,18 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       }
     }
 
+    // Theme-bundled sidebar glyphs → also list in Icon Shop when not already published.
+    const uploadedIconGlyphs = await collectUploadedThemeIconGlyphs(
+      formData,
+      env,
+      token,
+      branch,
+      root,
+      commitPrefix,
+      commitVerb,
+    );
+    applyThemeIconManifest(proposal, uploadedIconGlyphs);
+
     const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
     await putFileEnsuringSha(
       env,
@@ -1102,15 +1320,28 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
       return upsertCatalogEntry(current, proposal.catalogEntry);
     });
 
+    const companionIconNote = await mirrorThemeIconsToIconShop(
+      env,
+      token,
+      branch,
+      commitPrefix,
+      proposal,
+      uploadedIconGlyphs,
+      iconCatalogFromUnknown(catalog),
+    );
+
     const proposalLinks = buildProposalLinks(proposal.siteBaseUrl, proposal.id, branch);
     const screenshotPath = `${root}/${sanitizeRelativePath(proposal.files.previewScreenshot)}`;
+    const prBody = companionIconNote
+      ? `${proposal.prBody}\n\n### Icon Shop\n${companionIconNote}`
+      : proposal.prBody;
     const pullRequestUrl = await openPullRequest(
       env,
       token,
       defaultBranch,
       branch,
       proposal.prTitle,
-      buildPullRequestBody(proposal.prBody, proposalLinks, {
+      buildPullRequestBody(prBody, proposalLinks, {
         owner: env.GITHUB_REPO_OWNER,
         repo: env.GITHUB_REPO_NAME,
         branch,
@@ -1266,17 +1497,6 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
 
   const root = themeRoot(proposal.id);
   const commitPrefix = `[theme-studio] ${proposal.id}`;
-  const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
-
-  await putFile(
-    env,
-    token,
-    branch,
-    `${root}/theme.json`,
-    `${commitPrefix}: update theme manifest`,
-    textToBase64(manifestJson),
-    await findContentSha(env, token, branch, `${root}/theme.json`),
-  );
 
   await uploadBinaryFile(
     env,
@@ -1363,17 +1583,50 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
     }
   }
 
+  const uploadedIconGlyphs = await collectUploadedThemeIconGlyphs(
+    formData,
+    env,
+    token,
+    branch,
+    root,
+    commitPrefix,
+    'update',
+  );
+  applyThemeIconManifest(proposal, uploadedIconGlyphs);
+
+  const manifestJson = JSON.stringify(proposal.manifest, null, 2) + '\n';
+  await putFile(
+    env,
+    token,
+    branch,
+    `${root}/theme.json`,
+    `${commitPrefix}: update theme manifest`,
+    textToBase64(manifestJson),
+    await findContentSha(env, token, branch, `${root}/theme.json`),
+  );
+
   await writeProposalDraftMetadata(env, token, branch, proposal, { authorLogin: currentMetadata.authorLogin });
   await updateJsonFile(env, token, branch, 'index.json', `${commitPrefix}: update catalog entry`, (current) => {
     return upsertCatalogEntry(current, proposal.catalogEntry);
   });
 
+  const branchCatalog = await getContent(env, token, 'index.json', branch);
+  const branchIcons = branchCatalog.content
+    ? iconCatalogFromUnknown(JSON.parse(decodeContent(branchCatalog.content)))
+    : [];
+  await mirrorThemeIconsToIconShop(
+    env,
+    token,
+    branch,
+    commitPrefix,
+    proposal,
+    uploadedIconGlyphs,
+    branchIcons,
+  );
+
   const proposalLinks = buildProposalLinks(proposal.siteBaseUrl, proposal.id, branch);
   return jsonResponse({ ok: true, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
 }
-
-const ICON_PACK_SLUG = /^[a-z0-9][a-z0-9-]*$/;
-const ICON_PACK_GLYPH_FILE = /^[a-z0-9_.-]+\.png$/i;
 
 async function handleCreateIconPack(request: Request, env: Env): Promise<Response> {
   const formData = await request.formData();

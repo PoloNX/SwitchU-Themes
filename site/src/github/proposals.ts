@@ -119,6 +119,14 @@ function buildProposalPayload(draft: StudioDraft) {
       path: themeRoot(id),
       manifest: `${themeRoot(id)}/theme.json`,
       cover: `${themeRoot(id)}/media/screenshots/00.png`,
+      hasIcons: Boolean(
+        (draft.iconGlyphs && draft.iconGlyphs.length > 0)
+        || manifest.theme?.icons?.packId
+        || manifest.theme?.icons?.path
+        || (manifest.theme?.icons?.files && manifest.theme.icons.files.length > 0),
+      ),
+      hasMusic: Boolean(manifest.audio?.music),
+      hasSounds: Boolean(manifest.audio?.sfx && Object.keys(manifest.audio.sfx).length > 0),
     },
     prTitle: draft.summary.trim() || `${draft.proposalMode === 'update' ? 'Update' : 'Add'} theme ${manifest.name}`,
     prBody: [
@@ -128,6 +136,11 @@ function buildProposalPayload(draft: StudioDraft) {
       `Mode: ${draft.proposalMode === 'update' ? 'Update existing theme' : 'Add new theme'}`,
       `Author: ${manifest.author}`,
       draft.contributor ? `Contributor: ${draft.contributor}` : '',
+      manifest.theme?.icons?.packId
+        ? `Icons: references Icon Shop pack \`${manifest.theme.icons.packId}\` (bundled for first install; not re-listed).`
+        : (draft.iconGlyphs && draft.iconGlyphs.length > 0)
+          ? `Icons: ${draft.iconGlyphs.length} custom glyph(s) — will also list in Icon Shop if not already present.`
+          : '',
       draft.notes.trim() ? '' : '',
       draft.notes.trim(),
     ].filter(Boolean).join('\n'),
@@ -219,6 +232,7 @@ function collectArchiveAssets(draft: StudioDraft): Map<string, StudioAsset> {
   addAsset(draft.fonts.small);
   addAsset(draft.audio.music);
   DEFAULT_SFX_NAMES.forEach((name) => addAsset(draft.audio.sfx[name]));
+  (draft.iconGlyphs ?? []).forEach((asset) => addAsset(asset));
 
   return assets;
 }
@@ -267,6 +281,27 @@ async function buildProposalFormData(draft: StudioDraft, previewNode: HTMLElemen
       formData.set(`sfx:${name}`, asset.file);
     }
   });
+
+  const iconGlyphNames: string[] = [];
+  for (const asset of draft.iconGlyphs ?? []) {
+    if (!asset.file || (!asset.proposalReady && draft.proposalMode !== 'update')) {
+      continue;
+    }
+    const fileName = asset.relativePath.replace(/\\/g, '/').split('/').pop() ?? '';
+    if (!/^[a-z0-9_.-]+\.png$/i.test(fileName)) {
+      continue;
+    }
+    const target = `assets/icons/${fileName}`;
+    if (uploadedPaths.has(target)) {
+      continue;
+    }
+    uploadedPaths.add(target);
+    iconGlyphNames.push(fileName);
+    formData.set(`icon:${fileName}`, asset.file);
+  }
+  if (iconGlyphNames.length > 0) {
+    formData.set('iconGlyphFiles', JSON.stringify(iconGlyphNames));
+  }
 
   return formData;
 }

@@ -8,3 +8,4 @@ pr-proxy/node_modules/
 pr-proxy/dist/
 pr-proxy/.wrangler/
 pr-proxy/.dev.vars
+pr-proxy/NUL

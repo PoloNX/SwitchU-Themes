@@ -13,8 +13,10 @@ import {
 import { useMemo, useState, type DragEvent } from 'react';
 import JSZip from 'jszip';
 import {
+  LEFT_SIDEBAR_VISUAL,
   PACK_GLYPHS,
-  SIDEBAR_GLYPHS,
+  RIGHT_SIDEBAR_VISUAL,
+  glyphsInVisualOrder,
   packInstallPath,
   slugifyPackId,
   type IconPackGlyph,
@@ -207,8 +209,8 @@ export function IconWorkshop() {
     }
   }
 
-  const leftGlyphs = SIDEBAR_GLYPHS.filter((glyph) => glyph.sidebar === 'left');
-  const rightGlyphs = SIDEBAR_GLYPHS.filter((glyph) => glyph.sidebar === 'right');
+  const leftGlyphs = glyphsInVisualOrder(LEFT_SIDEBAR_VISUAL);
+  const rightGlyphs = glyphsInVisualOrder(RIGHT_SIDEBAR_VISUAL);
 
   return (
     <section className="icon-workshop">

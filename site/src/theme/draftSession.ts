@@ -88,6 +88,9 @@ function collectDraftAssets(draft: StudioDraft): StudioAsset[] {
       assets.push(asset);
     }
   }
+  for (const asset of draft.iconGlyphs ?? []) {
+    assets.push(asset);
+  }
   return assets;
 }
 

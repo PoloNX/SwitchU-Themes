@@ -2,6 +2,7 @@ import JSZip from 'jszip';
 import {
   DEFAULT_SFX_NAMES,
   createEmptyDraft,
+  themeIconsPackId,
   type DefaultSfxName,
   type StudioAsset,
   type StudioDraft,
@@ -223,12 +224,39 @@ export async function draftFromThemeZip(file: File): Promise<StudioDraft> {
       small: await resolveAsset(fonts?.small),
     },
     icons: theme?.icons ? { ...theme.icons } : undefined,
+    iconGlyphs: [],
     audio: {
       bundled: Boolean(manifest.audio?.bundled),
       music: await resolveAsset(audioMusicPath(manifest.audio)),
       sfx: {},
     },
   };
+
+  const iconGlyphs: StudioAsset[] = [];
+  for (const relative of absoluteByRelative.keys()) {
+    const normalized = relative.replace(/\\/g, '/');
+    if (!normalized.toLowerCase().startsWith('assets/icons/')) {
+      continue;
+    }
+    if (!normalized.toLowerCase().endsWith('.png')) {
+      continue;
+    }
+    const asset = await resolveAsset(normalized);
+    if (asset) {
+      iconGlyphs.push(asset);
+    }
+  }
+  const packId = themeIconsPackId(theme?.icons);
+  if (iconGlyphs.length > 0 || packId) {
+    draft.iconGlyphs = iconGlyphs;
+    draft.icons = {
+      ...(theme?.icons ? { ...theme.icons } : {}),
+      path: theme?.icons?.path ?? 'assets/icons',
+      files: iconGlyphs.map((asset) => asset.relativePath.replace(/\\/g, '/')),
+      ...(packId ? { packId } : {}),
+    };
+    draft.iconSource = packId ? 'pack' : iconGlyphs.length > 0 ? 'custom' : 'none';
+  }
 
   const sfxEntries = await Promise.all(
     DEFAULT_SFX_NAMES.map(async (name) => {

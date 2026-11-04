@@ -93,6 +93,14 @@ export interface StudioDraft {
     small?: StudioAsset;
   };
   icons?: ThemeIconsConfig;
+  /**
+   * none — console defaults
+   * pack — reference an Icon Shop pack (packId + light glyph bundle; no shop re-list)
+   * custom — author-uploaded glyphs (auto-listed in Icon Shop on publish)
+   */
+  iconSource?: 'none' | 'pack' | 'custom';
+  /** Glyph PNGs under assets/icons/ (Icons tab / zip import / shop pack copy). */
+  iconGlyphs?: StudioAsset[];
   audio: {
     bundled: boolean;
     music?: StudioAsset;
@@ -120,11 +128,43 @@ export interface StudioDraftSnapshot {
     small?: StudioAssetSnapshot;
   };
   icons?: ThemeIconsConfig;
+  iconSource?: 'none' | 'pack' | 'custom';
+  iconGlyphs?: StudioAssetSnapshot[];
   audio: {
     bundled: boolean;
     music?: StudioAssetSnapshot;
     sfx: Partial<Record<DefaultSfxName, StudioAssetSnapshot>>;
   };
+}
+
+export function themeIconsPackId(icons: ThemeIconsConfig | undefined): string | undefined {
+  if (!icons) {
+    return undefined;
+  }
+  for (const key of ['packId', 'pack_id', 'pack', 'iconPack', 'icon_pack'] as const) {
+    const value = icons[key];
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim();
+    }
+  }
+  return undefined;
+}
+
+export function inferIconSource(draft: {
+  iconSource?: 'none' | 'pack' | 'custom';
+  icons?: ThemeIconsConfig;
+  iconGlyphs?: unknown[] | undefined;
+}): 'none' | 'pack' | 'custom' {
+  if (draft.iconSource === 'none' || draft.iconSource === 'pack' || draft.iconSource === 'custom') {
+    return draft.iconSource;
+  }
+  if (themeIconsPackId(draft.icons)) {
+    return 'pack';
+  }
+  if ((draft.iconGlyphs?.length ?? 0) > 0) {
+    return 'custom';
+  }
+  return 'none';
 }
 
 function blankTriplet(h: number, s: number, l: number): StudioTriplet {
@@ -337,6 +377,8 @@ export function createEmptyDraft(): StudioDraft {
       imageFit: 'cover',
     },
     fonts: {},
+    iconSource: 'none',
+    iconGlyphs: [],
     audio: {
       bundled: false,
       sfx: {},
@@ -410,6 +452,10 @@ export function draftSnapshotFromDraft(draft: StudioDraft): StudioDraftSnapshot 
       small: snapshotAsset(draft.fonts.small),
     },
     icons: draft.icons ? { ...draft.icons } : undefined,
+    iconSource: inferIconSource(draft),
+    iconGlyphs: draft.iconGlyphs
+      ?.map((asset) => snapshotAsset(asset))
+      .filter((asset): asset is StudioAssetSnapshot => Boolean(asset)),
     audio: {
       bundled: draft.audio.bundled,
       music: snapshotAsset(draft.audio.music),
@@ -459,6 +505,10 @@ export function draftFromSnapshot(
       small: hydrateAsset(snapshot.fonts.small, resolveAssetUrl, proposalReadyAssets),
     },
     icons: snapshot.icons ? { ...snapshot.icons } : undefined,
+    iconSource: snapshot.iconSource ?? inferIconSource(snapshot),
+    iconGlyphs: snapshot.iconGlyphs
+      ?.map((asset) => hydrateAsset(asset, resolveAssetUrl, proposalReadyAssets))
+      .filter((asset): asset is StudioAsset => Boolean(asset)),
     audio: {
       bundled: snapshot.audio.bundled,
       music: hydrateAsset(snapshot.audio.music, resolveAssetUrl, proposalReadyAssets),
@@ -522,7 +572,28 @@ export function draftFromCatalogRecord(record: ThemeCatalogRecord, options: { pr
     regular: toCatalogAsset(record, fonts?.regular),
     small: toCatalogAsset(record, fonts?.small),
   };
-  base.icons = base.proposalMode === 'update' && theme?.icons ? { ...theme.icons } : undefined;
+  if (theme?.icons) {
+    const packId = themeIconsPackId(theme.icons);
+    const filePaths = Array.isArray(theme.icons.files) ? theme.icons.files : [];
+    const glyphAssets = filePaths
+      .map((relativePath) => toCatalogAsset(record, relativePath))
+      .filter((asset): asset is StudioAsset => Boolean(asset));
+    base.icons = { ...theme.icons };
+    if (packId) {
+      base.icons.packId = packId;
+      base.iconSource = 'pack';
+    } else if (glyphAssets.length > 0) {
+      base.iconSource = 'custom';
+    } else {
+      base.iconSource = 'none';
+    }
+    // Preview glyphs from the theme folder when present (packId themes often ship both).
+    base.iconGlyphs = glyphAssets;
+  } else {
+    base.icons = undefined;
+    base.iconSource = 'none';
+    base.iconGlyphs = [];
+  }
   base.audio = {
     bundled: Boolean(manifest.audio?.bundled),
     music: toCatalogAsset(record, audioMusicPath(manifest.audio)),
@@ -643,8 +714,30 @@ export function buildManifestFromDraft(draft: StudioDraft): ThemeManifest {
   if (fonts) {
     manifest.theme!.fonts = fonts;
   }
-  if (draft.icons) {
-    manifest.theme!.icons = { ...draft.icons };
+  const packId = themeIconsPackId(draft.icons);
+  const iconSource = inferIconSource(draft);
+  if (draft.iconGlyphs && draft.iconGlyphs.length > 0) {
+    const files = draft.iconGlyphs
+      .filter((asset) => draft.proposalMode === 'update' || asset.proposalReady)
+      .map((asset) => asset.relativePath.replace(/\\/g, '/'));
+    if (files.length > 0 || packId) {
+      manifest.theme!.icons = {
+        path: 'assets/icons',
+        ...(files.length > 0 ? { files } : {}),
+        ...(iconSource === 'pack' && packId ? { packId } : {}),
+      };
+    }
+  } else if (iconSource === 'pack' && packId) {
+    manifest.theme!.icons = {
+      path: draft.icons?.path ?? 'assets/icons',
+      packId,
+      ...(draft.icons?.files ? { files: draft.icons.files } : {}),
+    };
+  } else if (draft.icons) {
+    const { packId: _a, pack_id: _b, pack: _c, iconPack: _d, icon_pack: _e, ...rest } = draft.icons;
+    if (Object.keys(rest).length > 0) {
+      manifest.theme!.icons = { ...rest };
+    }
   }
 
   const audio = serializeAudio(draft);
@@ -668,6 +761,8 @@ export function cloneDraft(draft: StudioDraft): StudioDraft {
     background: { ...draft.background },
     fonts: { ...draft.fonts },
     icons: draft.icons ? { ...draft.icons } : undefined,
+    iconSource: inferIconSource(draft),
+    iconGlyphs: draft.iconGlyphs?.map((asset) => ({ ...asset })),
     audio: {
       ...draft.audio,
       sfx: cloneSfxRecord(draft.audio.sfx),

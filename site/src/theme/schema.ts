@@ -8,6 +8,9 @@ export interface ThemeCatalogEntry {
   path: string;
   manifest: string;
   cover?: string;
+  hasIcons?: boolean;
+  hasMusic?: boolean;
+  hasSounds?: boolean;
 }
 
 export interface IconCatalogEntry {
@@ -93,6 +96,12 @@ export interface ThemeIconsConfig {
   basePath?: string;
   base_path?: string;
   files?: string[];
+  /** Existing Icon Shop pack id (Atmosphere → atmos). Console applies this pack. */
+  packId?: string;
+  pack_id?: string;
+  pack?: string;
+  iconPack?: string;
+  icon_pack?: string;
 }
 
 export interface ThemeColorConfig {

@@ -1666,8 +1666,16 @@ select option:hover {
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
 }
 
-.sidebar-button svg {
+.sidebar-button svg,
+.sidebar-button__glyph {
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.16));
+}
+
+.sidebar-button__glyph {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
 }
 
 .sidebar-button--active::after {

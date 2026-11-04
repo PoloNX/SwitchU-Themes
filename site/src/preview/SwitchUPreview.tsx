@@ -5,6 +5,7 @@ import {
   Power,
   Settings2,
   Smile,
+  type LucideIcon,
 } from 'lucide-react';
 import {
   forwardRef,
@@ -13,22 +14,70 @@ import {
   useRef,
   useState,
 } from 'react';
+import {
+  LEFT_SIDEBAR_VISUAL,
+  RIGHT_SIDEBAR_VISUAL,
+  glyphsInVisualOrder,
+  type IconPackGlyph,
+} from '../icons/pack';
 import type { ThemeCatalogRecord } from '../theme/schema';
 import type { StudioAsset, StudioDraft } from '../theme/draft';
 import { createBackgroundScene, renderBackgroundScene } from './background';
 import { hslTripletToCss, paletteFromDraft } from '../theme/color';
 
-const sidebarButtonsLeft = [
-  { id: 'album', label: 'Album', Icon: ImageIcon },
-  { id: 'mii-editor', label: 'Mii Editor', Icon: Smile },
-  { id: 'settings', label: 'Settings', Icon: Settings2 },
-] as const;
+const GLYPH_FALLBACKS: Record<string, LucideIcon> = {
+  'album.png': ImageIcon,
+  'mii_editor.png': Smile,
+  'settings.png': Settings2,
+  'controller.png': Gamepad2,
+  'power.png': Power,
+  'themes.png': Grid3x3,
+};
 
-const sidebarButtonsRight = [
-  { id: 'controllers', label: 'Controllers', Icon: Gamepad2, active: false },
-  { id: 'power', label: 'Power', Icon: Power, active: false },
-  { id: 'theme-shop', label: 'Theme Shop', Icon: Grid3x3, active: true },
-] as const;
+function glyphAssetUrl(draft: StudioDraft, fileName: string): string | undefined {
+  return (draft.iconGlyphs ?? []).find((asset) => {
+    const base = asset.relativePath.replace(/\\/g, '/').split('/').pop() ?? asset.name;
+    return base === fileName;
+  })?.url;
+}
+
+function SidebarGlyphButton({
+  glyph,
+  draft,
+  active = false,
+}: {
+  glyph: IconPackGlyph;
+  draft: StudioDraft;
+  active?: boolean;
+}) {
+  const url = glyphAssetUrl(draft, glyph.file);
+  const Fallback = GLYPH_FALLBACKS[glyph.file] ?? ImageIcon;
+  const [imageFailed, setImageFailed] = useState(false);
+  useEffect(() => {
+    setImageFailed(false);
+  }, [url]);
+
+  return (
+    <button
+      type="button"
+      className={`sidebar-button${active ? ' sidebar-button--active' : ''}`}
+      aria-label={glyph.label}
+      title={glyph.label}
+    >
+      {url && !imageFailed ? (
+        <img
+          className="sidebar-button__glyph"
+          src={url}
+          alt=""
+          aria-hidden
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <Fallback aria-hidden size={30} />
+      )}
+    </button>
+  );
+}
 
 const previewSlotIndexes = Array.from({ length: 15 }, (_, index) => index);
 
@@ -236,24 +285,19 @@ export const SwitchUPreview = forwardRef<HTMLDivElement, {
           </div>
 
           <div className="switchu-preview__side switchu-preview__side--left">
-            {sidebarButtonsLeft.map(({ id, label, Icon }) => (
-              <button key={id} type="button" className="sidebar-button" aria-label={label} title={label}>
-                <Icon aria-hidden size={30} />
-              </button>
+            {glyphsInVisualOrder(LEFT_SIDEBAR_VISUAL).map((glyph) => (
+              <SidebarGlyphButton key={glyph.file} glyph={glyph} draft={draft} />
             ))}
           </div>
 
           <div className="switchu-preview__side switchu-preview__side--right">
-            {sidebarButtonsRight.map(({ id, label, Icon, active }) => (
-              <button
-                key={id}
-                type="button"
-                className={`sidebar-button ${active ? 'sidebar-button--active' : ''}`}
-                aria-label={label}
-                title={label}
-              >
-                <Icon aria-hidden size={30} />
-              </button>
+            {glyphsInVisualOrder(RIGHT_SIDEBAR_VISUAL).map((glyph) => (
+              <SidebarGlyphButton
+                key={glyph.file}
+                glyph={glyph}
+                draft={draft}
+                active={glyph.file === 'themes.png'}
+              />
             ))}
           </div>
 
