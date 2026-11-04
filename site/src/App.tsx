@@ -221,15 +221,15 @@ function ProposalCard({
         </div>
         <div className="theme-card__actions">
           <button className="theme-card__action theme-card__action--preview" type="button" onClick={onPreview}>
-            <Eye size={16} />
+            <Eye size={16} aria-hidden />
             <span>Preview</span>
           </button>
           <button className="theme-card__action" type="button" onClick={onEdit}>
-            <PenLine size={16} />
+            <PenLine size={16} aria-hidden />
             <span>Edit</span>
           </button>
-          <a className="ghost-button theme-card__secondary" href={proposal.pullRequestUrl} target="_blank" rel="noreferrer">
-            <ExternalLink size={16} />
+          <a className="theme-card__action theme-card__secondary" href={proposal.pullRequestUrl} target="_blank" rel="noreferrer">
+            <ExternalLink size={16} aria-hidden />
             <span>Open PR</span>
           </a>
         </div>
@@ -281,7 +281,7 @@ function IconPackProposalCard({ pack }: { pack: OpenIconPackSummary }) {
         </div>
         <div className="theme-card__actions">
           <a className="theme-card__action theme-card__action--preview" href={pack.pullRequestUrl} target="_blank" rel="noreferrer">
-            <ExternalLink size={16} />
+            <ExternalLink size={16} aria-hidden />
             <span>Open PR</span>
           </a>
         </div>
@@ -986,9 +986,17 @@ export default function App() {
                   <p className="panel__eyebrow">Creator workspace</p>
                   <h2>{linkedProposal ? 'Open a PR-linked draft' : 'Build a theme from scratch or from a template'}</h2>
                 </div>
-                <button className="ghost-button" type="button" onClick={() => setActiveTab('explore')}>
-                  Back to explore
-                </button>
+                <div className="creator-overview__actions">
+                  {linkedProposal ? (
+                    <button className="ghost-button" type="button" onClick={resetStudio}>
+                      <X size={16} />
+                      <span>Exit linked draft</span>
+                    </button>
+                  ) : null}
+                  <button className="ghost-button" type="button" onClick={() => setActiveTab('explore')}>
+                    Back to explore
+                  </button>
+                </div>
               </div>
               <div className="feature-list creator-overview">
                 <div className="feature-card">
@@ -1013,11 +1021,17 @@ export default function App() {
                 </div>
                 <div className="feature-card">
                   <strong>{linkedProposal ? 'Exit this link' : 'Better color picking'}</strong>
-                  <span>
-                    {linkedProposal
-                      ? 'Start a blank draft or load a catalog template to leave the PR-linked editing flow.'
-                      : 'Use a native swatch picker plus readable hue, saturation, and lightness controls.'}
-                  </span>
+                  {linkedProposal ? (
+                    <>
+                      <span>Leave this PR and return Theme creator to a blank draft.</span>
+                      <button className="ghost-button feature-card__action" type="button" onClick={resetStudio}>
+                        <X size={16} />
+                        <span>Exit linked draft</span>
+                      </button>
+                    </>
+                  ) : (
+                    <span>Use a native swatch picker plus readable hue, saturation, and lightness controls.</span>
+                  )}
                 </div>
               </div>
             </section>

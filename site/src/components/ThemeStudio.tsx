@@ -10,6 +10,7 @@ import {
   Sparkles,
   Type,
   Upload,
+  X,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { downloadDraftArchive, submitThemeProposal, type ProposalMode, type ProposalResult, type ProposalUpdateResult } from '../github/proposals';
@@ -739,12 +740,18 @@ export function ThemeStudio({
                     ? authUser
                       ? 'Only the proposal author can update this PR branch.'
                       : 'Sign in with GitHub to edit this proposal.'
-                    : 'This PR link only loads the draft for inspection. Use the edit link from the PR if you need to save changes.'}
+                    : 'This PR link only loads the draft for inspection. Exit to return Theme creator to a blank draft, or use the edit link from the PR to save changes.'}
                 </span>
                 {linkedProposal?.proposalMode === 'edit' && !authUser ? (
                   <button className="submit-button submit-button--secondary" type="button" onClick={onLogin}>
                     <LogIn size={18} />
                     <span>Sign in with GitHub</span>
+                  </button>
+                ) : null}
+                {linkedProposal ? (
+                  <button className="submit-button submit-button--secondary" type="button" onClick={onReset}>
+                    <X size={18} />
+                    <span>Exit linked draft</span>
                   </button>
                 ) : null}
               </div>

@@ -288,6 +288,19 @@ select {
   border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
+.creator-overview__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.feature-card__action {
+  width: fit-content;
+  margin-top: auto;
+  gap: 8px;
+}
+
 .feature-card span,
 .theme-card__meta,
 .theme-card__flags span,
@@ -614,6 +627,13 @@ select {
   min-height: 40px;
   padding: 0 12px;
   font-size: 0.82rem;
+}
+
+.proposal-card .theme-card__action svg,
+.proposal-card .theme-card__secondary svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
 }
 
 .proposal-card.theme-card--icons .theme-card__actions {
