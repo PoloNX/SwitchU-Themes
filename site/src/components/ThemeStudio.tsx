@@ -408,7 +408,6 @@ export function ThemeStudio({
   onProposalCreated,
 }: ThemeStudioProps) {
   const previewRef = useRef<HTMLDivElement>(null);
-  const zipInputRef = useRef<HTMLInputElement>(null);
   const [activeEditorTab, setActiveEditorTab] = useState<StudioEditorTab>('setup');
   const [downloadingArchive, setDownloadingArchive] = useState(false);
   const [importingZip, setImportingZip] = useState(false);
@@ -661,21 +660,11 @@ export function ThemeStudio({
       setImportError(cause instanceof Error ? cause.message : 'Unknown zip import error');
     } finally {
       setImportingZip(false);
-      if (zipInputRef.current) {
-        zipInputRef.current.value = '';
-      }
     }
   }
 
   return (
     <section className="studio-shell">
-      <input
-        ref={zipInputRef}
-        type="file"
-        accept=".zip,application/zip"
-        hidden
-        onChange={(event) => { void handleZipImport(event.currentTarget.files?.[0]); }}
-      />
       <div className="studio-shell__header">
         <div>
           <p className="panel__eyebrow">Theme creator</p>
@@ -762,20 +751,6 @@ export function ThemeStudio({
                 <div className="studio-control-section">
                   <div className="studio-control-section__title">Template</div>
                   <div className="studio-grid studio-grid--two">
-                    <Field label="Base theme" hint="Start from blank or clone an existing theme into a new theme. Use Edit from the catalog to update an existing theme.">
-                      <select
-                        className="studio-input"
-                        value={selectedRecord?.entry.id ?? ''}
-                        onChange={(event) => onTemplateSelection(event.currentTarget.value)}
-                      >
-                        <option value="">Blank draft</option>
-                        {records.map((record) => (
-                          <option key={record.entry.id} value={record.entry.id}>
-                            {record.entry.name} · {record.entry.author}
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
                     <div className="studio-template-card">
                       <strong>{selectedRecord ? selectedRecord.entry.name : 'Blank draft'}</strong>
                       <span>
@@ -790,6 +765,20 @@ export function ThemeStudio({
                         onReset();
                       }}>Start blank draft</button>
                     </div>
+                    <Field label="Base theme" hint="Start from blank or clone an existing theme into a new theme. Use Edit from the catalog to update an existing theme.">
+                      <select
+                        className="studio-input"
+                        value={selectedRecord?.entry.id ?? ''}
+                        onChange={(event) => onTemplateSelection(event.currentTarget.value)}
+                      >
+                        <option value="">Blank draft</option>
+                        {records.map((record) => (
+                          <option key={record.entry.id} value={record.entry.id}>
+                            {record.entry.name} · {record.entry.author}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
                   </div>
                   {!linkedProposal ? (
                     <div className="studio-import-drop">
@@ -799,7 +788,7 @@ export function ThemeStudio({
                         icon={FolderInput}
                         dropHint="Drop theme zip"
                         buttonLabel={importingZip ? 'Importing…' : 'Upload zip'}
-                        hint="Restores settings + assets into this editor. Also available under Publish."
+                        hint="Restores settings + assets into this editor."
                         disabled={importingZip}
                         onFile={(file) => { void handleZipImport(file); }}
                       />
@@ -1071,19 +1060,10 @@ export function ThemeStudio({
                       <Download size={18} />
                       <span>{downloadingArchive ? 'Building local zip…' : 'Save this draft as a local zip'}</span>
                     </button>
-                    <button
-                      className="submit-button submit-button--secondary"
-                      type="button"
-                      disabled={submitting || downloadingArchive || importingZip || Boolean(linkedProposal)}
-                      onClick={() => zipInputRef.current?.click()}
-                    >
-                      <FolderInput size={18} />
-                      <span>{importingZip ? 'Importing zip…' : 'Import a theme zip'}</span>
-                    </button>
                   </div>
                   <p className="studio-field__hint">
                     Manual install path: <code>{themeInstallPath(draft.id || 'my-theme')}</code>
-                    {' '}Zips include an INSTALL.txt with the same instructions. Import restores settings and assets into this studio.
+                    {' '}Zips include an INSTALL.txt with the same instructions.
                   </p>
                   {linkedProposal?.proposalMode === 'preview' ? (
                     <div className="submit-feedback submit-feedback--success">
