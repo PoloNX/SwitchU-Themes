@@ -1,15 +1,20 @@
 import {
   Download,
+  FileAudio2,
+  FolderInput,
+  ImageIcon,
   LockKeyhole,
   LogIn,
   Music4,
   Send,
   Sparkles,
+  Type,
   Upload,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { downloadDraftArchive, submitThemeProposal, type ProposalMode, type ProposalResult, type ProposalUpdateResult } from '../github/proposals';
 import type { AuthUser } from '../github/auth';
+import { themeInstallPath } from '../install/paths';
 import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
 import {
@@ -22,6 +27,7 @@ import {
   type StudioDraft,
   type StudioTriplet,
 } from '../theme/draft';
+import { draftFromThemeZip } from '../theme/importZip';
 import type { ThemeCatalogRecord } from '../theme/schema';
 
 interface ThemeStudioProps {
@@ -58,13 +64,121 @@ const studioEditorTabs: Array<{ id: StudioEditorTab; label: string }> = [
   { id: 'publish', label: 'Publish' },
 ];
 
-function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
+function Field({
+  label,
+  children,
+  hint,
+  span = false,
+}: {
+  label: string;
+  children: ReactNode;
+  hint?: string;
+  span?: boolean;
+}) {
   return (
-    <label className="studio-field">
+    <label className={`studio-field${span ? ' studio-field--span' : ''}`}>
       <span className="studio-field__label">{label}</span>
       {children}
       {hint ? <small className="studio-field__hint">{hint}</small> : null}
     </label>
+  );
+}
+
+function StudioDropField({
+  label,
+  accept,
+  icon: Icon,
+  fileName,
+  previewUrl,
+  hint,
+  dropHint = 'Drop file',
+  buttonLabel = 'Upload',
+  disabled = false,
+  compact = false,
+  onFile,
+}: {
+  label: string;
+  accept: string;
+  icon: typeof Upload;
+  fileName?: string;
+  previewUrl?: string;
+  hint?: string;
+  dropHint?: string;
+  buttonLabel?: string;
+  disabled?: boolean;
+  compact?: boolean;
+  onFile: (file: File | undefined) => void;
+}) {
+  const [dragOver, setDragOver] = useState(false);
+  const filled = Boolean(fileName || previewUrl);
+
+  function acceptDrop(event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (disabled) {
+      return;
+    }
+    setDragOver(false);
+    onFile(event.dataTransfer.files?.[0]);
+  }
+
+  function onDragOver(event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (disabled) {
+      return;
+    }
+    setDragOver(true);
+  }
+
+  function onDragLeave(event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      return;
+    }
+    setDragOver(false);
+  }
+
+  return (
+    <div
+      className={[
+        'studio-drop',
+        compact ? 'studio-drop--compact' : '',
+        filled ? 'studio-drop--filled' : '',
+        dragOver ? 'studio-drop--dragover' : '',
+        disabled ? 'studio-drop--disabled' : '',
+      ].filter(Boolean).join(' ')}
+      onDragEnter={onDragOver}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={acceptDrop}
+    >
+      <div className="studio-drop__label">{label}</div>
+      <div className="studio-drop__zone">
+        {previewUrl ? (
+          <img className="studio-drop__preview" src={previewUrl} alt="" />
+        ) : (
+          <Icon size={compact ? 22 : 28} aria-hidden />
+        )}
+        <span className="studio-drop__drop-hint">{filled ? (fileName || 'Ready') : dropHint}</span>
+      </div>
+      {hint ? <small className="studio-drop__hint">{hint}</small> : null}
+      <label className="ghost-button studio-drop__upload">
+        <Upload size={15} />
+        <span>{buttonLabel}</span>
+        <input
+          type="file"
+          accept={accept}
+          hidden
+          disabled={disabled}
+          onChange={(event) => {
+            onFile(event.currentTarget.files?.[0]);
+            event.currentTarget.value = '';
+          }}
+        />
+      </label>
+    </div>
   );
 }
 
@@ -293,12 +407,16 @@ export function ThemeStudio({
   onProposalCreated,
 }: ThemeStudioProps) {
   const previewRef = useRef<HTMLDivElement>(null);
+  const zipInputRef = useRef<HTMLInputElement>(null);
   const [activeEditorTab, setActiveEditorTab] = useState<StudioEditorTab>('setup');
   const [downloadingArchive, setDownloadingArchive] = useState(false);
+  const [importingZip, setImportingZip] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [updatingProposal, setUpdatingProposal] = useState(false);
   const [archiveError, setArchiveError] = useState<string | null>(null);
   const [archiveSuccess, setArchiveSuccess] = useState<string | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importSuccess, setImportSuccess] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<SubmitSuccessState | null>(null);
   const [assetError, setAssetError] = useState<string | null>(null);
@@ -320,6 +438,8 @@ export function ThemeStudio({
     setAssetError(null);
     setArchiveError(null);
     setArchiveSuccess(null);
+    setImportError(null);
+    setImportSuccess(null);
     setSubmitError(null);
     setSubmitSuccess(null);
   }
@@ -513,7 +633,9 @@ export function ThemeStudio({
     setArchiveSuccess(null);
     try {
       await downloadDraftArchive(draft, previewRef.current);
-      setArchiveSuccess('Local zip download started.');
+      setArchiveSuccess(
+        `Local zip download started. Extract it to ${themeInstallPath(draft.id || 'my-theme')} on your SD card.`,
+      );
     } catch (cause) {
       setArchiveError(cause instanceof Error ? cause.message : 'Unknown archive export error');
     } finally {
@@ -521,15 +643,45 @@ export function ThemeStudio({
     }
   }
 
+  async function handleZipImport(file: File | undefined) {
+    if (!file) {
+      return;
+    }
+
+    setImportingZip(true);
+    setImportError(null);
+    setImportSuccess(null);
+    try {
+      const imported = await draftFromThemeZip(file);
+      update(imported);
+      setActiveEditorTab('setup');
+      setImportSuccess(`Imported “${imported.name}” from ${file.name}. Draft autosave will keep it for 24 hours.`);
+    } catch (cause) {
+      setImportError(cause instanceof Error ? cause.message : 'Unknown zip import error');
+    } finally {
+      setImportingZip(false);
+      if (zipInputRef.current) {
+        zipInputRef.current.value = '';
+      }
+    }
+  }
+
   return (
     <section className="studio-shell">
+      <input
+        ref={zipInputRef}
+        type="file"
+        accept=".zip,application/zip"
+        hidden
+        onChange={(event) => { void handleZipImport(event.currentTarget.files?.[0]); }}
+      />
       <div className="studio-shell__header">
         <div>
           <p className="panel__eyebrow">Theme creator</p>
           <h2>Live theme studio</h2>
           <p className="studio-shell__lede">
             {linkedProposal
-              ? `Linked to ${linkedProposal.proposalId} on ${linkedProposal.branchName}. Preview mode is public; saving edits stays locked behind this proposal's personal edit code.`
+              ? `Linked to ${linkedProposal.proposalId} on ${linkedProposal.branchName}. Preview is public; saving edits requires signing in with the GitHub account that opened the PR.`
               : draft.proposalMode === 'update'
                 ? `Editing ${draft.id}. This will create a pull request that updates the existing catalog theme instead of adding a new folder.`
               : selectedRecord
@@ -632,14 +784,36 @@ export function ThemeStudio({
                       }}>Start blank draft</button>
                     </div>
                   </div>
+                  {!linkedProposal ? (
+                    <div className="studio-import-drop">
+                      <StudioDropField
+                        label="Import a theme zip"
+                        accept=".zip,application/zip"
+                        icon={FolderInput}
+                        dropHint="Drop theme zip"
+                        buttonLabel={importingZip ? 'Importing…' : 'Upload zip'}
+                        hint="Restores settings + assets into this editor. Also available under Publish."
+                        disabled={importingZip}
+                        onFile={(file) => { void handleZipImport(file); }}
+                      />
+                      {importError ? <div className="submit-feedback submit-feedback--error">{importError}</div> : null}
+                      {importSuccess ? <div className="submit-feedback submit-feedback--success">{importSuccess}</div> : null}
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="studio-control-section">
                   <div className="studio-control-section__title">Metadata</div>
-                  <div className="studio-grid studio-grid--two">
+                  <div className="studio-grid studio-grid--metadata">
+                    <Field label="Display name">
+                      <input className="studio-input" value={draft.name} onChange={(event) => patchDisplayName(event.currentTarget.value)} />
+                    </Field>
+                    <Field label="Author">
+                      <input className="studio-input" value={draft.author} onChange={(event) => patch('author', event.currentTarget.value)} />
+                    </Field>
                     <Field
                       label="Theme ID"
-                      hint={draft.proposalMode === 'update' ? 'Locked to the existing theme folder.' : 'Lowercase + hyphens. This becomes the folder name.'}
+                      hint={draft.proposalMode === 'update' ? 'Locked to the existing theme folder.' : 'Lowercase + hyphens. Becomes folder name.'}
                     >
                       <input
                         className="studio-input"
@@ -651,22 +825,16 @@ export function ThemeStudio({
                     <Field label="Version">
                       <input className="studio-input" value={draft.version} onChange={(event) => patch('version', event.currentTarget.value)} />
                     </Field>
-                    <Field label="Display name">
-                      <input className="studio-input" value={draft.name} onChange={(event) => patchDisplayName(event.currentTarget.value)} />
-                    </Field>
-                    <Field label="Author">
-                      <input className="studio-input" value={draft.author} onChange={(event) => patch('author', event.currentTarget.value)} />
-                    </Field>
                     <Field label="PR title">
                       <input className="studio-input" value={draft.summary} onChange={(event) => patch('summary', event.currentTarget.value)} />
                     </Field>
                     <Field label="Contributor handle">
                       <input className="studio-input" value={draft.contributor} onChange={(event) => patch('contributor', event.currentTarget.value)} placeholder="optional GitHub username" />
                     </Field>
+                    <Field span label="PR notes" hint="Optional context for reviewers.">
+                      <textarea className="studio-textarea" rows={4} value={draft.notes} onChange={(event) => patch('notes', event.currentTarget.value)} />
+                    </Field>
                   </div>
-                  <Field label="PR notes">
-                    <textarea className="studio-textarea" rows={4} value={draft.notes} onChange={(event) => patch('notes', event.currentTarget.value)} />
-                  </Field>
                 </div>
               </>
             ) : null}
@@ -771,22 +939,44 @@ export function ThemeStudio({
                   {assetError ? <div className="submit-feedback submit-feedback--error">{assetError}</div> : null}
 
                 <div className="studio-grid studio-grid--three studio-assets-row">
-                    <Field
-                      label="Background image"
-                      hint={draft.background.image?.proposalReady
-                        ? `${draft.background.image.name}${backgroundOptimizing ? ' · optimizing…' : ' · optimized PNG'}`
+                  <StudioDropField
+                    label="Background image"
+                    accept=".png,.jpg,.jpeg,.webp"
+                    icon={ImageIcon}
+                    dropHint="Drop image"
+                    buttonLabel={backgroundOptimizing ? 'Optimizing…' : draft.background.image?.proposalReady ? 'Replace' : 'Upload'}
+                    fileName={draft.background.image?.proposalReady ? draft.background.image.name : undefined}
+                    previewUrl={draft.background.image?.url}
+                    hint={
+                      draft.background.image?.proposalReady
+                        ? (backgroundOptimizing ? 'Optimizing…' : 'Optimized PNG')
                         : backgroundOptimizing
-                          ? 'Optimizing image for SwitchU…'
-                          : 'PNG/JPG/WebP · auto-converted to PNG (max 1920px)'}
-                    >
-                      <input type="file" accept=".png,.jpg,.jpeg,.webp" disabled={backgroundOptimizing} onChange={(event) => { void onAssetUpload('background', event.currentTarget.files?.[0]); }} />
-                  </Field>
-                  <Field label="Regular font" hint={draft.fonts.regular?.proposalReady ? draft.fonts.regular.name : 'Optional TTF/OTF'}>
-                      <input type="file" accept=".ttf,.otf,.woff,.woff2" onChange={(event) => { void onAssetUpload('regularFont', event.currentTarget.files?.[0]); }} />
-                  </Field>
-                  <Field label="Small font" hint={draft.fonts.small?.proposalReady ? draft.fonts.small.name : 'Optional secondary font'}>
-                      <input type="file" accept=".ttf,.otf,.woff,.woff2" onChange={(event) => { void onAssetUpload('smallFont', event.currentTarget.files?.[0]); }} />
-                  </Field>
+                          ? 'Optimizing…'
+                          : 'PNG/JPG/WebP'
+                    }
+                    disabled={backgroundOptimizing}
+                    onFile={(file) => { void onAssetUpload('background', file); }}
+                  />
+                  <StudioDropField
+                    label="Regular font"
+                    accept=".ttf,.otf,.woff,.woff2"
+                    icon={Type}
+                    dropHint="Drop font"
+                    buttonLabel={draft.fonts.regular?.proposalReady ? 'Replace' : 'Upload'}
+                    fileName={draft.fonts.regular?.proposalReady ? draft.fonts.regular.name : undefined}
+                    hint={draft.fonts.regular?.proposalReady ? draft.fonts.regular.name : 'Optional TTF/OTF'}
+                    onFile={(file) => { void onAssetUpload('regularFont', file); }}
+                  />
+                  <StudioDropField
+                    label="Small font"
+                    accept=".ttf,.otf,.woff,.woff2"
+                    icon={Type}
+                    dropHint="Drop font"
+                    buttonLabel={draft.fonts.small?.proposalReady ? 'Replace' : 'Upload'}
+                    fileName={draft.fonts.small?.proposalReady ? draft.fonts.small.name : undefined}
+                    hint={draft.fonts.small?.proposalReady ? draft.fonts.small.name : 'Optional TTF/OTF'}
+                    onFile={(file) => { void onAssetUpload('smallFont', file); }}
+                  />
                 </div>
               </div>
             ) : null}
@@ -794,29 +984,48 @@ export function ThemeStudio({
             {activeEditorTab === 'audio' ? (
               <div className="studio-control-section">
                 <div className="studio-control-section__title">Audio</div>
-                <div className="studio-grid studio-grid--two">
-                  <Field label="Background music" hint={draft.audio.music?.proposalReady ? draft.audio.music.name : 'MP3 file copied into sounds/music'}>
-                    <input type="file" accept=".mp3" onChange={(event) => { void onAssetUpload('music', event.currentTarget.files?.[0]); }} />
-                  </Field>
-                  <div className="audio-summary-card">
-                    <Music4 size={18} />
-                    <div>
-                      <strong>{draft.audio.bundled || hasProposalAssets ? 'Bundled audio enabled' : 'Using built-in sound set'}</strong>
-                      <span>Upload a music file and any subset of SwitchU `.wav` SFX overrides.</span>
-                    </div>
-                  </div>
+                <p className="studio-control-section__subtitle">
+                  {draft.audio.bundled || hasProposalAssets
+                    ? 'Bundled audio enabled — uploads ship with the theme.'
+                    : 'Using built-in sounds. Upload music or any SFX you want to override.'}
+                </p>
+
+                <div className="studio-audio-music">
+                  <StudioDropField
+                    label="Background music"
+                    accept=".mp3,audio/mpeg"
+                    icon={Music4}
+                    dropHint="Drop MP3"
+                    buttonLabel={draft.audio.music?.proposalReady ? 'Replace' : 'Upload'}
+                    fileName={draft.audio.music?.proposalReady ? draft.audio.music.name : undefined}
+                    hint={draft.audio.music?.proposalReady ? draft.audio.music.name : 'Copied into sounds/music'}
+                    onFile={(file) => { void onAssetUpload('music', file); }}
+                  />
+                  {draft.audio.music?.url ? (
+                    <audio className="audio-player" controls src={draft.audio.music.url} />
+                  ) : null}
                 </div>
 
-                {draft.audio.music?.url ? (
-                  <audio className="audio-player" controls src={draft.audio.music.url} />
-                ) : null}
-
-                <div className="studio-grid studio-grid--three">
-                  {DEFAULT_SFX_NAMES.map((name) => (
-                    <Field key={name} label={name} hint={draft.audio.sfx[name]?.proposalReady ? draft.audio.sfx[name]?.name : `${name}.wav`}>
-                      <input type="file" accept=".wav" onChange={(event) => onSfxUpload(name, event.currentTarget.files?.[0])} />
-                    </Field>
-                  ))}
+                <div className="studio-control-section__title studio-control-section__title--sub">SFX overrides</div>
+                <p className="studio-control-section__subtitle">WAV only. Empty slots keep the console defaults.</p>
+                <div className="studio-grid studio-grid--three studio-sfx-grid">
+                  {DEFAULT_SFX_NAMES.map((name) => {
+                    const asset = draft.audio.sfx[name];
+                    return (
+                      <StudioDropField
+                        key={name}
+                        compact
+                        label={name}
+                        accept=".wav,audio/wav"
+                        icon={FileAudio2}
+                        dropHint="Drop WAV"
+                        buttonLabel={asset?.proposalReady ? 'Replace' : 'Upload'}
+                        fileName={asset?.proposalReady ? asset.name : undefined}
+                        hint={`${name}.wav`}
+                        onFile={(file) => onSfxUpload(name, file)}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             ) : null}
@@ -834,7 +1043,7 @@ export function ThemeStudio({
                   </p>
                   <div className="submit-actions">
                     {linkedProposal?.proposalMode === 'preview' ? null : (
-                      <button className="submit-button" type="button" disabled={submitting || downloadingArchive || updatingProposal} onClick={() => { void handleSubmit(); }}>
+                      <button className="submit-button" type="button" disabled={submitting || downloadingArchive || importingZip || updatingProposal} onClick={() => { void handleSubmit(); }}>
                         <Send size={18} />
                         <span>
                           {linkedProposal
@@ -842,7 +1051,7 @@ export function ThemeStudio({
                               ? 'Updating linked proposal…'
                               : editorUnlocked
                                 ? 'Update this linked proposal'
-                                : 'Unlock and update linked proposal'
+                                : 'Sign in as author to update'
                             : submitting
                               ? 'Creating pull request…'
                               : draft.proposalMode === 'update'
@@ -851,18 +1060,33 @@ export function ThemeStudio({
                         </span>
                       </button>
                     )}
-                    <button className="submit-button submit-button--secondary" type="button" disabled={submitting || downloadingArchive} onClick={() => { void handleArchiveDownload(); }}>
+                    <button className="submit-button submit-button--secondary" type="button" disabled={submitting || downloadingArchive || importingZip} onClick={() => { void handleArchiveDownload(); }}>
                       <Download size={18} />
                       <span>{downloadingArchive ? 'Building local zip…' : 'Save this draft as a local zip'}</span>
                     </button>
+                    <button
+                      className="submit-button submit-button--secondary"
+                      type="button"
+                      disabled={submitting || downloadingArchive || importingZip || Boolean(linkedProposal)}
+                      onClick={() => zipInputRef.current?.click()}
+                    >
+                      <FolderInput size={18} />
+                      <span>{importingZip ? 'Importing zip…' : 'Import a theme zip'}</span>
+                    </button>
                   </div>
+                  <p className="studio-field__hint">
+                    Manual install path: <code>{themeInstallPath(draft.id || 'my-theme')}</code>
+                    {' '}Zips include an INSTALL.txt with the same instructions. Import restores settings and assets into this studio.
+                  </p>
                   {linkedProposal?.proposalMode === 'preview' ? (
                     <div className="submit-feedback submit-feedback--success">
-                      This PR link is preview-only. Open the edit link from the PR to unlock branch updates.
+                      This PR link is preview-only. Open the edit link from the PR, then sign in with the author GitHub account to save.
                     </div>
                   ) : null}
                   {archiveError ? <div className="submit-feedback submit-feedback--error">{archiveError}</div> : null}
                   {archiveSuccess ? <div className="submit-feedback submit-feedback--success">{archiveSuccess}</div> : null}
+                  {importError ? <div className="submit-feedback submit-feedback--error">{importError}</div> : null}
+                  {importSuccess ? <div className="submit-feedback submit-feedback--success">{importSuccess}</div> : null}
                   {submitError ? <div className="submit-feedback submit-feedback--error">{submitError}</div> : null}
                   {submitSuccess ? (
                     <div className="submit-feedback submit-feedback--success">

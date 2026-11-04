@@ -1487,6 +1487,148 @@ async function handleCreateIconPack(request: Request, env: Env): Promise<Respons
   return jsonResponse({ ok: true, branchName: branch, pullRequestUrl }, 200, corsHeaders(request, env));
 }
 
+function packIdFromManifestPath(path: string): string | undefined {
+  const match = /^icons\/([^/]+)\/pack\.json$/.exec(path);
+  return match?.[1];
+}
+
+function sanitizePackId(value: string): string {
+  const id = value.trim().toLowerCase();
+  if (!ICON_PACK_SLUG.test(id)) {
+    throw new Error(`Invalid icon pack id: ${value}`);
+  }
+  return id;
+}
+
+function buildIconPackAssetUrl(request: Request, branchName: string, packId: string, fileName: string): string {
+  const url = new URL('/api/icon-packs/asset', request.url);
+  url.searchParams.set('branch', branchName);
+  url.searchParams.set('id', packId);
+  url.searchParams.set('path', fileName);
+  return url.toString();
+}
+
+async function handleGetIconPackAsset(request: Request, env: Env, url: URL): Promise<Response> {
+  const branch = sanitizeBranchName(url.searchParams.get('branch') ?? '');
+  if (!branch.startsWith('icon-pack/')) {
+    return jsonResponse({ error: 'Only icon-pack branches can be read.' }, 400, corsHeaders(request, env));
+  }
+
+  const packId = sanitizePackId(url.searchParams.get('id') ?? '');
+  const relativePath = sanitizeRelativePath(url.searchParams.get('path') ?? '');
+  if (!ICON_PACK_GLYPH_FILE.test(relativePath) && relativePath !== 'pack.json') {
+    return jsonResponse({ error: 'Invalid icon pack asset path.' }, 400, corsHeaders(request, env));
+  }
+
+  const token = await getInstallationToken(env);
+  const repoFilePath = sanitizeRelativePath(`icons/${packId}/${relativePath}`);
+  const upstream = await githubRequest(
+    env,
+    token,
+    `${repoPath(env)}/contents/${repoFilePath}?ref=${encodeURIComponent(branch)}`,
+    {
+      headers: {
+        Accept: 'application/vnd.github.raw',
+      },
+    },
+  );
+
+  if (!upstream.ok) {
+    const text = await upstream.text();
+    return jsonResponse({ error: `GitHub asset fetch failed (${upstream.status}): ${text}` }, upstream.status, corsHeaders(request, env));
+  }
+
+  return new Response(await upstream.arrayBuffer(), {
+    status: 200,
+    headers: {
+      ...corsHeaders(request, env),
+      'cache-control': 'public, max-age=60',
+      'content-type': upstream.headers.get('content-type') || guessContentType(relativePath),
+    },
+  });
+}
+
+async function handleListIconPacks(request: Request, env: Env): Promise<Response> {
+  const token = await getInstallationToken(env);
+  const defaultBranch = await getDefaultBranch(env, token);
+  const pulls = await githubFetch<GitHubPullResponse[]>(
+    env,
+    token,
+    `${repoPath(env)}/pulls?state=open&base=${encodeURIComponent(defaultBranch)}&per_page=100`,
+  );
+
+  const packs = await Promise.all(
+    pulls
+      .filter((pull) => pull.head.ref.startsWith('icon-pack/'))
+      .map(async (pull) => {
+        const files = await githubFetch<GitHubPullFileResponse[]>(
+          env,
+          token,
+          `${repoPath(env)}/pulls/${pull.number}/files?per_page=100`,
+        );
+        const manifestFile = files.find((file) => packIdFromManifestPath(file.filename));
+        const packId = manifestFile ? packIdFromManifestPath(manifestFile.filename) : undefined;
+        if (!packId) {
+          return undefined;
+        }
+
+        const content = await getContent(env, token, `icons/${packId}/pack.json`, pull.head.ref);
+        if (!content.content) {
+          return undefined;
+        }
+
+        let manifest: {
+          id?: string;
+          name?: string;
+          author?: string;
+          version?: string;
+          colour?: boolean;
+          preview?: string;
+          glyphs?: string[];
+        };
+        try {
+          manifest = JSON.parse(decodeContent(content.content)) as typeof manifest;
+        } catch {
+          return undefined;
+        }
+
+        const glyphs = Array.isArray(manifest.glyphs)
+          ? manifest.glyphs.filter((item): item is string => typeof item === 'string' && ICON_PACK_GLYPH_FILE.test(item))
+          : [];
+        const previewName = typeof manifest.preview === 'string' && ICON_PACK_GLYPH_FILE.test(manifest.preview)
+          ? manifest.preview
+          : glyphs[0];
+
+        return {
+          kind: 'icon' as const,
+          number: pull.number,
+          title: pull.title,
+          pullRequestUrl: pull.html_url,
+          branchName: pull.head.ref,
+          packId,
+          name: typeof manifest.name === 'string' && manifest.name.trim() ? manifest.name.trim() : packId,
+          author: typeof manifest.author === 'string' && manifest.author.trim() ? manifest.author.trim() : 'Community',
+          version: typeof manifest.version === 'string' && manifest.version.trim() ? manifest.version.trim() : '1.0.0',
+          colour: manifest.colour !== false,
+          contributor: pull.user?.login || '',
+          createdAt: pull.created_at,
+          updatedAt: pull.updated_at,
+          coverUrl: previewName ? buildIconPackAssetUrl(request, pull.head.ref, packId, previewName) : '',
+          glyphUrls: glyphs.slice(0, 8).map((fileName) => ({
+            fileName,
+            url: buildIconPackAssetUrl(request, pull.head.ref, packId, fileName),
+          })),
+        };
+      }),
+  );
+
+  return jsonResponse(
+    { packs: packs.filter(Boolean) },
+    200,
+    corsHeaders(request, env),
+  );
+}
+
 function safeRedirectTarget(value: string | undefined): string {
   const target = value?.trim();
   if (!target) {
@@ -1617,6 +1759,14 @@ export default {
 
       if (request.method === 'POST' && url.pathname === '/api/proposals/update') {
         return await handleUpdateProposal(request, env, url);
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/icon-packs') {
+        return await handleListIconPacks(request, env);
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/icon-packs/asset') {
+        return await handleGetIconPackAsset(request, env, url);
       }
 
       if (request.method === 'POST' && url.pathname === '/api/icon-packs') {

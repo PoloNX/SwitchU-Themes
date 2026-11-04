@@ -22,27 +22,6 @@ export const PACK_GLYPHS: IconPackGlyph[] = [
 
 export const SIDEBAR_GLYPHS = PACK_GLYPHS.filter((glyph) => glyph.sidebar !== 'chrome');
 
-export interface BuiltInPack {
-  id: string;
-  name: string;
-  description: string;
-}
-
-// Built-in packs that ship with SwitchU (romfs/icons/<id>/).
-// Legacy tinted/grayscale/solid ids remap to atmos on the console.
-export const BUILT_IN_PACKS: BuiltInPack[] = [
-  {
-    id: 'default',
-    name: 'Default',
-    description: 'The stock coloured glyphs that ship with SwitchU.',
-  },
-  {
-    id: 'atmos',
-    name: 'Atmos',
-    description: 'Coloured glyphs with optional on-device HSL tint.',
-  },
-];
-
 export function slugifyPackId(value: string): string {
   return value
     .trim()

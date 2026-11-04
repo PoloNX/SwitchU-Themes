@@ -10,10 +10,9 @@ import {
   Upload,
   X,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type DragEvent } from 'react';
 import JSZip from 'jszip';
 import {
-  BUILT_IN_PACKS,
   PACK_GLYPHS,
   SIDEBAR_GLYPHS,
   packInstallPath,
@@ -58,12 +57,32 @@ export function IconWorkshop() {
   const [building, setBuilding] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [prUrl, setPrUrl] = useState<string | null>(null);
+  const [dragOverFile, setDragOverFile] = useState<string | null>(null);
 
   const uploadedCount = useMemo(() => Object.keys(glyphs).length, [glyphs]);
   const normalizedId = slugifyPackId(packId) || 'my-icons';
 
+  function pickPngFile(fileList: FileList | null | undefined): File | undefined {
+    if (!fileList?.length) {
+      return undefined;
+    }
+
+    const match = Array.from(fileList).find((file) => {
+      const name = file.name.toLowerCase();
+      return file.type === 'image/png' || name.endsWith('.png');
+    });
+
+    return match ?? undefined;
+  }
+
   function onGlyphUpload(glyph: IconPackGlyph, file: File | undefined) {
     if (!file) {
+      return;
+    }
+
+    const name = file.name.toLowerCase();
+    if (file.type && file.type !== 'image/png' && !name.endsWith('.png')) {
+      setFeedback({ kind: 'error', text: `${glyph.label} expects a .png file.` });
       return;
     }
 
@@ -77,6 +96,31 @@ export function IconWorkshop() {
       [glyph.file]: { url: URL.createObjectURL(file), file },
     }));
     setFeedback(null);
+  }
+
+  function onGlyphDragOver(event: DragEvent<HTMLElement>, glyph: IconPackGlyph) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    setDragOverFile(glyph.file);
+  }
+
+  function onGlyphDragLeave(event: DragEvent<HTMLElement>, glyph: IconPackGlyph) {
+    const next = event.relatedTarget as Node | null;
+    if (next && event.currentTarget.contains(next)) {
+      return;
+    }
+    setDragOverFile((current) => (current === glyph.file ? null : current));
+  }
+
+  function onGlyphDrop(event: DragEvent<HTMLElement>, glyph: IconPackGlyph) {
+    event.preventDefault();
+    setDragOverFile(null);
+    const file = pickPngFile(event.dataTransfer.files);
+    if (!file) {
+      setFeedback({ kind: 'error', text: `Drop a .png onto ${glyph.label}.` });
+      return;
+    }
+    onGlyphUpload(glyph, file);
   }
 
   function onGlyphClear(glyph: IconPackGlyph) {
@@ -168,7 +212,7 @@ export function IconWorkshop() {
 
   return (
     <section className="icon-workshop">
-      <div className="studio-layout">
+      <div className="studio-layout studio-layout--icons">
         <div className="panel studio-panel studio-panel--controls">
           <div className="panel__header">
             <div>
@@ -178,7 +222,7 @@ export function IconWorkshop() {
           </div>
 
           <div className="studio-control-section">
-            <div className="studio-grid studio-grid--two">
+            <div className="studio-grid studio-grid--pack-details">
               <label className="studio-field">
                 <span className="studio-field__label">Pack ID</span>
                 <input
@@ -187,7 +231,7 @@ export function IconWorkshop() {
                   onChange={(event) => setPackId(event.currentTarget.value)}
                   placeholder="my-icons"
                 />
-                <small className="studio-field__hint">Lowercase + hyphens. Becomes the folder name under icons/.</small>
+                <small className="studio-field__hint">Lowercase + hyphens. Becomes folder name.</small>
               </label>
               <label className="studio-field">
                 <span className="studio-field__label">Display name</span>
@@ -198,7 +242,7 @@ export function IconWorkshop() {
                   placeholder="My Icons"
                 />
               </label>
-              <label className="studio-field">
+              <label className="studio-field studio-field--span">
                 <span className="studio-field__label">Author</span>
                 <input
                   className="studio-input"
@@ -211,40 +255,38 @@ export function IconWorkshop() {
           </div>
 
           <div className="studio-control-section">
-            <div className="studio-control-section__title">Glyphs ({uploadedCount}/{PACK_GLYPHS.length} uploaded)</div>
-            <div className="icon-glyph-grid">
-              {PACK_GLYPHS.map((glyph) => {
-                const entry = glyphs[glyph.file];
-                const Fallback = glyphFallbackIcon(glyph);
-                return (
-                  <div className="icon-glyph-card" key={glyph.file}>
-                    <div className="icon-glyph-card__preview">
-                      {entry ? <img src={entry.url} alt={glyph.label} /> : <Fallback size={28} />}
-                    </div>
-                    <div className="icon-glyph-card__body">
-                      <strong>{glyph.label}</strong>
-                      <span className="icon-glyph-card__file">{glyph.file}</span>
-                    </div>
-                    <div className="icon-glyph-card__actions">
-                      <label className="ghost-button icon-glyph-card__upload">
-                        <Upload size={15} />
-                        <span>{entry ? 'Replace' : 'Upload'}</span>
-                        <input
-                          type="file"
-                          accept=".png"
-                          hidden
-                          onChange={(event) => onGlyphUpload(glyph, event.currentTarget.files?.[0])}
-                        />
-                      </label>
-                      {entry ? (
-                        <button className="ghost-button icon-glyph-card__clear" type="button" onClick={() => onGlyphClear(glyph)} title={`Remove ${glyph.label}`}>
-                          <X size={15} />
-                        </button>
-                      ) : null}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="studio-control-section__title">Live preview</div>
+            <div className="icon-pack-preview">
+              <div className="icon-pack-preview__column">
+                {leftGlyphs.map((glyph) => {
+                  const entry = glyphs[glyph.file];
+                  const Fallback = glyphFallbackIcon(glyph);
+                  return (
+                    <button key={glyph.file} type="button" className="sidebar-button" aria-label={glyph.label} title={glyph.label}>
+                      {entry ? <img src={entry.url} alt={glyph.label} /> : <Fallback aria-hidden size={30} />}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="icon-pack-preview__spacer" />
+              <div className="icon-pack-preview__column">
+                {rightGlyphs.map((glyph) => {
+                  const entry = glyphs[glyph.file];
+                  const Fallback = glyphFallbackIcon(glyph);
+                  return (
+                    <button key={glyph.file} type="button" className="sidebar-button" aria-label={glyph.label} title={glyph.label}>
+                      {entry ? <img src={entry.url} alt={glyph.label} /> : <Fallback aria-hidden size={30} />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="icon-pack-note">
+              <Info size={16} />
+              <span>
+                Packs are read from <code>{packInstallPath(normalizedId)}</code>. Monochrome packs adapt to the
+                theme chrome on the console; colour packs keep their authored look.
+              </span>
             </div>
           </div>
 
@@ -274,65 +316,59 @@ export function IconWorkshop() {
           </div>
         </div>
 
-        <div className="panel studio-panel studio-panel--preview">
+        <div className="panel studio-panel studio-panel--glyphs">
           <div className="panel__header">
             <div>
-              <p className="panel__eyebrow">Live preview</p>
-              <h2>{name.trim() || 'Icon pack'}</h2>
+              <p className="panel__eyebrow">Glyphs</p>
+              <h2>{uploadedCount}/{PACK_GLYPHS.length} uploaded</h2>
             </div>
           </div>
-
-          <div className="icon-pack-preview">
-            <div className="icon-pack-preview__column">
-              {leftGlyphs.map((glyph) => {
-                const entry = glyphs[glyph.file];
-                const Fallback = glyphFallbackIcon(glyph);
-                return (
-                  <button key={glyph.file} type="button" className="sidebar-button" aria-label={glyph.label} title={glyph.label}>
-                    {entry ? <img src={entry.url} alt={glyph.label} /> : <Fallback aria-hidden size={30} />}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="icon-pack-preview__spacer" />
-            <div className="icon-pack-preview__column">
-              {rightGlyphs.map((glyph) => {
-                const entry = glyphs[glyph.file];
-                const Fallback = glyphFallbackIcon(glyph);
-                return (
-                  <button key={glyph.file} type="button" className="sidebar-button" aria-label={glyph.label} title={glyph.label}>
-                    {entry ? <img src={entry.url} alt={glyph.label} /> : <Fallback aria-hidden size={30} />}
-                  </button>
-                );
-              })}
-            </div>
+          <p className="studio-control-section__subtitle icon-workshop__glyphs-lead">
+            Drag and Drop square PNGs onto each slot, or click Upload. Empty slots will use defaults.
+          </p>
+          <div className="icon-glyph-grid">
+            {PACK_GLYPHS.map((glyph) => {
+              const entry = glyphs[glyph.file];
+              const Fallback = glyphFallbackIcon(glyph);
+              const isDragOver = dragOverFile === glyph.file;
+              return (
+                <div
+                  className={`icon-glyph-card ${entry ? 'icon-glyph-card--filled' : 'icon-glyph-card--empty'} ${isDragOver ? 'icon-glyph-card--dragover' : ''}`}
+                  key={glyph.file}
+                  onDragEnter={(event) => onGlyphDragOver(event, glyph)}
+                  onDragOver={(event) => onGlyphDragOver(event, glyph)}
+                  onDragLeave={(event) => onGlyphDragLeave(event, glyph)}
+                  onDrop={(event) => onGlyphDrop(event, glyph)}
+                >
+                  <div className="icon-glyph-card__preview">
+                    {entry ? <img src={entry.url} alt={glyph.label} /> : <Fallback size={28} />}
+                    {!entry ? <span className="icon-glyph-card__drop-hint">Drop PNG</span> : null}
+                  </div>
+                  <div className="icon-glyph-card__body">
+                    <strong>{glyph.label}</strong>
+                    <span className="icon-glyph-card__file">{glyph.file}</span>
+                  </div>
+                  <div className={`icon-glyph-card__actions${entry ? ' icon-glyph-card__actions--filled' : ''}`}>
+                    <label className="ghost-button icon-glyph-card__upload">
+                      <Upload size={15} />
+                      <span>{entry ? 'Replace' : 'Upload'}</span>
+                      <input
+                        type="file"
+                        accept=".png,image/png"
+                        hidden
+                        onChange={(event) => onGlyphUpload(glyph, event.currentTarget.files?.[0])}
+                      />
+                    </label>
+                    {entry ? (
+                      <button className="ghost-button icon-glyph-card__clear" type="button" onClick={() => onGlyphClear(glyph)} title={`Remove ${glyph.label}`}>
+                        <X size={15} />
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-
-          <div className="icon-pack-note">
-            <Info size={16} />
-            <span>
-              Packs are read from <code>{packInstallPath(normalizedId)}</code>. Monochrome packs adapt to the
-              theme chrome on the console; colour packs keep their authored look.
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="panel">
-        <div className="panel__header">
-          <div>
-            <p className="panel__eyebrow">Built-in packs</p>
-            <h2>Reference</h2>
-          </div>
-        </div>
-        <div className="icon-pack-gallery">
-          {BUILT_IN_PACKS.map((pack) => (
-            <div className="icon-pack-card" key={pack.id}>
-              <strong>{pack.name}</strong>
-              <span>{pack.description}</span>
-              <code>icons/{pack.id}/</code>
-            </div>
-          ))}
         </div>
       </div>
     </section>

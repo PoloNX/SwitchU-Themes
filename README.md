@@ -63,7 +63,10 @@ Recommended GitHub App permissions:
 
 The worker endpoint is `POST /api/proposals`. It creates a branch, uploads `theme.json`, the generated preview screenshot, every uploaded asset, updates `index.json`, and opens a PR back to the default branch.
 
-The worker also exposes `POST /api/icon-packs`. It creates a branch on **this** repo, uploads each glyph under `icons/<id>/`, writes `icons/<id>/pack.json`, adds the pack to the `icons` array of `index.json`, and opens a PR.
+The worker also exposes icon-pack routes:
+- `POST /api/icon-packs` — creates a branch on **this** repo, uploads each glyph under `icons/<id>/`, writes `icons/<id>/pack.json`, adds the pack to the `icons` array of `index.json`, and opens a PR.
+- `GET /api/icon-packs` — lists open icon-pack PRs for the Validation tab.
+- `GET /api/icon-packs/asset` — serves a glyph/manifest file from an open `icon-pack/` branch.
 
 ### GitHub sign-in (OAuth)
 
@@ -404,6 +407,10 @@ Once downloaded, a theme folder is expected to map directly to:
 sdmc:/config/SwitchU/themes/<theme-id>/
 ```
 
+Theme Shop installs and manual zip installs currently share that `config` path.
+Standalone icon packs are different and install under `sdmc:/switch/SwitchU/icons/`.
+
+Downloaded theme zips from the site include an `INSTALL.txt` with these steps.
 That means the repository layout is already close to the installed layout, which keeps client-side installation simple.
 
 ## Adding a theme

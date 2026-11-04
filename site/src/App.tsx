@@ -1,5 +1,5 @@
 import { AudioLines, Download, ExternalLink, Eye, GitPullRequest, LoaderCircle, LogIn, LogOut, Palette, PenLine, RefreshCw, Search, Sparkles, Volume2, Wand2, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { themeCapabilities, themeDeclaresIcons, themeDeclaresMusic, themeDeclaresSounds } from './catalog/capabilities';
 import { downloadThemeArchive } from './catalog/download';
@@ -8,11 +8,41 @@ import { IconCatalog } from './components/IconCatalog';
 import { IconWorkshop } from './components/IconWorkshop';
 import { beginGitHubLogin, clearSessionToken, completeAuthFromUrl, fetchCurrentUser, type AuthUser } from './github/auth';
 import { loadOpenProposals, loadProposalDraft, readProposalRouteState, updateThemeProposal, type OpenProposalSummary, type ProposalResult, type ProposalRouteState } from './github/proposals';
+import { loadOpenIconPacks, type OpenIconPackSummary } from './icons/submit';
 import { SwitchUPreview } from './preview/SwitchUPreview';
 import { createEmptyDraft, draftFromCatalogRecord, type StudioDraft } from './theme/draft';
+import {
+  clearDraftSession,
+  loadDraftSession,
+  peekDraftSession,
+  saveDraftSession,
+  type DraftSessionMeta,
+} from './theme/draftSession';
 import type { ThemeCatalogRecord } from './theme/schema';
 
 type AppTab = 'explore' | 'pending' | 'create' | 'icons';
+type ValidationFilter = 'all' | 'themes' | 'icons';
+
+type ValidationItem =
+  | { kind: 'theme'; updatedAt: string; proposal: OpenProposalSummary }
+  | { kind: 'icon'; updatedAt: string; pack: OpenIconPackSummary };
+
+function isPristineDraft(draft: StudioDraft): boolean {
+  return (
+    draft.proposalMode === 'create'
+    && !draft.basedOnThemeId
+    && draft.id === 'my-theme'
+    && draft.name === 'My Theme'
+    && !draft.author.trim()
+    && !draft.notes.trim()
+    && !draft.contributor.trim()
+    && !draft.background.image
+    && !draft.fonts.regular
+    && !draft.fonts.small
+    && !draft.audio.music
+    && Object.keys(draft.audio.sfx).length === 0
+  );
+}
 
 function StatChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
@@ -72,23 +102,31 @@ function ThemeCard({
 
   return (
     <article className={`theme-card ${previewed ? 'theme-card--selected' : ''}`}>
-      <div className="theme-card__cover-wrap">
-        {record.coverUrl ? (
-          <img className="theme-card__cover" src={record.coverUrl} alt={`Preview of ${record.entry.name}`} />
-        ) : (
-          <div className="theme-card__cover theme-card__cover--empty">
-            <Sparkles size={22} />
-            <span>No preview yet</span>
+      <button
+        className="theme-card__cover-button"
+        type="button"
+        onClick={onPreview}
+        title={`Open live preview for ${record.entry.name}`}
+      >
+        <div className="theme-card__cover-wrap">
+          {record.coverUrl ? (
+            <img className="theme-card__cover" src={record.coverUrl} alt={`Preview of ${record.entry.name}`} />
+          ) : (
+            <div className="theme-card__cover theme-card__cover--empty">
+              <Sparkles size={22} />
+              <span>No preview yet</span>
+            </div>
+          )}
+          <div className="theme-card__badges">
+            <span>{record.manifest.theme?.mode ?? 'dark'}</span>
+            <span>{layout}</span>
+            {caps.music ? <span>music</span> : null}
+            {caps.sounds ? <span>sounds</span> : null}
+            {caps.icons ? <span>icons</span> : null}
+            {hasBackgroundImage ? <span>bg</span> : null}
           </div>
-        )}
-        <div className="theme-card__badges">
-          <span>{record.manifest.theme?.mode ?? 'dark'}</span>
-          <span>{layout}</span>
-          {caps.music ? <span>music</span> : null}
-          {caps.sounds ? <span>sounds</span> : null}
-          {caps.icons ? <span>icons</span> : null}
         </div>
-      </div>
+      </button>
       <div className="theme-card__body">
         <div>
           <p className="theme-card__eyebrow">{record.entry.id}</p>
@@ -97,45 +135,44 @@ function ThemeCard({
             by {record.entry.author} · v{record.entry.version}
           </p>
         </div>
-        <div className="theme-card__flags">
-          <span>{hasBackgroundImage ? 'background image' : 'procedural background'}</span>
-          <span>{caps.icons ? 'custom icons' : 'default icons'}</span>
-          <span>{record.manifest.theme?.fonts?.regular ? 'custom fonts' : 'bundled fonts'}</span>
-        </div>
         <div className="theme-card__actions">
           <button
-            className={`theme-card__action theme-card__action--preview ${previewed ? 'theme-card__action--active' : ''}`}
+            className={`theme-card__action theme-card__action--icon theme-card__action--preview ${previewed ? 'theme-card__action--active' : ''}`}
             type="button"
             onClick={onPreview}
-            title={`Open live preview for ${record.entry.name}`}
+            aria-label={`Preview ${record.entry.name}`}
+            title={`Preview ${record.entry.name}`}
           >
             <Eye size={16} />
             <span>Preview</span>
           </button>
           <button
-            className={`theme-card__action ${templated ? 'theme-card__action--active' : ''}`}
+            className={`theme-card__action theme-card__action--icon ${templated ? 'theme-card__action--active' : ''}`}
             type="button"
             onClick={onUseTemplate}
-            title={`Load ${record.entry.name} as the current creator template`}
+            aria-label={`Use ${record.entry.name} as template`}
+            title={`Use ${record.entry.name} as template`}
           >
             <Wand2 size={16} />
             <span>Template</span>
           </button>
           <button
-            className="theme-card__action"
+            className="theme-card__action theme-card__action--icon"
             type="button"
             onClick={onEditTheme}
-            title={`Open a pull request to update ${record.entry.name}`}
+            aria-label={`Edit ${record.entry.name}`}
+            title={`Edit ${record.entry.name}`}
           >
             <PenLine size={16} />
             <span>Edit</span>
           </button>
           <button
-            className="ghost-button theme-card__secondary"
+            className="ghost-button theme-card__secondary theme-card__action--icon"
             type="button"
             onClick={onDownload}
             disabled={downloading}
-            title={`Download ${record.entry.name} as a zip archive`}
+            aria-label={`Download ${record.entry.name} zip`}
+            title={downloading ? 'Building zip…' : `Download ${record.entry.name} zip`}
           >
             <Download size={16} />
             <span>{downloading ? 'Building…' : 'Download'}</span>
@@ -160,6 +197,7 @@ function ProposalCard({
       <div className="theme-card__cover-wrap">
         <img className="theme-card__cover" src={proposal.coverUrl} alt={`Preview of ${proposal.name}`} />
         <div className="theme-card__badges">
+          <span>Theme</span>
           <span>PR #{proposal.number}</span>
           <span>{proposal.proposalMode === 'update' ? 'update' : 'new'}</span>
           <span>{proposal.mode}</span>
@@ -177,7 +215,7 @@ function ProposalCard({
           <GitPullRequest size={16} />
           <span>{proposal.title}</span>
         </div>
-        <div className="theme-card__flags">
+        <div className="theme-card__flags proposal-card__flags">
           <span>{proposal.contributor ? `submitted by ${proposal.contributor}` : 'community proposal'}</span>
           <span>updated {formatDateTime(proposal.updatedAt)}</span>
         </div>
@@ -191,6 +229,58 @@ function ProposalCard({
             <span>Edit</span>
           </button>
           <a className="ghost-button theme-card__secondary" href={proposal.pullRequestUrl} target="_blank" rel="noreferrer">
+            <ExternalLink size={16} />
+            <span>Open PR</span>
+          </a>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function IconPackProposalCard({ pack }: { pack: OpenIconPackSummary }) {
+  return (
+    <article className="theme-card proposal-card theme-card--icons">
+      <div className="theme-card__cover-wrap theme-card__cover-wrap--icons">
+        {pack.glyphUrls.length ? (
+          <div className="proposal-card__glyph-mosaic" aria-hidden>
+            {pack.glyphUrls.slice(0, 6).map((glyph) => (
+              <img key={glyph.fileName} src={glyph.url} alt="" />
+            ))}
+          </div>
+        ) : pack.coverUrl ? (
+          <img className="theme-card__cover theme-card__cover--icons" src={pack.coverUrl} alt={`Glyphs of ${pack.name}`} />
+        ) : (
+          <div className="theme-card__cover theme-card__cover--empty">
+            <Sparkles size={22} />
+            <span>No preview yet</span>
+          </div>
+        )}
+        <div className="theme-card__badges">
+          <span>Icon pack</span>
+          <span>PR #{pack.number}</span>
+          <span>{pack.colour ? 'colour' : 'mono'}</span>
+        </div>
+      </div>
+      <div className="theme-card__body">
+        <div>
+          <p className="theme-card__eyebrow">{pack.packId}</p>
+          <h3>{pack.name}</h3>
+          <p className="theme-card__meta">
+            by {pack.author} · v{pack.version}
+          </p>
+        </div>
+        <div className="proposal-card__status">
+          <GitPullRequest size={16} />
+          <span>{pack.title}</span>
+        </div>
+        <div className="theme-card__flags proposal-card__flags">
+          <span>{pack.contributor ? `submitted by ${pack.contributor}` : 'community proposal'}</span>
+          <span>updated {formatDateTime(pack.updatedAt)}</span>
+          <span>{pack.glyphUrls.length || 0} glyph{pack.glyphUrls.length === 1 ? '' : 's'}</span>
+        </div>
+        <div className="theme-card__actions">
+          <a className="theme-card__action theme-card__action--preview" href={pack.pullRequestUrl} target="_blank" rel="noreferrer">
             <ExternalLink size={16} />
             <span>Open PR</span>
           </a>
@@ -220,9 +310,15 @@ export default function App() {
   const [authReady, setAuthReady] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [openProposals, setOpenProposals] = useState<OpenProposalSummary[]>([]);
+  const [openIconPacks, setOpenIconPacks] = useState<OpenIconPackSummary[]>([]);
   const [openProposalsLoading, setOpenProposalsLoading] = useState(false);
   const [openProposalsLoaded, setOpenProposalsLoaded] = useState(false);
   const [openProposalsError, setOpenProposalsError] = useState<string | null>(null);
+  const [validationFilter, setValidationFilter] = useState<ValidationFilter>('all');
+  const [savedSession, setSavedSession] = useState<DraftSessionMeta | null>(null);
+  const [sessionBusy, setSessionBusy] = useState(false);
+  const [sessionNotice, setSessionNotice] = useState<string | null>(null);
+  const skipNextAutosaveRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -284,6 +380,30 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (initialProposalRoute) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        const meta = await peekDraftSession();
+        if (!cancelled) {
+          setSavedSession(meta);
+        }
+      } catch {
+        if (!cancelled) {
+          setSavedSession(null);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [initialProposalRoute]);
+
+  useEffect(() => {
     if (!linkedProposal) {
       return undefined;
     }
@@ -292,11 +412,14 @@ export default function App() {
     setProposalLoading(true);
     setProposalError(null);
     setActiveTab('create');
+    setSavedSession(null);
+    setSessionNotice(null);
 
     void (async () => {
       try {
         const proposalDraft = await loadProposalDraft(linkedProposal);
         if (!cancelled) {
+          skipNextAutosaveRef.current = true;
           setSelectedThemeId(null);
           setPreviewThemeId(null);
           setDraft(proposalDraft.draft);
@@ -317,6 +440,38 @@ export default function App() {
       cancelled = true;
     };
   }, [linkedProposal]);
+
+  useEffect(() => {
+    if (linkedProposal || proposalLoading) {
+      return undefined;
+    }
+
+    if (skipNextAutosaveRef.current) {
+      skipNextAutosaveRef.current = false;
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (isPristineDraft(draft)) {
+        void clearDraftSession()
+          .then(() => setSavedSession(null))
+          .catch(() => {});
+        return;
+      }
+
+      void saveDraftSession(draft)
+        .then(async () => {
+          setSavedSession(await peekDraftSession());
+        })
+        .catch(() => {
+          // Autosave is best-effort; ignore quota / private-mode failures.
+        });
+    }, 700);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [draft, linkedProposal, proposalLoading]);
 
   useEffect(() => {
     if (activeTab !== 'pending' || openProposalsLoaded || openProposalsLoading) {
@@ -396,8 +551,9 @@ export default function App() {
     setOpenProposalsLoading(true);
     setOpenProposalsError(null);
     try {
-      const proposals = await loadOpenProposals();
+      const [proposals, packs] = await Promise.all([loadOpenProposals(), loadOpenIconPacks()]);
       setOpenProposals(proposals);
+      setOpenIconPacks(packs);
       setOpenProposalsLoaded(true);
     } catch (cause) {
       setOpenProposalsError(cause instanceof Error ? cause.message : 'Unknown proposal list error');
@@ -405,6 +561,33 @@ export default function App() {
       setOpenProposalsLoading(false);
     }
   }
+
+  const validationItems = useMemo(() => {
+    const themes: ValidationItem[] = openProposals.map((proposal) => ({
+      kind: 'theme',
+      updatedAt: proposal.updatedAt,
+      proposal,
+    }));
+    const icons: ValidationItem[] = openIconPacks.map((pack) => ({
+      kind: 'icon',
+      updatedAt: pack.updatedAt,
+      pack,
+    }));
+
+    const merged = validationFilter === 'themes'
+      ? themes
+      : validationFilter === 'icons'
+        ? icons
+        : [...themes, ...icons];
+
+    return merged.sort((left, right) => Date.parse(right.updatedAt) - Date.parse(left.updatedAt));
+  }, [openIconPacks, openProposals, validationFilter]);
+
+  const validationCounts = useMemo(() => ({
+    all: openProposals.length + openIconPacks.length,
+    themes: openProposals.length,
+    icons: openIconPacks.length,
+  }), [openIconPacks.length, openProposals.length]);
 
   function clearProposalRoute() {
     const url = new URL(window.location.href);
@@ -462,6 +645,7 @@ export default function App() {
     clearProposalRoute();
     setSelectedThemeId(record.entry.id);
     setPreviewThemeId(null);
+    setSessionNotice(null);
     setDraft(draftFromCatalogRecord(record, { proposalMode: 'create' }));
     setActiveTab('create');
   }
@@ -470,6 +654,7 @@ export default function App() {
     clearProposalRoute();
     setSelectedThemeId(record.entry.id);
     setPreviewThemeId(null);
+    setSessionNotice(null);
     setDraft(draftFromCatalogRecord(record, { proposalMode: 'update' }));
     setActiveTab('create');
   }
@@ -477,8 +662,49 @@ export default function App() {
   function resetStudio() {
     clearProposalRoute();
     setSelectedThemeId(null);
+    setSessionNotice(null);
     setDraft(createEmptyDraft());
     setActiveTab('create');
+    void clearDraftSession().then(() => setSavedSession(null));
+  }
+
+  async function resumeSavedDraft() {
+    setSessionBusy(true);
+    setSessionNotice(null);
+    try {
+      const restored = await loadDraftSession();
+      if (!restored) {
+        setSavedSession(null);
+        setSessionNotice('No saved draft was available to restore.');
+        return;
+      }
+
+      clearProposalRoute();
+      skipNextAutosaveRef.current = true;
+      setSelectedThemeId(null);
+      setPreviewThemeId(null);
+      setDraft(restored);
+      setActiveTab('create');
+      setSavedSession(await peekDraftSession());
+      setSessionNotice(`Restored “${restored.name}” from your browser draft (kept for 24 hours).`);
+    } catch (cause) {
+      setSessionNotice(cause instanceof Error ? cause.message : 'Failed to restore the saved draft.');
+    } finally {
+      setSessionBusy(false);
+    }
+  }
+
+  async function discardSavedDraft() {
+    setSessionBusy(true);
+    try {
+      await clearDraftSession();
+      setSavedSession(null);
+      setSessionNotice('Discarded the browser-saved draft.');
+    } catch (cause) {
+      setSessionNotice(cause instanceof Error ? cause.message : 'Failed to discard the saved draft.');
+    } finally {
+      setSessionBusy(false);
+    }
   }
 
   async function handleDownload(record: ThemeCatalogRecord) {
@@ -509,11 +735,32 @@ export default function App() {
     <div className="app-shell">
       <header className="hero">
         <div className="hero__copy">
-          <p className="hero__kicker">Theme catalog</p>
-          <h1>SwitchU Themes</h1>
+          <div className="hero__title-row">
+            <img className="hero__brand" src="/brand-themes.png" alt="" width={72} height={72} />
+            <h1>SwitchU Themes</h1>
+          </div>
           <p className="hero__lede">
-            Browse and download themes, or open the studio to build your own with a live SwitchU preview.
+            Browse and download themes, or use the studio to build your own with a live SwitchU preview.
+            Download your custom theme or Sign in with GitHub to submit it to the theme shop and review or update your open submissions.
           </p>
+          <div className="auth-control">
+            {authUser ? (
+              <div className="auth-control__user">
+                {authUser.avatarUrl ? <img src={authUser.avatarUrl} alt="" className="auth-control__avatar" /> : null}
+                <span className="auth-control__login">@{authUser.login}</span>
+                <button className="ghost-button" type="button" onClick={handleLogout} title="Sign out">
+                  <LogOut size={16} />
+                  <span>Sign out</span>
+                </button>
+              </div>
+            ) : (
+              <button className="ghost-button" type="button" onClick={() => { void handleLogin(); }} title="Sign in with GitHub">
+                <LogIn size={16} />
+                <span>Sign in with GitHub</span>
+              </button>
+            )}
+            {authError ? <div className="submit-feedback submit-feedback--error auth-control__error">{authError}</div> : null}
+          </div>
         </div>
 
         <div className="hero__stats">
@@ -521,25 +768,6 @@ export default function App() {
           <StatChip icon={<AudioLines size={18} />} label="Music" value={String(stats.withMusic)} />
           <StatChip icon={<Volume2 size={18} />} label="Sounds" value={String(stats.withSounds)} />
           <StatChip icon={<Sparkles size={18} />} label="Icons" value={String(stats.withCustomIcons)} />
-        </div>
-
-        <div className="auth-control">
-          {authUser ? (
-            <div className="auth-control__user">
-              {authUser.avatarUrl ? <img src={authUser.avatarUrl} alt="" className="auth-control__avatar" /> : null}
-              <span className="auth-control__login">@{authUser.login}</span>
-              <button className="ghost-button" type="button" onClick={handleLogout} title="Sign out">
-                <LogOut size={16} />
-                <span>Sign out</span>
-              </button>
-            </div>
-          ) : (
-            <button className="ghost-button" type="button" onClick={() => { void handleLogin(); }} title="Sign in with GitHub">
-              <LogIn size={16} />
-              <span>Sign in with GitHub</span>
-            </button>
-          )}
-          {authError ? <div className="submit-feedback submit-feedback--error auth-control__error">{authError}</div> : null}
         </div>
       </header>
 
@@ -550,13 +778,6 @@ export default function App() {
           onClick={() => setActiveTab('explore')}
         >
           Explore themes
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'pending' ? 'tab-button--active' : ''}`}
-          type="button"
-          onClick={() => setActiveTab('pending')}
-        >
-          Validation
         </button>
         <button
           className={`tab-button ${activeTab === 'create' ? 'tab-button--active' : ''}`}
@@ -572,6 +793,13 @@ export default function App() {
         >
           Icon workshop
         </button>
+        <button
+          className={`tab-button ${activeTab === 'pending' ? 'tab-button--active' : ''}`}
+          type="button"
+          onClick={() => setActiveTab('pending')}
+        >
+          Validation
+        </button>
       </nav>
 
       <main className="content-grid">
@@ -580,21 +808,24 @@ export default function App() {
             <section className="panel panel--spotlight">
               <div className="panel__header">
                 <div>
-                  <p className="panel__eyebrow">Catalog workspace</p>
-                  <h2>Explore, download, template</h2>
+                  <p className="panel__eyebrow">Theme catalog</p>
+                  <h2>Explore and download themes</h2>
                 </div>
                 <button className="ghost-button" type="button" onClick={resetStudio}>
-                  Start a blank draft
+                  Create your own theme
                 </button>
               </div>
               <div className="feature-list">
                 <div className="feature-card">
-                  <strong>Browse real themes</strong>
-                  <span>Reads the live catalog and keeps the existing manifests visible in one place.</span>
+                  <strong>Browse themes</strong>
+                  <span>Browse, preview and download themes below or use SwitchU&apos;s built in theme shop.</span>
                 </div>
                 <div className="feature-card">
-                  <strong>Download complete zips</strong>
-                  <span>Packages the whole theme folder so you can archive or install it manually.</span>
+                  <strong>How to install</strong>
+                  <span>
+                    Use the SwitchU theme shop or extract downloaded themes to:{' '}
+                    <code>/config/SwitchU/themes/&lt;theme-id&gt;/</code>.
+                  </span>
                 </div>
                 <div className="feature-card">
                   <strong>Jump into the creator</strong>
@@ -651,7 +882,7 @@ export default function App() {
               <div className="panel__header">
                 <div>
                   <p className="panel__eyebrow">Validation queue</p>
-                  <h2>Themes awaiting review</h2>
+                  <h2>Themes and icon packs awaiting review</h2>
                 </div>
                 <button className="ghost-button" type="button" onClick={() => { void refreshOpenProposals(); }} disabled={openProposalsLoading}>
                   <RefreshCw size={16} />
@@ -660,16 +891,16 @@ export default function App() {
               </div>
               <div className="feature-list">
                 <div className="feature-card">
-                  <strong>Preview PR themes</strong>
-                  <span>Open any studio proposal with the same live SwitchU renderer used by the creator.</span>
+                  <strong>Preview theme PRs</strong>
+                  <span>Open studio theme proposals in the live SwitchU renderer used by the creator.</span>
                 </div>
                 <div className="feature-card">
-                  <strong>Edit with a personal code</strong>
-                  <span>Proposal authors can keep editing their own PR after entering its private edit code.</span>
+                  <strong>Review icon packs</strong>
+                  <span>Inspect glyph mosaics from open icon-pack PRs, then jump to GitHub to merge.</span>
                 </div>
                 <div className="feature-card">
-                  <strong>Review from GitHub</strong>
-                  <span>Jump straight to the pull request when a theme is ready for merge review.</span>
+                  <strong>Edit as the author</strong>
+                  <span>Theme authors can keep editing their own PR after signing in with the same GitHub account.</span>
                 </div>
               </div>
             </section>
@@ -678,7 +909,27 @@ export default function App() {
               <div className="panel__header">
                 <div>
                   <p className="panel__eyebrow">Open proposals</p>
-                  <h2>{openProposals.length ? `${openProposals.length} theme${openProposals.length === 1 ? '' : 's'} in validation` : 'No themes in validation'}</h2>
+                  <h2>
+                    {validationCounts.all
+                      ? `${validationCounts.all} item${validationCounts.all === 1 ? '' : 's'} in validation`
+                      : 'Nothing in validation'}
+                  </h2>
+                </div>
+                <div className="validation-filters" role="group" aria-label="Filter validation queue">
+                  {([
+                    ['all', `All (${validationCounts.all})`],
+                    ['themes', `Themes (${validationCounts.themes})`],
+                    ['icons', `Icons (${validationCounts.icons})`],
+                  ] as const).map(([value, label]) => (
+                    <button
+                      key={value}
+                      className={`validation-filter ${validationFilter === value ? 'validation-filter--active' : ''}`}
+                      type="button"
+                      onClick={() => setValidationFilter(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -692,19 +943,32 @@ export default function App() {
               {openProposalsError ? <div className="submit-feedback submit-feedback--error">{openProposalsError}</div> : null}
 
               {!openProposalsLoading && !openProposalsError ? (
-                openProposals.length ? (
+                validationItems.length ? (
                   <div className="theme-grid">
-                    {openProposals.map((proposal) => (
-                      <ProposalCard
-                        key={`${proposal.branchName}:${proposal.proposalId}`}
-                        proposal={proposal}
-                        onPreview={() => openProposalInStudio(proposal, 'preview')}
-                        onEdit={() => openProposalInStudio(proposal, 'edit')}
-                      />
+                    {validationItems.map((item) => (
+                      item.kind === 'theme' ? (
+                        <ProposalCard
+                          key={`theme:${item.proposal.branchName}:${item.proposal.proposalId}`}
+                          proposal={item.proposal}
+                          onPreview={() => openProposalInStudio(item.proposal, 'preview')}
+                          onEdit={() => openProposalInStudio(item.proposal, 'edit')}
+                        />
+                      ) : (
+                        <IconPackProposalCard
+                          key={`icon:${item.pack.branchName}:${item.pack.packId}`}
+                          pack={item.pack}
+                        />
+                      )
                     ))}
                   </div>
                 ) : (
-                  <div className="empty-state">No open studio proposals right now.</div>
+                  <div className="empty-state">
+                    {validationFilter === 'themes'
+                      ? 'No open theme proposals right now.'
+                      : validationFilter === 'icons'
+                        ? 'No open icon pack proposals right now.'
+                        : 'No open theme or icon pack proposals right now.'}
+                  </div>
                 )
               ) : null}
             </section>
@@ -742,9 +1006,9 @@ export default function App() {
                   <span>
                     {linkedProposal
                       ? linkedProposal.proposalMode === 'edit'
-                        ? "This link opens the editor for the linked PR. Saving remains locked until you provide this proposal's personal edit code."
+                        ? 'This link opens the editor for the linked PR. Sign in with the author GitHub account to save updates.'
                         : 'This link opens the linked PR in preview mode without write access.'
-                      : 'Pick an existing theme in the creator to clone its palette, assets, and layout values.'}
+                      : 'Pick an existing theme in the creator to clone its palette, assets, and layout values. Drafts autosave in this browser for 24 hours, and you can import a local zip anytime.'}
                   </span>
                 </div>
                 <div className="feature-card">
@@ -766,6 +1030,25 @@ export default function App() {
             ) : null}
 
             {proposalError ? <div className="submit-feedback submit-feedback--error">{proposalError}</div> : null}
+
+            {!linkedProposal && savedSession ? (
+              <div className="submit-feedback submit-feedback--success draft-session-banner">
+                <div>
+                  Browser draft “{savedSession.draftName}” ({savedSession.draftId}) is saved until{' '}
+                  {formatDateTime(new Date(savedSession.expiresAt).toISOString())}.
+                </div>
+                <div className="draft-session-banner__actions">
+                  <button className="ghost-button" type="button" disabled={sessionBusy} onClick={() => { void resumeSavedDraft(); }}>
+                    <span>{sessionBusy ? 'Working…' : 'Resume saved draft'}</span>
+                  </button>
+                  <button className="ghost-button" type="button" disabled={sessionBusy} onClick={() => { void discardSavedDraft(); }}>
+                    <span>Discard</span>
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            {sessionNotice ? <div className="submit-feedback submit-feedback--success">{sessionNotice}</div> : null}
 
             <ThemeStudio
               draft={draft}
@@ -841,7 +1124,7 @@ export default function App() {
                     disabled={downloadingThemeId === previewRecord.entry.id}
                   >
                     <Download size={16} />
-                    <span>{downloadingThemeId === previewRecord.entry.id ? 'Building zip…' : 'Download .zip'}</span>
+                    <span>{downloadingThemeId === previewRecord.entry.id ? 'Building zip…' : 'Download'}</span>
                   </button>
                 </div>
               </div>

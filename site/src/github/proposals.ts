@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { toBlob } from 'html-to-image';
+import { themeInstallInstructions } from '../install/paths';
 import { authHeaders } from './auth';
 import {
   DEFAULT_SFX_NAMES,
@@ -278,6 +279,7 @@ export async function downloadDraftArchive(draft: StudioDraft, previewNode: HTML
 
   root.file('theme.json', `${JSON.stringify(manifest, null, 2)}\n`);
   root.file('media/screenshots/00.png', previewBlob);
+  root.file('INSTALL.txt', themeInstallInstructions(manifest.id));
 
   await Promise.all(
     Array.from(collectArchiveAssets(draft).entries()).map(async ([relativePath, asset]) => {

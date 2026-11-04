@@ -6,6 +6,28 @@ export interface IconPackSubmitResult {
   branchName: string;
 }
 
+export interface OpenIconPackSummary {
+  kind: 'icon';
+  number: number;
+  title: string;
+  pullRequestUrl: string;
+  branchName: string;
+  packId: string;
+  name: string;
+  author: string;
+  version: string;
+  colour: boolean;
+  contributor: string;
+  createdAt: string;
+  updatedAt: string;
+  coverUrl: string;
+  glyphUrls: Array<{ fileName: string; url: string }>;
+}
+
+interface OpenIconPacksResponse {
+  packs: OpenIconPackSummary[];
+}
+
 export function iconPackProxyBaseUrl(): string {
   const apiBase = import.meta.env.VITE_PR_PROXY_URL?.trim();
   if (!apiBase) {
@@ -20,6 +42,17 @@ export async function withMosaicPreview(glyphs: PackGlyphFile[]): Promise<PackGl
   const withoutPreview = glyphs.filter((glyph) => glyph.fileName !== 'preview.png');
   const mosaic = await buildIconPackMosaicPng(withoutPreview);
   return [...withoutPreview, { fileName: 'preview.png', file: mosaic }];
+}
+
+export async function loadOpenIconPacks(): Promise<OpenIconPackSummary[]> {
+  const response = await fetch(`${iconPackProxyBaseUrl()}/api/icon-packs`, { cache: 'no-store' });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || `Failed to load open icon packs (${response.status})`);
+  }
+
+  const payload = await response.json() as OpenIconPacksResponse;
+  return Array.isArray(payload.packs) ? payload.packs : [];
 }
 
 export async function submitIconPack(

@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { buildCatalogUrl } from './api';
+import { themeInstallInstructions } from '../install/paths';
 import { assertLegitAsset } from './verifyAsset';
 import type { IconPackRecord, ThemeCatalogRecord } from '../theme/schema';
 
@@ -58,6 +59,8 @@ export async function downloadThemeArchive(record: ThemeCatalogRecord): Promise<
       root.file(relativePath, binary);
     }),
   );
+
+  root.file('INSTALL.txt', themeInstallInstructions(rootName));
 
   const archive = await zip.generateAsync({
     type: 'blob',
