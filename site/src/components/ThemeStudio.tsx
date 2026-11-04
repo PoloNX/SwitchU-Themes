@@ -682,7 +682,6 @@ export function ThemeStudio({
         <div className="studio-shell__status">
           <span><Sparkles size={16} /> live preview</span>
           <span><Upload size={16} /> background + fonts + audio</span>
-          <span><Send size={16} /> {linkedProposal ? 'PR linked' : 'PR ready'}</span>
         </div>
       </div>
 
