@@ -119,7 +119,9 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
                       <div className="theme-card__flags">
                         {record.entry.builtin ? <span>built-in</span> : <span>community</span>}
                         {record.manifest.colour === false ? <span>mono</span> : <span>colour</span>}
-                        {record.manifest.theme ? <span>theme: {record.manifest.theme}</span> : null}
+                        {record.entry.theme || record.manifest.theme ? (
+                          <span>theme: {record.entry.theme || record.manifest.theme}</span>
+                        ) : null}
                       </div>
                       {record.entry.description ? (
                         <p className="theme-card__meta">{record.entry.description}</p>

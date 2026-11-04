@@ -94,9 +94,22 @@ export async function loadIconCatalog(): Promise<IconPackRecord[]> {
         // to the icon convention below.
       }
 
-      const coverPath = entry.cover ?? (manifest.preview ? `${entry.path}/${manifest.preview}` : undefined);
+      // Prefer pack.json for title/author/version/theme so cards stay current
+      // even when a cached index.json lags a rename.
+      const resolvedEntry: IconCatalogEntry = {
+        ...entry,
+        name: (manifest.name && manifest.name.trim()) || entry.name,
+        author: (manifest.author && manifest.author.trim()) || entry.author,
+        version: (manifest.version && String(manifest.version).trim()) || entry.version,
+        description: (manifest.description && manifest.description.trim()) || entry.description,
+        colour: manifest.colour ?? entry.colour,
+        builtin: manifest.builtin ?? entry.builtin,
+        theme: (manifest.theme && manifest.theme.trim()) || entry.theme,
+      };
+
+      const coverPath = resolvedEntry.cover ?? (manifest.preview ? `${resolvedEntry.path}/${manifest.preview}` : undefined);
       return {
-        entry,
+        entry: resolvedEntry,
         manifest,
         manifestUrl,
         coverUrl: coverPath ? buildCatalogUrl(coverPath) : undefined,

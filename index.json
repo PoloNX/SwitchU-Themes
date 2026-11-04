@@ -75,7 +75,7 @@
     },
     {
       "id": "atmosphere-darkman-361985",
-      "name": "Atmosphere",
+      "name": "Atmos",
       "author": "bshurikan",
       "version": "1.1.2",
       "path": "themes/atmosphere-darkman-361985",
@@ -505,7 +505,8 @@
       "cover": "icons/atmos/preview.png",
       "builtin": true,
       "colour": true,
-      "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins."
+      "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins.",
+      "theme": "atmosphere-darkman-361985"
     },
     {
       "id": "default",

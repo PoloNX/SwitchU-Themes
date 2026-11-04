@@ -6,6 +6,7 @@
   "description": "Coloured glyphs with optional on-device HSL tint. Replaces the former Tinted / Grayscale / Solid builtins.",
   "colour": true,
   "builtin": true,
+  "theme": "atmosphere-darkman-361985",
   "preview": "preview.png",
   "glyphs": [
     "album.png",
