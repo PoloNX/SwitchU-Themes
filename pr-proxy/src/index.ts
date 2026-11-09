@@ -844,14 +844,14 @@ async function mirrorThemeIconsToIconShop(
   // Atmosphere-style: theme references an existing shop pack — ship glyphs, don't re-list.
   const referencedPackId = referencedThemeIconPackId(proposal);
   if (referencedPackId) {
-    return `References Icon Shop pack \`${referencedPackId}\` — glyphs ship with the theme; pack not re-listed.`;
+    return `References Icon Shop pack \`${referencedPackId}\` - glyphs ship with the theme; pack not re-listed.`;
   }
 
   const packId = proposal.id;
   const alreadyListed = findIconShopListing(existingIcons, packId);
   if (alreadyListed) {
     return alreadyListed.theme === proposal.id || alreadyListed.id === packId
-      ? `Icon Shop already lists \`${alreadyListed.id}\` for this theme — left unchanged.`
+      ? `Icon Shop already lists \`${alreadyListed.id}\` for this theme - left unchanged.`
       : `Skipped Icon Shop mirror: pack id \`${packId}\` is already used by \`${alreadyListed.id}\`.`;
   }
 

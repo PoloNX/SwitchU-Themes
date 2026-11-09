@@ -3,7 +3,7 @@
   "name": "iiSU",
   "author": "iiSU Team",
   "version": "1.1.1",
-  "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
+  "description": "Sidebar glyphs for the iiSU theme. Partial pack - missing glyphs (album, settings, power, …) fall back to Default.",
   "colour": true,
   "builtin": false,
   "preview": "preview.png",

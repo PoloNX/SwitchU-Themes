@@ -139,7 +139,7 @@ function buildProposalPayload(draft: StudioDraft) {
       manifest.theme?.icons?.packId
         ? `Icons: references Icon Shop pack \`${manifest.theme.icons.packId}\` (bundled for first install; not re-listed).`
         : (draft.iconGlyphs && draft.iconGlyphs.length > 0)
-          ? `Icons: ${draft.iconGlyphs.length} custom glyph(s) — will also list in Icon Shop if not already present.`
+          ? `Icons: ${draft.iconGlyphs.length} custom glyph(s) - will also list in Icon Shop if not already present.`
           : '',
       draft.notes.trim() ? '' : '',
       draft.notes.trim(),

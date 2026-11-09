@@ -905,7 +905,7 @@ export function ThemeStudio({
       const importedIcons = imported.iconGlyphs?.length ?? 0;
       setImportSuccess(
         importedIcons > 0
-          ? `Imported “${imported.name}” from ${file.name} (${importedIcons} icon${importedIcons === 1 ? '' : 's'} — edit under Icons). Draft autosave will keep it for 24 hours.`
+          ? `Imported “${imported.name}” from ${file.name} (${importedIcons} icon${importedIcons === 1 ? '' : 's'} - edit under Icons). Draft autosave will keep it for 24 hours.`
           : `Imported “${imported.name}” from ${file.name}. Draft autosave will keep it for 24 hours.`,
       );
     } catch (cause) {
@@ -1352,7 +1352,7 @@ export function ThemeStudio({
                 <div className="studio-control-section__title">Audio</div>
                 <p className="studio-control-section__subtitle">
                   {draft.audio.bundled || hasProposalAssets
-                    ? 'Bundled audio enabled — uploads ship with the theme.'
+                    ? 'Bundled audio enabled - uploads ship with the theme.'
                     : 'Using built-in sounds. Upload music or any SFX you want to override.'}
                 </p>
 
@@ -1420,7 +1420,7 @@ export function ThemeStudio({
                     </p>
                   ) : (
                     <p className="studio-field__hint">
-                      No sidebar icons yet — pick an Icon Shop pack or upload custom PNGs under Icons.
+                      No sidebar icons yet - pick an Icon Shop pack or upload custom PNGs under Icons.
                     </p>
                   )}
                   <div className="submit-actions">

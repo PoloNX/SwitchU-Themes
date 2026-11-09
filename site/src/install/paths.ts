@@ -26,7 +26,7 @@ export function themeShopInstallPath(themeId: string): string {
 export function themeInstallInstructions(themeId = '<theme-id>'): string {
   const folder = themeId.trim() || '<theme-id>';
   return [
-    'SwitchU theme — manual install',
+    'SwitchU theme - manual install',
     '',
     '1. Unzip this archive on your computer.',
     `2. Copy the theme folder to ${THEME_MANUAL_INSTALL_ROOT}/${folder}/`,
