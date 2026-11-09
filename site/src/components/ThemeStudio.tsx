@@ -28,7 +28,7 @@ import {
   glyphsInVisualOrder,
   type IconPackGlyph,
 } from '../icons/pack';
-import { themeInstallPath } from '../install/paths';
+import { themeInstallPath, themeShopInstallPath } from '../install/paths';
 import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
 import {
@@ -880,7 +880,8 @@ export function ThemeStudio({
     try {
       await downloadDraftArchive(draft, previewRef.current);
       setArchiveSuccess(
-        `Local zip download started. Extract it to ${themeInstallPath(draft.id || 'my-theme')} on your SD card.`,
+        `Local zip download started. Extract it to ${themeInstallPath(draft.id || 'my-theme')} on your SD card `
+        + `(or ${themeShopInstallPath(draft.id || 'my-theme')}).`,
       );
     } catch (cause) {
       setArchiveError(cause instanceof Error ? cause.message : 'Unknown archive export error');
@@ -1447,7 +1448,8 @@ export function ThemeStudio({
                     </button>
                   </div>
                   <p className="studio-field__hint">
-                    Manual install path: <code>{themeInstallPath(draft.id || 'my-theme')}</code>
+                    Manual install (1.4.1+): <code>{themeInstallPath(draft.id || 'my-theme')}</code>
+                    {' '}Also valid: <code>{themeShopInstallPath(draft.id || 'my-theme')}</code>.
                     {' '}Zips include an INSTALL.txt with the same instructions.
                   </p>
                   {linkedProposal?.proposalMode === 'preview' ? (

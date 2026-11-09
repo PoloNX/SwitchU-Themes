@@ -401,14 +401,19 @@ Rules:
 
 ## Installation mapping
 
-Once downloaded, a theme folder is expected to map directly to:
+As of SwitchU **1.4.1**, installed theme packages are discovered from either root:
 
 ```text
-sdmc:/config/SwitchU/themes/<theme-id>/
+sdmc:/switch/SwitchU/themes/<theme-id>/   ← preferred manual drop folder
+sdmc:/config/SwitchU/themes/<theme-id>/   ← Theme Shop / managed installs
 ```
 
-Theme Shop installs and manual zip installs currently share that `config` path.
-Standalone icon packs are different and install under `sdmc:/switch/SwitchU/icons/`.
+Manual zips should use the `/switch/SwitchU/themes/` path. Theme Shop downloads
+still land under `/config/SwitchU/themes/`. If the same theme id exists in both
+places, the Theme Shop (`config`) copy wins. Theme-bundled icons and sounds are
+resolved from whichever root the package was loaded from.
+
+Standalone icon packs remain separate and install under `sdmc:/switch/SwitchU/icons/`.
 
 Downloaded theme zips from the site include an `INSTALL.txt` with these steps.
 That means the repository layout is already close to the installed layout, which keeps client-side installation simple.
