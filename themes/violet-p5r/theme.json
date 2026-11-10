@@ -1,0 +1,91 @@
+{
+  "id": "violet-p5r",
+  "name": "Violet P5R",
+  "author": "Yukikuze",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.00010775031978615957,
+        1,
+        0.5
+      ],
+      "accent": [
+        0,
+        0,
+        1
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0,
+        0,
+        1
+      ],
+      "shapes": [
+        0.6317506072371535,
+        0.4055009832781854,
+        1
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "mixed",
+      "symmetry": "vertical",
+      "count": 30,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "grid": {
+        "columns": 10,
+        "rows": 9,
+        "spacing": [
+          350,
+          200
+        ]
+      },
+      "size": [
+        0,
+        0
+      ],
+      "speed": [
+        7,
+        10
+      ],
+      "wobble": 0,
+      "rotationSpeed": 0.1,
+      "opacity": 0.51,
+      "image": {
+        "path": "media/backgrounds/thumb-1920-1210980.png",
+        "opacity": 1,
+        "fit": "contain"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Take-Over-(Battle-Theme)---Persona-5-Royal.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}
