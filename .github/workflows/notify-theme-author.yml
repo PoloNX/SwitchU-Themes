@@ -1,0 +1,102 @@
+name: Notify theme submitter on merge
+
+# Theme PRs are opened by switchu-themes-pr-proxy[bot], so GitHub never mails
+# the human who signed in. Studio stores their login in .switchu-studio.json
+# (authorLogin). On merge, @mention them so they see the theme is in the shop.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout merge commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 1
+
+      - name: Comment @authorLogin from studio metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          import json, os, subprocess, urllib.request
+          from pathlib import Path
+
+          token = os.environ["GH_TOKEN"]
+          repo = os.environ["REPO"]
+          pr = os.environ["PR_NUMBER"]
+          title = os.environ["PR_TITLE"]
+
+          req = urllib.request.Request(
+              f"https://api.github.com/repos/{repo}/pulls/{pr}/files?per_page=100",
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {token}",
+                  "User-Agent": "switchu-themes-notify",
+              },
+          )
+          with urllib.request.urlopen(req) as resp:
+              files = json.load(resp)
+
+          paths = [
+              f["filename"]
+              for f in files
+              if f.get("filename", "").endswith("/.switchu-studio.json")
+          ]
+          if not paths:
+              paths = [str(p) for p in Path("themes").glob("*/.switchu-studio.json")]
+
+          mentions = []
+          names = []
+          seen = set()
+          for path in paths:
+              p = Path(path)
+              if not p.is_file():
+                  continue
+              data = json.loads(p.read_text(encoding="utf-8"))
+              login = (
+                  (data.get("authorLogin") or "")
+                  or (data.get("draftSnapshot") or {}).get("contributor")
+                  or ""
+              ).strip().lstrip("@")
+              name = ((data.get("draftSnapshot") or {}).get("name") or "").strip()
+              key = login.lower()
+              if not login or key in seen:
+                  continue
+              seen.add(key)
+              mentions.append(f"@{login}")
+              if name:
+                  names.append(name)
+
+          if not mentions:
+              print("No authorLogin found; skipping notify.")
+              raise SystemExit(0)
+
+          theme_line = f"Themes: {', '.join(names)}\n\n" if names else ""
+          body = (
+              f"{' '.join(mentions)}\n\n"
+              "Your theme proposal was merged and should show up in the Theme Shop "
+              "shortly (catalog refresh / next app pull).\n\n"
+              f"{theme_line}"
+              f"PR: #{pr} — {title}\n\n"
+              "Thanks for contributing to SwitchU Themes!\n"
+          )
+          subprocess.run(
+              ["gh", "pr", "comment", pr, "--repo", repo, "--body", body],
+              check=True,
+          )
+          print("Notified:", ", ".join(mentions))
+          PY
