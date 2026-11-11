@@ -386,15 +386,6 @@
       "hasIcons": false
     },
     {
-      "id": "twilight-princess",
-      "name": "Twilight Princess",
-      "author": "Snaoke",
-      "version": "1.0.0",
-      "path": "themes/twilight-princess",
-      "manifest": "themes/twilight-princess/theme.json",
-      "cover": "themes/twilight-princess/media/screenshots/00.png"
-    },
-    {
       "id": "sonicadventure2",
       "name": "Sonic Adventure Theme",
       "author": "Sloth_Blast",
@@ -465,6 +456,27 @@
       "hasMusic": true,
       "hasSounds": true,
       "hasIcons": false
+    },
+    {
+      "id": "twilight-princess",
+      "name": "Twilight Princess",
+      "author": "Snaoke",
+      "version": "1.0.0",
+      "path": "themes/twilight-princess",
+      "manifest": "themes/twilight-princess/theme.json",
+      "cover": "themes/twilight-princess/media/screenshots/00.png"
+    },
+    {
+      "id": "undertale",
+      "name": "Undertale",
+      "author": "Kiddo Animation",
+      "version": "1.0.5",
+      "path": "themes/undertale",
+      "manifest": "themes/undertale/theme.json",
+      "cover": "themes/undertale/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": false
     },
     {
       "id": "wii-ish",

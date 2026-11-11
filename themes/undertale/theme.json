@@ -1,0 +1,85 @@
+{
+  "id": "undertale",
+  "name": "Undertale",
+  "author": "Kiddo Animation",
+  "version": "1.0.5",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0,
+        0,
+        1
+      ],
+      "accent": [
+        0.9912350372291993,
+        0.8698204270034652,
+        0.55
+      ],
+      "background": [
+        0,
+        1,
+        0.0196078431372549
+      ],
+      "backgroundAccent": [
+        0,
+        1,
+        0.03137254901960784
+      ],
+      "shapes": [
+        0,
+        0,
+        1
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "square",
+      "symmetry": "none",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "image": {
+        "path": "media/backgrounds/1000325549.png",
+        "opacity": 0.24,
+        "fit": "cover"
+      }
+    },
+    "fonts": {
+      "regular": "fonts/DeterminationMonoWebRegular-Z5oq.ttf",
+      "small": "fonts/DeterminationMonoWebRegular-Z5oq.ttf"
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/toby-fox---UNDERTALE-Soundtrack---90-His-Theme.mp3"
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/undertale-1794178890222",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "undertale",
+    "name": "Undertale",
+    "author": "Kiddo Animation",
+    "version": "1.0.5",
+    "summary": "Undertale",
+    "notes": "",
+    "contributor": "hafizarifin661-bit",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      },
+      "accent": {
+        "h": 0.9912350372291993,
+        "s": 0.8698204270034652,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0,
+        "s": 1,
+        "l": 0.0196078431372549
+      },
+      "backgroundAccent": {
+        "h": 0,
+        "s": 1,
+        "l": 0.03137254901960784
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "square",
+      "symmetry": "none",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 0.24,
+      "imageFit": "cover",
+      "image": {
+        "name": "1000325549.png",
+        "relativePath": "media/backgrounds/1000325549.png"
+      }
+    },
+    "fonts": {
+      "regular": {
+        "name": "DeterminationMonoWebRegular-Z5oq.ttf",
+        "relativePath": "fonts/DeterminationMonoWebRegular-Z5oq.ttf"
+      },
+      "small": {
+        "name": "DeterminationMonoWebRegular-Z5oq.ttf",
+        "relativePath": "fonts/DeterminationMonoWebRegular-Z5oq.ttf"
+      }
+    },
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "toby-fox---UNDERTALE-Soundtrack---90-His-Theme.mp3",
+        "relativePath": "sounds/music/toby-fox---UNDERTALE-Soundtrack---90-His-Theme.mp3"
+      },
+      "sfx": {}
+    }
+  },
+  "authorLogin": "hafizarifin661-bit"
+}
