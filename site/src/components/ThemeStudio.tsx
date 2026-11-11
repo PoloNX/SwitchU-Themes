@@ -1322,7 +1322,7 @@ export function ThemeStudio({
                     step={0.01}
                     value={draft.background.rotationSpeed}
                     onChange={(value) => patchBackground('rotationSpeed', value)}
-                    hint="Negative = reverse"
+                    hint="−2–2 · Negative = reverse"
                     disabled={controlsLocked}
                   />
                   <UnitSlider
