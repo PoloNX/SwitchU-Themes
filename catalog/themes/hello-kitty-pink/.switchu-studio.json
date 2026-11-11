@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/hello-kitty-pink-1792405644489",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "hello-kitty-pink",
+    "name": "Hello kitty pink",
+    "author": "aadya",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.8568470351644206,
+        "s": 0.6143200613238212,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      },
+      "background": {
+        "h": 0.8917394687684724,
+        "s": 0.7674362731005451,
+        "l": 0.8588235294117648
+      },
+      "backgroundAccent": {
+        "h": 0.9351577445383878,
+        "s": 0.5245253489244484,
+        "l": 0.7607843137254902
+      },
+      "shapes": {
+        "h": 0.9379751786369868,
+        "s": 0.49634804523398585,
+        "l": 0.5705882352941176
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 60,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.3,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 5,
+      "sizeMax": 12,
+      "speedMin": 10,
+      "speedMax": 70,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 0.24,
+      "imageFit": "cover",
+      "image": {
+        "name": "Screenshot-2026-10-19-at-11.19.41.png",
+        "relativePath": "media/backgrounds/Screenshot-2026-10-19-at-11.19.41.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  }
+}

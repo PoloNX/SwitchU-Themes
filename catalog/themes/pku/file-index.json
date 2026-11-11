@@ -1,0 +1,18 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "media/backgrounds/pokemons-pikachu-live-wallpaper.png",
+    "media/screenshots/00.png",
+    "sounds/music/1-23.-Pokemon-Gym.mp3",
+    "sounds/sfx/hide_modal.wav",
+    "sounds/sfx/launch_game.wav",
+    "sounds/sfx/navigation.wav",
+    "sounds/sfx/slider_down.wav",
+    "sounds/sfx/slider_up.wav",
+    "sounds/sfx/tab_transition.wav",
+    "sounds/sfx/toggle_off.wav",
+    "sounds/sfx/toggle_on.wav",
+    "sounds/sfx/volume.wav",
+    "theme.json"
+  ]
+}

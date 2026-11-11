@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/cyan-theme-1787080628263",
+  "draftSnapshot": {
+    "basedOnThemeId": "iisu",
+    "proposalMode": "create",
+    "id": "cyan-theme",
+    "name": "Cyan Theme",
+    "author": "JohnK",
+    "version": "0.1.0",
+    "summary": "Add theme Cyan Theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.63,
+        "s": 0.78,
+        "l": 0.56
+      },
+      "accent": {
+        "h": 0.63,
+        "s": 0.78,
+        "l": 0.56
+      },
+      "background": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+      },
+      "backgroundAccent": {
+        "h": 0.42715930501020694,
+        "s": 0.43848678474999747,
+        "l": 0.0392156862745098
+      },
+      "shapes": {
+        "h": 0.4936981785045189,
+        "s": 1,
+        "l": 0.5
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "quad",
+      "count": 50,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.24,
+      "columns": 28,
+      "rows": 15,
+      "spacingX": 45,
+      "spacingY": 45,
+      "sizeMin": 4,
+      "sizeMax": 15,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0,
+      "opacity": 0.76,
+      "imageOpacity": 0.24,
+      "imageFit": "cover"
+    },
+    "fonts": {
+      "regular": {
+        "name": "Digital-Serial-Bold.ttf",
+        "relativePath": "fonts/Digital-Serial-Bold.ttf"
+      },
+      "small": {
+        "name": "Digital-Serial-Regular.ttf",
+        "relativePath": "fonts/Digital-Serial-Regular.ttf"
+      }
+    },
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "43. Wii U Menu - Not In Use (Gamepad).mp3",
+        "relativePath": "sounds/music/43.-Wii-U-Menu---Not-In-Use-(Gamepad).mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "activation.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "confirm.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "show_modal.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "hide_modal.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "navigation.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        }
+      }
+    }
+  }
+}

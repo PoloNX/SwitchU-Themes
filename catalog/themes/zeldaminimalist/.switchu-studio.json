@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/zeldaminimalist-1781852357862",
+  "draftSnapshot": {
+    "id": "zeldaminimalist",
+    "name": "Zelda Minimalist",
+    "author": "Degrahne",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "Degrahne",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.13617835114749588,
+        "s": 1,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.22000931437610904,
+        "s": 0.6806423728608855,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.24588996411879416,
+        "s": 0.87138429041887,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.47489964010097774,
+        "s": 1,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.17627734956576013,
+        "s": 1,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "triangle",
+      "symmetry": "quad",
+      "count": 70,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.5,
+      "columns": 0,
+      "rows": 0,
+      "spacingX": 10,
+      "spacingY": 10,
+      "sizeMin": 8,
+      "sizeMax": 15,
+      "speedMin": 0,
+      "speedMax": 13,
+      "wobble": 8,
+      "rotationSpeed": 0,
+      "opacity": 0.3,
+      "imageOpacity": 0.48,
+      "imageFit": "cover",
+      "image": {
+        "name": "1.png",
+        "relativePath": "media/backgrounds/1.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  }
+}

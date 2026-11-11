@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/slenditubbies-clasic-1792720959342",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "slenditubbies-clasic",
+    "name": "Slenditubbies clasic",
+    "author": "guardian",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.6790701810480051,
+        "s": 1,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.708593167794933,
+        "s": 1,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.7415022916057636,
+        "s": 0.9826503262043307,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.6429871436820755,
+        "s": 0.8468179775057786,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.7805392276813161,
+        "s": 1,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "quad",
+      "count": 50,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.21,
+      "columns": 15,
+      "rows": 10,
+      "spacingX": 73,
+      "spacingY": 74,
+      "sizeMin": 10,
+      "sizeMax": 13,
+      "speedMin": 5,
+      "speedMax": 5,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 0.24,
+      "imageFit": "contain",
+      "image": {
+        "name": "imagen_2026-10-22_201210729.png",
+        "relativePath": "media/backgrounds/imagen_2026-10-22_201210729.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Slendytubbies 2 Intro Song.mp3",
+        "relativePath": "sounds/music/Slendytubbies-2-Intro-Song.mp3"
+      },
+      "sfx": {
+        "confirm": {
+          "name": "Slendytubbies-tinky-winky-scream-_1_.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "hide_modal": {
+          "name": "laa-laa-monster-scream.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "launch_game": {
+          "name": "slendytubbies-2-popup.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "slendytubbies-2-popup.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "slendytubbies-2-popup.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "volume": {
+          "name": "dipsy-chainsaw-sound-effect.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/srcmiku-1783982372099",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "srcmiku",
+    "name": "SRC Hatsune Miku",
+    "author": "CrisUllon",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.5431034482758621,
+        "s": 0.8969072164948456,
+        "l": 0.6196078431372549
+      },
+      "accent": {
+        "h": 0.53,
+        "s": 0.8,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 0.00392156862745098
+      }
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 0.8,
+      "imageFit": "cover",
+      "image": {
+        "name": "1400513.png",
+        "relativePath": "media/backgrounds/1400513.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "sailovejinseirunner (SwitchU).mp3",
+        "relativePath": "sounds/music/sailovejinseirunner-(SwitchU).mp3"
+      },
+      "sfx": {}
+    }
+  }
+}

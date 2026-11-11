@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/ch4r1z4rd-th3m3-1781980396341",
+  "draftSnapshot": {
+    "basedOnThemeId": "sunset",
+    "proposalMode": "create",
+    "id": "ch4r1z4rd-th3m3",
+    "name": "CH4R1Z4RD TH3M3",
+    "author": "Darlin Collado",
+    "version": "1.2.0",
+    "summary": "4404",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.08,
+        "s": 0.85,
+        "l": 0.6
+      },
+      "accent": {
+        "h": 0.011806700608164133,
+        "s": 0.5323234497917102,
+        "l": 0.6
+      },
+      "background": {
+        "h": 0.03259178965268106,
+        "s": 0.7677342367354837,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.06,
+        "s": 0.5,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.9939487678476786,
+        "s": 0.6062975533015382,
+        "l": 0.28
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "quad",
+      "count": 4,
+      "fixedOrientation": false,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 26,
+      "sizeMax": 78,
+      "speedMin": 10,
+      "speedMax": 24,
+      "wobble": 8,
+      "rotationSpeed": 0.18,
+      "opacity": 0.7,
+      "imageOpacity": 0.24,
+      "imageFit": "cover",
+      "image": {
+        "name": "Gemini_Generated_Image_psit0wpsit0wpsit.png",
+        "relativePath": "media/backgrounds/Gemini_Generated_Image_psit0wpsit0wpsit.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "pk battle.mp3",
+        "relativePath": "sounds/music/pk-battle.mp3"
+      },
+      "sfx": {}
+    }
+  }
+}

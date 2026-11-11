@@ -1,0 +1,95 @@
+{
+  "id": "iisu",
+  "name": "iiSU",
+  "author": "iiSU Team",
+  "version": "1.1.2",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.63,
+        0.78,
+        0.56
+      ],
+      "accent": [
+        0.63,
+        0.78,
+        0.56
+      ],
+      "background": [
+        0.6,
+        0.01,
+        0.94
+      ],
+      "backgroundAccent": [
+        0.6,
+        0.02,
+        0.89
+      ],
+      "shapes": [
+        0.62,
+        0.14,
+        0.76
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "none",
+      "count": 420,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.24,
+      "grid": {
+        "columns": 28,
+        "rows": 15,
+        "spacing": [
+          45,
+          45
+        ]
+      },
+      "size": [
+        4,
+        6
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "rotationSpeed": 0,
+      "opacity": 0.76
+    },
+    "fonts": {
+      "regular": "fonts/Digital-Serial-Bold.ttf",
+      "small": "fonts/Digital-Serial-Regular.ttf"
+    },
+    "icons": {
+      "path": "assets/icons",
+      "files": [
+        "assets/icons/controller.png",
+        "assets/icons/gamecard.png",
+        "assets/icons/mii_editor.png",
+        "assets/icons/themes.png"
+      ]
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/home.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "show_modal": "sounds/sfx/show_modal.wav"
+    }
+  }
+}

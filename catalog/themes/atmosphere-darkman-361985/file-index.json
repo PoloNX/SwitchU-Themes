@@ -1,0 +1,16 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "assets/icons/album.png",
+    "assets/icons/change_view.png",
+    "assets/icons/controller.png",
+    "assets/icons/mii_editor.png",
+    "assets/icons/power.png",
+    "assets/icons/preview.png",
+    "assets/icons/settings.png",
+    "assets/icons/themes.png",
+    "media/backgrounds/image.png",
+    "media/screenshots/00.png",
+    "theme.json"
+  ]
+}

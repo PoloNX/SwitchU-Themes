@@ -1,0 +1,76 @@
+{
+  "id": "cyan-theme",
+  "name": "Cyan Theme",
+  "author": "JohnK",
+  "version": "0.1.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.63,
+        0.78,
+        0.56
+      ],
+      "accent": [
+        0.63,
+        0.78,
+        0.56
+      ],
+      "background": [
+        0,
+        0,
+        0
+      ],
+      "backgroundAccent": [
+        0.42715930501020694,
+        0.43848678474999747,
+        0.0392156862745098
+      ],
+      "shapes": [
+        0.4936981785045189,
+        1,
+        0.5
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "quad",
+      "count": 50,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.24,
+      "grid": {
+        "columns": 28,
+        "rows": 15,
+        "spacing": [
+          45,
+          45
+        ]
+      },
+      "size": [
+        4,
+        15
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0,
+      "opacity": 0.76
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/43.-Wii-U-Menu---Not-In-Use-(Gamepad).mp3"
+    ]
+  }
+}

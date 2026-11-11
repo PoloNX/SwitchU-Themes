@@ -1,0 +1,89 @@
+{
+  "id": "slenditubbies-clasic",
+  "name": "Slenditubbies clasic",
+  "author": "guardian",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.6790701810480051,
+        1,
+        0.62
+      ],
+      "accent": [
+        0.708593167794933,
+        1,
+        0.55
+      ],
+      "background": [
+        0.7415022916057636,
+        0.9826503262043307,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.6429871436820755,
+        0.8468179775057786,
+        0.14
+      ],
+      "shapes": [
+        0.7805392276813161,
+        1,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "quad",
+      "count": 50,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.21,
+      "grid": {
+        "columns": 15,
+        "rows": 10,
+        "spacing": [
+          73,
+          74
+        ]
+      },
+      "size": [
+        10,
+        13
+      ],
+      "speed": [
+        5,
+        5
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "image": {
+        "path": "media/backgrounds/imagen_2026-10-22_201210729.png",
+        "opacity": 0.24,
+        "fit": "contain"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Slendytubbies-2-Intro-Song.mp3"
+    ],
+    "sfx": {
+      "confirm": "sounds/sfx/confirm.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}

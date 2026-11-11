@@ -1,0 +1,21 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "media/backgrounds/thumb-1920-1375141.png",
+    "media/screenshots/00.png",
+    "sounds/music/LoggingIn.mp3",
+    "sounds/sfx/activation.wav",
+    "sounds/sfx/confirm.wav",
+    "sounds/sfx/hide_modal.wav",
+    "sounds/sfx/launch_game.wav",
+    "sounds/sfx/navigation.wav",
+    "sounds/sfx/show_modal.wav",
+    "sounds/sfx/slider_down.wav",
+    "sounds/sfx/slider_up.wav",
+    "sounds/sfx/tab_transition.wav",
+    "sounds/sfx/toggle_off.wav",
+    "sounds/sfx/toggle_on.wav",
+    "sounds/sfx/volume.wav",
+    "theme.json"
+  ]
+}

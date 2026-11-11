@@ -1,0 +1,18 @@
+{
+  "files": [
+    "assets/icons/controller.png",
+    "assets/icons/gamecard.png",
+    "assets/icons/mii_editor.png",
+    "assets/icons/themes.png",
+    "fonts/Digital-Serial-Bold.ttf",
+    "fonts/Digital-Serial-Regular.ttf",
+    "media/screenshots/00.png",
+    "sounds/music/home.mp3",
+    "sounds/sfx/activation.wav",
+    "sounds/sfx/confirm.wav",
+    "sounds/sfx/hide_modal.wav",
+    "sounds/sfx/navigation.wav",
+    "sounds/sfx/show_modal.wav",
+    "theme.json"
+  ]
+}

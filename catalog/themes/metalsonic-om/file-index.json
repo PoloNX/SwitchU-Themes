@@ -1,0 +1,14 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "media/backgrounds/ima2ge.png",
+    "media/screenshots/00.png",
+    "sounds/music/Dead-or-Alive-0.1.mp3",
+    "sounds/sfx/confirm.wav",
+    "sounds/sfx/launch_game.wav",
+    "sounds/sfx/slider_down.wav",
+    "sounds/sfx/slider_up.wav",
+    "sounds/sfx/tab_transition.wav",
+    "theme.json"
+  ]
+}

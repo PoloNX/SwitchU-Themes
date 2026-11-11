@@ -1,0 +1,17 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "fonts/Display-Plump-W95-Regular.ttf",
+    "fonts/TintaArabic-Bold.otf",
+    "media/backgrounds/801c9339-a8d1-4b07-a7ae-76616a27cf4a.png",
+    "media/screenshots/00.png",
+    "sounds/music/Sonic-Adventure-2-Story-select.mp3",
+    "sounds/sfx/hide_modal.wav",
+    "sounds/sfx/launch_game.wav",
+    "sounds/sfx/navigation.wav",
+    "sounds/sfx/show_modal.wav",
+    "sounds/sfx/tab_transition.wav",
+    "sounds/sfx/toggle_on.wav",
+    "theme.json"
+  ]
+}

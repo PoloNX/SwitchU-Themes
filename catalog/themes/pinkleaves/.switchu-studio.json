@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/pinkleaves-1781999572451",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "pinkleaves",
+    "name": "ACNH Leaves (Pink)",
+    "author": "pillOwOfort",
+    "version": "1.0.0",
+    "summary": "ACNH Leaves (Pink)",
+    "notes": "simple theme meant to match a coral ACNH switch lite. also in teal for your teal needs!",
+    "contributor": "pillOwOfort",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.48701298701298695,
+        "s": 0.41621621621621613,
+        "l": 0.6372549019607843
+      },
+      "accent": {
+        "h": 0.48701298701298695,
+        "s": 0.41621621621621613,
+        "l": 0.6372549019607843
+      },
+      "background": {
+        "h": 0.9703389830508474,
+        "s": 0.6941176470588235,
+        "l": 0.6666666666666667
+      },
+      "backgroundAccent": {
+        "h": 0.9703389830508474,
+        "s": 0.6941176470588235,
+        "l": 0.6666666666666667
+      },
+      "shapes": {
+        "h": 0.98,
+        "s": 0.8426966292134833,
+        "l": 0.8254901960784313
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 5,
+      "sizeMax": 40,
+      "speedMin": 5,
+      "speedMax": 45,
+      "wobble": 15,
+      "rotationSpeed": 0.15,
+      "opacity": 0.45,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "acnh-leaf-pink.png",
+        "relativePath": "media/backgrounds/acnh-leaf-pink.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  }
+}

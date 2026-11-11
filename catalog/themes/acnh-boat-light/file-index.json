@@ -1,0 +1,13 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "fonts/FinkHeavy.ttf",
+    "media/backgrounds/SyocC5.png",
+    "media/screenshots/00.png",
+    "sounds/music/Animal-Crossing-New-Horizons.mp3",
+    "sounds/sfx/activation.wav",
+    "sounds/sfx/confirm.wav",
+    "sounds/sfx/launch_game.wav",
+    "theme.json"
+  ]
+}

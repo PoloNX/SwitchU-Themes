@@ -1,0 +1,22 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "fonts/X360.ttf",
+    "media/backgrounds/Switch-360-Theme-Switch-U-1.png",
+    "media/screenshots/00.png",
+    "sounds/music/bg1.mp3",
+    "sounds/sfx/activation.wav",
+    "sounds/sfx/confirm.wav",
+    "sounds/sfx/hide_modal.wav",
+    "sounds/sfx/launch_game.wav",
+    "sounds/sfx/navigation.wav",
+    "sounds/sfx/show_modal.wav",
+    "sounds/sfx/slider_down.wav",
+    "sounds/sfx/slider_up.wav",
+    "sounds/sfx/tab_transition.wav",
+    "sounds/sfx/toggle_off.wav",
+    "sounds/sfx/toggle_on.wav",
+    "sounds/sfx/volume.wav",
+    "theme.json"
+  ]
+}

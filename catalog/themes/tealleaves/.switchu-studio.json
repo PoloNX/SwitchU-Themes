@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/tealleaves-1781999313568",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "tealleaves",
+    "name": "ACNH Leaves (Teal)",
+    "author": "pillOwOfort",
+    "version": "1.0.0",
+    "summary": "ACNH Leaves (Teal)",
+    "notes": "extremely simple theme designed to match my switch lite's shells. also in pink for your pink needs!",
+    "contributor": "pillOwOfort",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.48701298701298695,
+        "s": 0.41621621621621613,
+        "l": 0.6372549019607843
+      },
+      "accent": {
+        "h": 0.4889807162534436,
+        "s": 1,
+        "l": 0.2372549019607843
+      },
+      "background": {
+        "h": 0.4889807162534436,
+        "s": 1,
+        "l": 0.2372549019607843
+      },
+      "backgroundAccent": {
+        "h": 0.4889807162534436,
+        "s": 1,
+        "l": 0.2372549019607843
+      },
+      "shapes": {
+        "h": 0.48701298701298695,
+        "s": 0.41621621621621613,
+        "l": 0.6372549019607843
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 100,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 1,
+      "sizeMax": 40,
+      "speedMin": 5,
+      "speedMax": 40,
+      "wobble": 15,
+      "rotationSpeed": 0.2,
+      "opacity": 0.35,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "acnh-leaf-teal.png",
+        "relativePath": "media/backgrounds/acnh-leaf-teal.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/violet-p5r-1794297962440",
+  "draftSnapshot": {
+    "basedOnThemeId": "lusamine",
+    "proposalMode": "create",
+    "id": "violet-p5r",
+    "name": "Violet P5R",
+    "author": "Yukikuze",
+    "version": "1.0.0",
+    "summary": "",
+    "notes": "",
+    "contributor": "hieuprorock-pixel",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.00010775031978615957,
+        "s": 1,
+        "l": 0.5
+      },
+      "accent": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      },
+      "shapes": {
+        "h": 0.6317506072371535,
+        "s": 0.4055009832781854,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "mixed",
+      "symmetry": "vertical",
+      "count": 30,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 10,
+      "rows": 9,
+      "spacingX": 350,
+      "spacingY": 200,
+      "sizeMin": 0,
+      "sizeMax": 0,
+      "speedMin": 7,
+      "speedMax": 10,
+      "wobble": 0,
+      "rotationSpeed": 0.1,
+      "opacity": 0.51,
+      "imageOpacity": 1,
+      "imageFit": "contain",
+      "image": {
+        "name": "thumb-1920-1210980.png",
+        "relativePath": "media/backgrounds/thumb-1920-1210980.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Take Over (Battle Theme) - Persona 5 Royal.mp3",
+        "relativePath": "sounds/music/Take-Over-(Battle-Theme)---Persona-5-Royal.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "SYSTEM#3 (co_op_up_c).wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "SYSTEM#18 (battle_cutin).wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "navigation": {
+          "name": "SYSTEM#316 (「ナビゲーションを開始します」).wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "SYSTEM#317 (「ナビを開始します」).wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "toggle_on": {
+          "name": "SYSTEM#96 (unlock).wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "SYSTEM#96 (unlock).wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "SYSTEM#82 (stab_knife).wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "SYSTEM#52 (den_notice).wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  },
+  "authorLogin": "hieuprorock-pixel"
+}

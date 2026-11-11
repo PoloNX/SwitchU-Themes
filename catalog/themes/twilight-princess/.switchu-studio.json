@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/twilight-princess-1793832367482",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "twilight-princess",
+    "name": "Twilight Princess",
+    "author": "Snaoke",
+    "version": "1.0.0",
+    "summary": "Twilight Princess",
+    "notes": "",
+    "contributor": "Snaoke",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.16666666666666666,
+        "s": 1,
+        "l": 0.2549019607843137
+      },
+      "accent": {
+        "h": 0.16666666666666666,
+        "s": 1,
+        "l": 0.3333333333333333
+      },
+      "background": {
+        "h": 0,
+        "s": 0,
+        "l": 0.2549019607843137
+      },
+      "backgroundAccent": {
+        "h": 0,
+        "s": 0,
+        "l": 0.11764705882352941
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "square",
+      "symmetry": "horizontal",
+      "count": 15,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "columns": 20,
+      "rows": 20,
+      "spacingX": 100,
+      "spacingY": 100,
+      "sizeMin": 15,
+      "sizeMax": 15,
+      "speedMin": 80,
+      "speedMax": 220,
+      "wobble": 0,
+      "rotationSpeed": 3,
+      "opacity": 0.3,
+      "imageOpacity": 0.5,
+      "imageFit": "cover",
+      "image": {
+        "name": "9696f0358e3c18e6a1af602db5959103.png",
+        "relativePath": "media/backgrounds/9696f0358e3c18e6a1af602db5959103.png"
+      }
+    },
+    "fonts": {
+      "regular": {
+        "name": "Ravenna.ttf",
+        "relativePath": "fonts/Ravenna.ttf"
+      }
+    },
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "1-12.-Twilight.mp3",
+        "relativePath": "sounds/music/1-12.-Twilight.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "activation.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "TP_Options_Confirm.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "TP_Portals_On.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "TP_Portals_Off.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "navigation.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "TP_Collections_Open.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "slider_up.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "slider_down.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "toggle_on.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "toggle_off.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "tab_transition": {
+          "name": "tab_transition.wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        },
+        "volume": {
+          "name": "volume.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  },
+  "authorLogin": "Snaoke"
+}

@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/metalsonic-om-1782683594288",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "metalsonic-om",
+    "name": "MetalSonic OM",
+    "author": "Tuto",
+    "version": "1.0.0",
+    "summary": "Metal Sonic Theme",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.6087190949938723,
+        "s": 0.9722270907363398,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.6567452516190304,
+        "s": 1,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.629904126611092,
+        "s": 1,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "quad",
+      "count": 82,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 1,
+      "sizeMax": 5,
+      "speedMin": 10,
+      "speedMax": 15,
+      "wobble": 8,
+      "rotationSpeed": 0.5,
+      "opacity": 1,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "ima2ge.png",
+        "relativePath": "media/backgrounds/ima2ge.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Dead or Alive 0.1.mp3",
+        "relativePath": "sounds/music/Dead-or-Alive-0.1.mp3"
+      },
+      "sfx": {
+        "confirm": {
+          "name": "confirmet).wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "launch_game": {
+          "name": "Metal Sonic Sounds (In-Game Pitch) - OUTCOME MEMORIES (mp3cut.net).wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "slider upt.net).wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "slider down(mp3cut.net).wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "tab_transition": {
+          "name": "tab change.net).wav",
+          "relativePath": "sounds/sfx/tab_transition.wav"
+        }
+      }
+    }
+  }
+}

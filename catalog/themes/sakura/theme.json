@@ -1,0 +1,72 @@
+{
+  "id": "sakura",
+  "name": "Sakura",
+  "author": "PoloNX",
+  "version": "1.2.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png",
+      "media/screenshots/01.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.94,
+        0.75,
+        0.7
+      ],
+      "accent": [
+        0.94,
+        0.75,
+        0.7
+      ],
+      "background": [
+        0.97,
+        0.3,
+        0.94
+      ],
+      "backgroundAccent": [
+        0.94,
+        0.4,
+        0.88
+      ],
+      "shapes": [
+        0.94,
+        0.35,
+        0.7
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "diamond",
+      "symmetry": "quad",
+      "count": 63,
+      "grid": {
+        "columns": 9,
+        "rows": 7,
+        "spacing": [
+          118,
+          92
+        ]
+      },
+      "size": [
+        16,
+        28
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "fixedOrientation": false,
+      "rotationSpeed": 0.03,
+      "roundness": 0,
+      "opacity": 0.52
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}

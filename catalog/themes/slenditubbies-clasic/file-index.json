@@ -1,0 +1,15 @@
+{
+  "files": [
+    ".switchu-studio.json",
+    "media/backgrounds/imagen_2026-10-22_201210729.png",
+    "media/screenshots/00.png",
+    "sounds/music/Slendytubbies-2-Intro-Song.mp3",
+    "sounds/sfx/confirm.wav",
+    "sounds/sfx/hide_modal.wav",
+    "sounds/sfx/launch_game.wav",
+    "sounds/sfx/slider_down.wav",
+    "sounds/sfx/slider_up.wav",
+    "sounds/sfx/volume.wav",
+    "theme.json"
+  ]
+}

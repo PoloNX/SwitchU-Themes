@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/roses-and-pain-1786813186850",
+  "draftSnapshot": {
+    "basedOnThemeId": "cammy-minimalist",
+    "proposalMode": "create",
+    "id": "roses-and-pain",
+    "name": "Roses and Pain",
+    "author": "Trastornada",
+    "version": "1.1.0",
+    "summary": "Roses and Pain",
+    "notes": "",
+    "contributor": "",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.9937634963511215,
+        "s": 1,
+        "l": 0.56
+      },
+      "accent": {
+        "h": 0.00362701962001144,
+        "s": 1,
+        "l": 0.56
+      },
+      "background": {
+        "h": 0.8436425817581502,
+        "s": 1,
+        "l": 0.94
+      },
+      "backgroundAccent": {
+        "h": 0.6464256118709681,
+        "s": 1,
+        "l": 0.89
+      },
+      "shapes": {
+        "h": 0.9677798548563017,
+        "s": 1,
+        "l": 0.76
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 20,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.42,
+      "columns": 26,
+      "rows": 20,
+      "spacingX": 47,
+      "spacingY": 58,
+      "sizeMin": 8,
+      "sizeMax": 16,
+      "speedMin": 62,
+      "speedMax": 10,
+      "wobble": 8,
+      "rotationSpeed": 0.38,
+      "opacity": 0.53,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "abdeb8ce-e859-44d0-89e6-157cd643ff90.png",
+        "relativePath": "media/backgrounds/abdeb8ce-e859-44d0-89e6-157cd643ff90.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "2debd19d-5593-4882-8c16-14615292ef99.mp3",
+        "relativePath": "sounds/music/2debd19d-5593-4882-8c16-14615292ef99.mp3"
+      },
+      "sfx": {}
+    }
+  }
+}

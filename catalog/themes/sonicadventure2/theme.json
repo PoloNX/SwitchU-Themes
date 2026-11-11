@@ -1,0 +1,93 @@
+{
+  "id": "sonicadventure2",
+  "name": "Sonic Adventure Theme",
+  "author": "Sloth_Blast",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.5914913856181698,
+        1,
+        0.62
+      ],
+      "accent": [
+        0.5890747625045701,
+        1,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.2102532083915376,
+        0.8567952990345874,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "vertical",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        4,
+        19
+      ],
+      "speed": [
+        100,
+        0
+      ],
+      "wobble": 10,
+      "rotationSpeed": 0,
+      "opacity": 0.15,
+      "image": {
+        "path": "media/backgrounds/801c9339-a8d1-4b07-a7ae-76616a27cf4a.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    },
+    "fonts": {
+      "regular": "fonts/Display-Plump-W95-Regular.ttf",
+      "small": "fonts/TintaArabic-Bold.otf"
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Sonic-Adventure-2-Story-select.mp3"
+    ],
+    "sfx": {
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav"
+    }
+  }
+}

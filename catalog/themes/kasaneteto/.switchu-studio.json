@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/kasaneteto-1785086674822",
+  "draftSnapshot": {
+    "basedOnThemeId": "hatsune-miku",
+    "proposalMode": "create",
+    "id": "kasaneteto",
+    "name": "Kasane Teto",
+    "author": "KoQuinS",
+    "version": "1.0.0",
+    "summary": "Kasane Teto",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.9947816701998444,
+        "s": 0.7626169146346928,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.981644257665479,
+        "s": 0.5974259874160677,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.9277893140804346,
+        "s": 1,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.9446706031177556,
+        "s": 0.3852538072322433,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.910686762398711,
+        "s": 0.5754648154313506,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "imageOpacity": 0.29,
+      "imageFit": "cover",
+      "image": {
+        "name": "upscalemedia-transformed.png",
+        "relativePath": "media/backgrounds/upscalemedia-transformed.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "(offvocal)原口沙輔 _ イガク feat.重音テト　リアルカラオケ(Instrumental).mp3",
+        "relativePath": "sounds/music/(offvocal)原口沙輔-_-イガク-feat.重音テト-リアルカラオケ(Instrumental).mp3"
+      },
+      "sfx": {}
+    }
+  }
+}

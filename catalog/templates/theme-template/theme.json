@@ -1,0 +1,84 @@
+{
+  "id": "theme-template",
+  "name": "Theme Template",
+  "author": "Theme Author",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/01.webp"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.58,
+        0.9,
+        0.62
+      ],
+      "accent": [
+        0.53,
+        0.8,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.56,
+        0.4,
+        0.3
+      ]
+    },
+    "background": {
+      "image": {
+        "path": "media/backgrounds/hero.jpg",
+        "opacity": 0.22,
+        "fit": "cover"
+      },
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "quad",
+      "count": 72,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "rotationSpeed": 0.04,
+      "opacity": 0.82
+    },
+    "fonts": {
+      "regular": "fonts/Sora-Regular.ttf",
+      "small": "fonts/Sora-Regular.ttf"
+    },
+    "icons": {
+      "path": "assets/icons"
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}
