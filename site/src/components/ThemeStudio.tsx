@@ -225,6 +225,48 @@ function UnitSlider({
   );
 }
 
+/** Bipolar slider: center = 0, left = reverse %, right = forward %. Maps ±100% onto [min, max]. */
+function SignedPercentSlider({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  disabled = false,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  min: number;
+  max: number;
+  disabled?: boolean;
+}) {
+  const extent = Math.max(Math.abs(min), Math.abs(max)) || 1;
+  const safe = normalizeFinite(value, min, max, 0);
+  const percent = Math.round((safe / extent) * 100);
+  const hint = `${percent}%`;
+  return (
+    <Field label={label} hint={hint}>
+      <div className="studio-slider">
+        <input
+          className="studio-slider__range"
+          type="range"
+          min={-100}
+          max={100}
+          step={1}
+          disabled={disabled}
+          value={percent}
+          aria-valuetext={hint}
+          onChange={(event) => {
+            const nextPercent = Number(event.currentTarget.value);
+            onChange(normalizeFinite((nextPercent / 100) * extent, min, max, 0));
+          }}
+        />
+      </div>
+    </Field>
+  );
+}
+
 function BoundNumber({
   label,
   value,
@@ -1315,14 +1357,12 @@ export function ThemeStudio({
                     onChange={(value) => patchBackground('wobble', value)}
                     disabled={controlsLocked}
                   />
-                  <BoundNumber
+                  <SignedPercentSlider
                     label="Rotation speed"
                     min={BACKGROUND_BOUNDS.rotationSpeed.min}
                     max={BACKGROUND_BOUNDS.rotationSpeed.max}
-                    step={0.01}
                     value={draft.background.rotationSpeed}
                     onChange={(value) => patchBackground('rotationSpeed', value)}
-                    hint="−2–2 · Negative = reverse"
                     disabled={controlsLocked}
                   />
                   <UnitSlider
