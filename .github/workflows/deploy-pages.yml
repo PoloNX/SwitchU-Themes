@@ -12,7 +12,9 @@ permissions:
   id-token: write
 
 concurrency:
-  group: theme-site-pages
+  # Bumped off theme-site-pages — phantom GitHub Actions runs held that group
+  # forever (queued, 0 jobs, cancel returns 409 "not queued yet").
+  group: theme-site-pages-v2
   cancel-in-progress: true
 
 jobs:
