@@ -685,10 +685,22 @@ select {
 
 .catalog-toolbar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.catalog-toolbar .catalog-sort {
+  flex: 0 0 auto;
+}
+
+.catalog-toolbar .search-field {
+  flex: 1 1 220px;
+  min-width: 180px;
+  max-width: 340px;
 }
 
 .catalog-sort {
@@ -2135,11 +2147,11 @@ select option:hover {
 
   .catalog-toolbar {
     width: 100%;
-    justify-content: stretch;
   }
 
   .catalog-toolbar .search-field {
-    flex: 1 1 100%;
+    flex: 1 1 auto;
+    max-width: none;
   }
 
   .tab-strip {
@@ -2159,12 +2171,15 @@ select option:hover {
   .panel__header,
   .studio-shell__header {
     flex-direction: column;
-    align-items: start;
+    align-items: stretch;
   }
 
-  .search-field,
   .ghost-button,
   .tab-button {
+    width: 100%;
+  }
+
+  .panel__header .search-field:not(.catalog-toolbar .search-field) {
     width: 100%;
   }
 

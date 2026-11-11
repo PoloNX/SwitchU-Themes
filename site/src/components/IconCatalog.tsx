@@ -1,4 +1,4 @@
-import { Download, LoaderCircle, RefreshCw, Search, Sparkles } from 'lucide-react';
+import { Download, LoaderCircle, Search, Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { loadIconCatalog } from '../catalog/api';
 import { downloadIconPackArchive } from '../catalog/download';
@@ -126,10 +126,6 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
               placeholder="Search pack, author…"
             />
           </label>
-          <button className="ghost-button" type="button" onClick={() => { void refresh(); }} disabled={loading}>
-            <RefreshCw size={16} />
-            <span>{loading ? 'Refreshing…' : 'Refresh'}</span>
-          </button>
         </div>
       </div>
 
