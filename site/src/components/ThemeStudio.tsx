@@ -28,7 +28,7 @@ import {
   glyphsInVisualOrder,
   type IconPackGlyph,
 } from '../icons/pack';
-import { themeInstallPath } from '../install/paths';
+import { themeInstallPath, themeShopInstallPath } from '../install/paths';
 import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
 import {
@@ -880,7 +880,8 @@ export function ThemeStudio({
     try {
       await downloadDraftArchive(draft, previewRef.current);
       setArchiveSuccess(
-        `Local zip download started. Extract it to ${themeInstallPath(draft.id || 'my-theme')} on your SD card.`,
+        `Local zip download started. Extract it to ${themeInstallPath(draft.id || 'my-theme')} on your SD card `
+        + `(or ${themeShopInstallPath(draft.id || 'my-theme')}).`,
       );
     } catch (cause) {
       setArchiveError(cause instanceof Error ? cause.message : 'Unknown archive export error');
@@ -904,7 +905,7 @@ export function ThemeStudio({
       const importedIcons = imported.iconGlyphs?.length ?? 0;
       setImportSuccess(
         importedIcons > 0
-          ? `Imported “${imported.name}” from ${file.name} (${importedIcons} icon${importedIcons === 1 ? '' : 's'} — edit under Icons). Draft autosave will keep it for 24 hours.`
+          ? `Imported “${imported.name}” from ${file.name} (${importedIcons} icon${importedIcons === 1 ? '' : 's'} - edit under Icons). Draft autosave will keep it for 24 hours.`
           : `Imported “${imported.name}” from ${file.name}. Draft autosave will keep it for 24 hours.`,
       );
     } catch (cause) {
@@ -1351,7 +1352,7 @@ export function ThemeStudio({
                 <div className="studio-control-section__title">Audio</div>
                 <p className="studio-control-section__subtitle">
                   {draft.audio.bundled || hasProposalAssets
-                    ? 'Bundled audio enabled — uploads ship with the theme.'
+                    ? 'Bundled audio enabled - uploads ship with the theme.'
                     : 'Using built-in sounds. Upload music or any SFX you want to override.'}
                 </p>
 
@@ -1419,7 +1420,7 @@ export function ThemeStudio({
                     </p>
                   ) : (
                     <p className="studio-field__hint">
-                      No sidebar icons yet — pick an Icon Shop pack or upload custom PNGs under Icons.
+                      No sidebar icons yet - pick an Icon Shop pack or upload custom PNGs under Icons.
                     </p>
                   )}
                   <div className="submit-actions">
@@ -1447,7 +1448,8 @@ export function ThemeStudio({
                     </button>
                   </div>
                   <p className="studio-field__hint">
-                    Manual install path: <code>{themeInstallPath(draft.id || 'my-theme')}</code>
+                    Manual install (1.4.1+): <code>{themeInstallPath(draft.id || 'my-theme')}</code>
+                    {' '}Also valid: <code>{themeShopInstallPath(draft.id || 'my-theme')}</code>.
                     {' '}Zips include an INSTALL.txt with the same instructions.
                   </p>
                   {linkedProposal?.proposalMode === 'preview' ? (

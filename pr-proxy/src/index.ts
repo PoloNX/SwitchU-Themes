@@ -844,14 +844,14 @@ async function mirrorThemeIconsToIconShop(
   // Atmosphere-style: theme references an existing shop pack — ship glyphs, don't re-list.
   const referencedPackId = referencedThemeIconPackId(proposal);
   if (referencedPackId) {
-    return `References Icon Shop pack \`${referencedPackId}\` — glyphs ship with the theme; pack not re-listed.`;
+    return `References Icon Shop pack \`${referencedPackId}\` - glyphs ship with the theme; pack not re-listed.`;
   }
 
   const packId = proposal.id;
   const alreadyListed = findIconShopListing(existingIcons, packId);
   if (alreadyListed) {
     return alreadyListed.theme === proposal.id || alreadyListed.id === packId
-      ? `Icon Shop already lists \`${alreadyListed.id}\` for this theme — left unchanged.`
+      ? `Icon Shop already lists \`${alreadyListed.id}\` for this theme - left unchanged.`
       : `Skipped Icon Shop mirror: pack id \`${packId}\` is already used by \`${alreadyListed.id}\`.`;
   }
 
@@ -1004,8 +1004,23 @@ function buildPullRequestBody(
   baseBody: string,
   links: ProposalLinks | undefined,
   previewImage?: { owner: string; repo: string; branch: string; path: string; alt: string },
+  authorLogin?: string,
 ): string {
-  const sections = [baseBody.trim()];
+  const sections: string[] = [];
+  const login = String(authorLogin ?? '').trim().replace(/^@+/, '');
+
+  // Lead with a GitHub @mention so the submitter is subscribed / notified.
+  // The PR author is the studio bot; without this, merge mail never reaches them.
+  if (login) {
+    sections.push(
+      `Submitted by @${login}`,
+      '',
+      `<sub>GitHub account that signed in to Themes Studio (\`authorLogin\`). Mentioning them here so review and merge updates reach a real inbox.</sub>`,
+      '',
+    );
+  }
+
+  sections.push(baseBody.trim());
 
   if (previewImage?.path) {
     const rawUrl =
@@ -1347,7 +1362,7 @@ async function handleCreateProposal(request: Request, env: Env): Promise<Respons
         branch,
         path: screenshotPath,
         alt: proposal.name,
-      }),
+      }, session.login),
     );
     return jsonResponse({ pullRequestUrl, branchName: branch, ...proposalLinks }, 200, corsHeaders(request, env));
   } catch (cause) {

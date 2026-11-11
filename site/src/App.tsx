@@ -830,8 +830,10 @@ export default function App() {
                 <div className="feature-card">
                   <strong>How to install</strong>
                   <span>
-                    Use the SwitchU theme shop or extract downloaded themes to:{' '}
-                    <code>/config/SwitchU/themes/&lt;theme-id&gt;/</code>.
+                    Use the SwitchU theme shop, or extract downloaded themes to{' '}
+                    <code>/switch/SwitchU/themes/&lt;theme-id&gt;/</code>
+                    {' '}(1.4.1+) or <code>/config/SwitchU/themes/&lt;theme-id&gt;/</code>.
+                    Theme Shop installs use the config path and win on id overlap.
                   </span>
                 </div>
                 <div className="feature-card">
