@@ -386,6 +386,15 @@
       "hasIcons": false
     },
     {
+      "id": "twilight-princess",
+      "name": "Twilight Princess",
+      "author": "Snaoke",
+      "version": "1.0.0",
+      "path": "themes/twilight-princess",
+      "manifest": "themes/twilight-princess/theme.json",
+      "cover": "themes/twilight-princess/media/screenshots/00.png"
+    },
+    {
       "id": "sonicadventure2",
       "name": "Sonic Adventure Theme",
       "author": "Sloth_Blast",

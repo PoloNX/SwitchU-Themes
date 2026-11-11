@@ -1,0 +1,99 @@
+{
+  "id": "twilight-princess",
+  "name": "Twilight Princess",
+  "author": "Snaoke",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.16666666666666666,
+        1,
+        0.2549019607843137
+      ],
+      "accent": [
+        0.16666666666666666,
+        1,
+        0.3333333333333333
+      ],
+      "background": [
+        0,
+        0,
+        0.2549019607843137
+      ],
+      "backgroundAccent": [
+        0,
+        0,
+        0.11764705882352941
+      ],
+      "shapes": [
+        0,
+        0,
+        0
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "square",
+      "symmetry": "horizontal",
+      "count": 15,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0,
+      "grid": {
+        "columns": 20,
+        "rows": 20,
+        "spacing": [
+          100,
+          100
+        ]
+      },
+      "size": [
+        15,
+        15
+      ],
+      "speed": [
+        80,
+        220
+      ],
+      "wobble": 0,
+      "rotationSpeed": 3,
+      "opacity": 0.3,
+      "image": {
+        "path": "media/backgrounds/9696f0358e3c18e6a1af602db5959103.png",
+        "opacity": 0.5,
+        "fit": "cover"
+      }
+    },
+    "fonts": {
+      "regular": "fonts/Ravenna.ttf",
+      "small": "fonts/Ravenna.ttf"
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/1-12.-Twilight.mp3"
+    ],
+    "sfx": {
+      "activation": "sounds/sfx/activation.wav",
+      "confirm": "sounds/sfx/confirm.wav",
+      "show_modal": "sounds/sfx/show_modal.wav",
+      "hide_modal": "sounds/sfx/hide_modal.wav",
+      "navigation": "sounds/sfx/navigation.wav",
+      "launch_game": "sounds/sfx/launch_game.wav",
+      "slider_up": "sounds/sfx/slider_up.wav",
+      "slider_down": "sounds/sfx/slider_down.wav",
+      "toggle_on": "sounds/sfx/toggle_on.wav",
+      "toggle_off": "sounds/sfx/toggle_off.wav",
+      "tab_transition": "sounds/sfx/tab_transition.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}
