@@ -1,7 +1,8 @@
-import { Download, LoaderCircle, RefreshCw, Sparkles } from 'lucide-react';
+import { Download, LoaderCircle, RefreshCw, Search, Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { loadIconCatalog } from '../catalog/api';
 import { downloadIconPackArchive } from '../catalog/download';
+import { compareCatalogEntries, type CatalogSortMode } from '../catalog/sort';
 import type { IconPackRecord } from '../theme/schema';
 
 function packId(record: IconPackRecord): string {
@@ -16,6 +17,8 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const [catalogSort, setCatalogSort] = useState<CatalogSortMode>('name');
 
   const refresh = useMemo(
     () => async () => {
@@ -35,6 +38,31 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
   useEffect(() => {
     void refresh();
   }, [refresh]);
+
+  const filteredRecords = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const matched = query
+      ? records.filter((record) => {
+          const haystack = [
+            record.entry.id,
+            record.entry.name,
+            record.entry.author,
+            record.entry.description,
+            record.entry.theme,
+            record.manifest.theme,
+          ].filter(Boolean).join(' ').toLowerCase();
+          return haystack.includes(query);
+        })
+      : records.slice();
+
+    matched.sort((left, right) => {
+      if (left.entry.builtin !== right.entry.builtin) {
+        return left.entry.builtin ? -1 : 1;
+      }
+      return compareCatalogEntries(left.entry, right.entry, catalogSort);
+    });
+    return matched;
+  }, [catalogSort, records, search]);
 
   const handleDownload = async (record: IconPackRecord) => {
     const id = packId(record);
@@ -72,10 +100,36 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
           <p className="panel__eyebrow">Online shop</p>
           <h2>Icon packs</h2>
         </div>
-        <button className="ghost-button" type="button" onClick={() => { void refresh(); }} disabled={loading}>
-          <RefreshCw size={16} />
-          <span>{loading ? 'Refreshing…' : 'Refresh'}</span>
-        </button>
+        <div className="catalog-toolbar">
+          <div className="catalog-sort" role="group" aria-label="Sort icon packs">
+            <button
+              className={`catalog-sort__button ${catalogSort === 'name' ? 'catalog-sort__button--active' : ''}`}
+              type="button"
+              onClick={() => setCatalogSort('name')}
+            >
+              A–Z
+            </button>
+            <button
+              className={`catalog-sort__button ${catalogSort === 'newest' ? 'catalog-sort__button--active' : ''}`}
+              type="button"
+              onClick={() => setCatalogSort('newest')}
+            >
+              Newest
+            </button>
+          </div>
+          <label className="search-field">
+            <Search size={16} />
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.currentTarget.value)}
+              placeholder="Search pack, author…"
+            />
+          </label>
+          <button className="ghost-button" type="button" onClick={() => { void refresh(); }} disabled={loading}>
+            <RefreshCw size={16} />
+            <span>{loading ? 'Refreshing…' : 'Refresh'}</span>
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -88,9 +142,9 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
       {error ? <div className="submit-feedback submit-feedback--error">{error}</div> : null}
 
       {!loading && !error ? (
-        records.length ? (
+        filteredRecords.length ? (
           <div className="theme-grid">
-            {records.map((record) => {
+            {filteredRecords.map((record) => {
               const id = packId(record);
               const isBusy = downloading === id;
               return (
@@ -145,7 +199,9 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
             })}
           </div>
         ) : (
-          <div className="empty-state">No icon packs published yet.</div>
+          <div className="empty-state">
+            {records.length ? 'No icon packs match that search.' : 'No icon packs published yet.'}
+          </div>
         )
       ) : null}
     </section>

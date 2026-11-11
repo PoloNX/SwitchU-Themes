@@ -27,6 +27,8 @@ interface CatalogEntry {
   hasIcons?: boolean;
   hasMusic?: boolean;
   hasSounds?: boolean;
+  addedAt?: string;
+  updatedAt?: string;
 }
 
 interface ProposalPayload {
@@ -736,8 +738,12 @@ function upsertCatalogEntry(
     ? current as { schemaVersion?: number; themes?: CatalogEntry[]; icons?: unknown[] }
     : {};
 
+  const previous = Array.isArray(catalog.themes)
+    ? catalog.themes.find((item) => item.id === entry.id)
+    : undefined;
+  const stamped = stampCatalogTimestamps(previous, entry);
   const themes = Array.isArray(catalog.themes) ? catalog.themes.filter((item) => item.id !== entry.id) : [];
-  themes.push(entry);
+  themes.push(stamped);
   themes.sort((left, right) => left.name.localeCompare(right.name));
 
   return {
@@ -760,6 +766,20 @@ interface IconCatalogEntry {
   builtin: boolean;
   colour: boolean;
   theme?: string;
+  addedAt?: string;
+  updatedAt?: string;
+}
+
+function stampCatalogTimestamps<T extends { addedAt?: string; updatedAt?: string }>(
+  existing: T | undefined,
+  entry: T,
+): T {
+  const now = new Date().toISOString();
+  return {
+    ...entry,
+    addedAt: existing?.addedAt || entry.addedAt || now,
+    updatedAt: now,
+  };
 }
 
 function upsertIconCatalogEntry(
@@ -770,10 +790,14 @@ function upsertIconCatalogEntry(
     ? current as { schemaVersion?: number; themes?: unknown[]; icons?: IconCatalogEntry[] }
     : {};
 
+  const previous = Array.isArray(catalog.icons)
+    ? catalog.icons.find((item) => item.id === entry.id)
+    : undefined;
+  const stamped = stampCatalogTimestamps(previous, entry);
   const icons = Array.isArray(catalog.icons)
     ? catalog.icons.filter((item) => item.id !== entry.id)
     : [];
-  icons.push(entry);
+  icons.push(stamped);
   icons.sort((left, right) => {
     if (left.builtin !== right.builtin) {
       return left.builtin ? -1 : 1;

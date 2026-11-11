@@ -11,6 +11,10 @@ export interface ThemeCatalogEntry {
   hasIcons?: boolean;
   hasMusic?: boolean;
   hasSounds?: boolean;
+  /** ISO-8601 first publish time (set by catalog upsert). */
+  addedAt?: string;
+  /** ISO-8601 last catalog upsert time. */
+  updatedAt?: string;
 }
 
 export interface IconCatalogEntry {
@@ -25,6 +29,10 @@ export interface IconCatalogEntry {
   builtin?: boolean;
   colour?: boolean;
   theme?: string;
+  /** ISO-8601 first publish time (set by catalog upsert). */
+  addedAt?: string;
+  /** ISO-8601 last catalog upsert time. */
+  updatedAt?: string;
 }
 
 export interface ThemeCatalog {

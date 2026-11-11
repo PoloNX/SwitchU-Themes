@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadThemeCatalog } from './catalog/api';
 import { themeCapabilities, themeDeclaresIcons, themeDeclaresMusic, themeDeclaresSounds } from './catalog/capabilities';
 import { downloadThemeArchive } from './catalog/download';
+import { compareCatalogEntries, type CatalogSortMode } from './catalog/sort';
 import { ThemeStudio } from './components/ThemeStudio';
 import { IconCatalog } from './components/IconCatalog';
 import { IconWorkshop } from './components/IconWorkshop';
@@ -300,6 +301,7 @@ export default function App() {
   const [previewThemeId, setPreviewThemeId] = useState<string | null>(null);
   const [draft, setDraft] = useState<StudioDraft>(() => createEmptyDraft());
   const [search, setSearch] = useState('');
+  const [catalogSort, setCatalogSort] = useState<CatalogSortMode>('name');
   const [downloadingThemeId, setDownloadingThemeId] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [linkedProposal, setLinkedProposal] = useState<ProposalRouteState | null>(initialProposalRoute);
@@ -496,20 +498,21 @@ export default function App() {
 
   const filteredRecords = useMemo(() => {
     const query = search.trim().toLowerCase();
-    if (!query) {
-      return records;
-    }
+    const matched = query
+      ? records.filter((record) => {
+          const haystack = [
+            record.entry.id,
+            record.entry.name,
+            record.entry.author,
+            record.manifest.theme?.mode,
+          ].join(' ').toLowerCase();
+          return haystack.includes(query);
+        })
+      : records.slice();
 
-    return records.filter((record) => {
-      const haystack = [
-        record.entry.id,
-        record.entry.name,
-        record.entry.author,
-        record.manifest.theme?.mode,
-      ].join(' ').toLowerCase();
-      return haystack.includes(query);
-    });
-  }, [records, search]);
+    matched.sort((left, right) => compareCatalogEntries(left.entry, right.entry, catalogSort));
+    return matched;
+  }, [catalogSort, records, search]);
 
   const selectedRecord = useMemo(() => {
     return records.find((record) => record.entry.id === selectedThemeId) ?? null;
@@ -849,10 +852,28 @@ export default function App() {
                   <p className="panel__eyebrow">Current catalog</p>
                   <h2>Browse existing themes</h2>
                 </div>
-                <label className="search-field">
-                  <Search size={16} />
-                  <input value={search} onChange={(event) => setSearch(event.currentTarget.value)} placeholder="Search theme, author, mode…" />
-                </label>
+                <div className="catalog-toolbar">
+                  <div className="catalog-sort" role="group" aria-label="Sort themes">
+                    <button
+                      className={`catalog-sort__button ${catalogSort === 'name' ? 'catalog-sort__button--active' : ''}`}
+                      type="button"
+                      onClick={() => setCatalogSort('name')}
+                    >
+                      A–Z
+                    </button>
+                    <button
+                      className={`catalog-sort__button ${catalogSort === 'newest' ? 'catalog-sort__button--active' : ''}`}
+                      type="button"
+                      onClick={() => setCatalogSort('newest')}
+                    >
+                      Newest
+                    </button>
+                  </div>
+                  <label className="search-field">
+                    <Search size={16} />
+                    <input value={search} onChange={(event) => setSearch(event.currentTarget.value)} placeholder="Search theme, author, mode…" />
+                  </label>
+                </div>
               </div>
 
               {downloadError ? <div className="submit-feedback submit-feedback--error">{downloadError}</div> : null}
@@ -867,21 +888,25 @@ export default function App() {
               {error ? <div className="error-state">{error}</div> : null}
 
               {!loading && !error ? (
-                <div className="theme-grid">
-                  {filteredRecords.map((record) => (
-                    <ThemeCard
-                      key={record.entry.id}
-                      record={record}
-                      previewed={record.entry.id === previewThemeId}
-                      templated={record.entry.id === selectedThemeId}
-                      downloading={record.entry.id === downloadingThemeId}
-                      onPreview={() => showRecordPreview(record)}
-                      onUseTemplate={() => loadRecordInStudio(record)}
-                      onEditTheme={() => editRecordInStudio(record)}
-                      onDownload={() => { void handleDownload(record); }}
-                    />
-                  ))}
-                </div>
+                filteredRecords.length ? (
+                  <div className="theme-grid">
+                    {filteredRecords.map((record) => (
+                      <ThemeCard
+                        key={record.entry.id}
+                        record={record}
+                        previewed={record.entry.id === previewThemeId}
+                        templated={record.entry.id === selectedThemeId}
+                        downloading={record.entry.id === downloadingThemeId}
+                        onPreview={() => showRecordPreview(record)}
+                        onUseTemplate={() => loadRecordInStudio(record)}
+                        onEditTheme={() => editRecordInStudio(record)}
+                        onDownload={() => { void handleDownload(record); }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-state">No themes match that search.</div>
+                )
               ) : null}
             </section>
           </>

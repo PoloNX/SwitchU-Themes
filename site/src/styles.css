@@ -683,6 +683,41 @@ select {
   animation: spin 1.1s linear infinite;
 }
 
+.catalog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.catalog-sort {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.catalog-sort__button {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.catalog-sort__button:hover {
+  color: #e7edf2;
+}
+
+.catalog-sort__button--active {
+  background: rgba(76, 141, 255, 0.16);
+  color: #e7edf2;
+}
+
 .search-field {
   display: inline-flex;
   align-items: center;
@@ -2096,6 +2131,15 @@ select option:hover {
 @media (max-width: 720px) {
   .app-shell {
     padding: 12px 14px 48px;
+  }
+
+  .catalog-toolbar {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .catalog-toolbar .search-field {
+    flex: 1 1 100%;
   }
 
   .tab-strip {
