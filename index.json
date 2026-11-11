@@ -98,6 +98,18 @@
       "hasIcons": false
     },
     {
+      "id": "botw-forest",
+      "name": "BOTW Forest",
+      "author": "Cal\u00f8htk",
+      "version": "0.5",
+      "path": "themes/botw-forest",
+      "manifest": "themes/botw-forest/theme.json",
+      "cover": "themes/botw-forest/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": true
+    },
+    {
       "id": "bowsette",
       "name": "Bowsette",
       "author": "CrisUllon",
