@@ -197,18 +197,17 @@ function UnitSlider({
   label,
   value,
   onChange,
-  hint,
   disabled = false,
 }: {
   label: string;
   value: number;
   onChange: (value: number) => void;
-  hint?: string;
   disabled?: boolean;
 }) {
   const safe = normalizeUnitInterval(value, 0);
+  const percent = `${Math.round(safe * 100)}%`;
   return (
-    <Field label={label} hint={hint}>
+    <Field label={label} hint={percent}>
       <div className="studio-slider">
         <input
           className="studio-slider__range"
@@ -218,9 +217,9 @@ function UnitSlider({
           step={0.01}
           disabled={disabled}
           value={safe}
+          aria-valuetext={percent}
           onChange={(event) => onChange(normalizeUnitInterval(Number(event.currentTarget.value), 0))}
         />
-        <span className="studio-slider__value">{safe.toFixed(2)}</span>
       </div>
     </Field>
   );
@@ -1245,7 +1244,7 @@ export function ThemeStudio({
                     max={BACKGROUND_BOUNDS.columns.max}
                     value={draft.background.columns}
                     onChange={(value) => patchBackground('columns', value)}
-                    hint="At least 1 (0 breaks HOME layout)"
+                    hint="1–32"
                     disabled={controlsLocked}
                   />
                   <BoundNumber
@@ -1323,20 +1322,19 @@ export function ThemeStudio({
                     step={0.01}
                     value={draft.background.rotationSpeed}
                     onChange={(value) => patchBackground('rotationSpeed', value)}
+                    hint="Negative = reverse"
                     disabled={controlsLocked}
                   />
                   <UnitSlider
                     label="Opacity"
                     value={draft.background.opacity}
                     onChange={(value) => patchBackground('opacity', value)}
-                    hint="Shape fill (0–1)"
                     disabled={controlsLocked}
                   />
                   <UnitSlider
                     label="Image opacity"
                     value={draft.background.imageOpacity}
                     onChange={(value) => patchBackground('imageOpacity', value)}
-                    hint="Wallpaper strength (0–1)"
                     disabled={controlsLocked}
                   />
                   <Field label="Image fit">
