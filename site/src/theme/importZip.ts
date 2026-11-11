@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import {
   DEFAULT_SFX_NAMES,
+  clampStudioBackground,
   createEmptyDraft,
   themeIconsPackId,
   type DefaultSfxName,
@@ -274,5 +275,6 @@ export async function draftFromThemeZip(file: File): Promise<StudioDraft> {
     draft.audio.bundled = true;
   }
 
+  draft.background = clampStudioBackground(draft.background);
   return draft;
 }

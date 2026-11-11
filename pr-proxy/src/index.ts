@@ -240,6 +240,56 @@ function sanitizeAssetSnapshot(input: ProposalAssetSnapshot | undefined): Propos
   };
 }
 
+function normalizeUnitInterval(value: unknown, fallback = 0): number {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  if (n >= 0 && n <= 1) return n;
+  if (n > 1 && n <= 100) return n / 100;
+  return Math.max(0, Math.min(1, n > 1 ? 1 : 0));
+}
+
+function normalizeInt(value: unknown, min: number, max: number, fallback: number): number {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.max(min, Math.min(max, Math.round(n)));
+}
+
+function normalizeFinite(value: unknown, min: number, max: number, fallback: number): number {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.max(min, Math.min(max, n));
+}
+
+function sanitizeBackgroundSnapshot(
+  background: ProposalDraftSnapshot['background'],
+): ProposalDraftSnapshot['background'] {
+  let sizeMin = normalizeFinite(background.sizeMin, 1, 400, 48);
+  let sizeMax = normalizeFinite(background.sizeMax, 1, 400, 48);
+  if (sizeMin > sizeMax) [sizeMin, sizeMax] = [sizeMax, sizeMin];
+  let speedMin = normalizeFinite(background.speedMin, 0, 20, 1);
+  let speedMax = normalizeFinite(background.speedMax, 0, 20, 1);
+  if (speedMin > speedMax) [speedMin, speedMax] = [speedMax, speedMin];
+
+  return {
+    ...background,
+    count: normalizeInt(background.count, 1, 64, 24),
+    roundness: normalizeUnitInterval(background.roundness, 0.35),
+    columns: normalizeInt(background.columns, 1, 32, 16),
+    rows: normalizeInt(background.rows, 1, 18, 9),
+    spacingX: normalizeFinite(background.spacingX, 0, 400, 8),
+    spacingY: normalizeFinite(background.spacingY, 0, 400, 8),
+    sizeMin,
+    sizeMax,
+    speedMin,
+    speedMax,
+    wobble: normalizeFinite(background.wobble, 0, 40, 0),
+    rotationSpeed: normalizeFinite(background.rotationSpeed, -2, 2, 0.04),
+    opacity: normalizeUnitInterval(background.opacity, 0.82),
+    imageOpacity: normalizeUnitInterval(background.imageOpacity, 0.24),
+    image: sanitizeAssetSnapshot(background.image),
+  };
+}
+
 function sanitizeDraftSnapshot(input: ProposalDraftSnapshot): ProposalDraftSnapshot {
   return {
     ...input,
@@ -251,10 +301,7 @@ function sanitizeDraftSnapshot(input: ProposalDraftSnapshot): ProposalDraftSnaps
     summary: String(input.summary ?? '').trim(),
     notes: String(input.notes ?? ''),
     contributor: String(input.contributor ?? '').trim(),
-    background: {
-      ...input.background,
-      image: sanitizeAssetSnapshot(input.background.image),
-    },
+    background: sanitizeBackgroundSnapshot(input.background),
     fonts: {
       regular: sanitizeAssetSnapshot(input.fonts.regular),
       small: sanitizeAssetSnapshot(input.fonts.small),
@@ -1196,6 +1243,41 @@ function validateProposal(input: unknown): ProposalPayload {
 
   if (proposal.catalogEntry.id !== proposal.id) {
     throw new Error('Catalog entry id must match proposal id');
+  }
+
+  // Manifest is client-built; normalize opacity/grid so theme.json never ships junk.
+  if (proposal.manifest && typeof proposal.manifest === 'object') {
+    const manifestObject = proposal.manifest as Record<string, unknown>;
+    const themeObject = (manifestObject.theme && typeof manifestObject.theme === 'object')
+      ? { ...(manifestObject.theme as Record<string, unknown>) }
+      : {};
+    const backgroundObject = (themeObject.background && typeof themeObject.background === 'object')
+      ? { ...(themeObject.background as Record<string, unknown>) }
+      : {};
+
+    backgroundObject.opacity = normalizeUnitInterval(backgroundObject.opacity, 0.82);
+    backgroundObject.count = normalizeInt(backgroundObject.count, 1, 64, 24);
+    backgroundObject.roundness = normalizeUnitInterval(backgroundObject.roundness, 0.35);
+    backgroundObject.rotationSpeed = normalizeFinite(backgroundObject.rotationSpeed, -2, 2, 0.04);
+    backgroundObject.wobble = normalizeFinite(backgroundObject.wobble, 0, 40, 0);
+
+    const gridObject = (backgroundObject.grid && typeof backgroundObject.grid === 'object')
+      ? { ...(backgroundObject.grid as Record<string, unknown>) }
+      : {};
+    gridObject.columns = normalizeInt(gridObject.columns, 1, 32, 16);
+    gridObject.rows = normalizeInt(gridObject.rows, 1, 18, 9);
+    backgroundObject.grid = gridObject;
+
+    const imageValue = backgroundObject.image;
+    if (imageValue && typeof imageValue === 'object') {
+      const imageObject = { ...(imageValue as Record<string, unknown>) };
+      imageObject.opacity = normalizeUnitInterval(imageObject.opacity, 0.24);
+      backgroundObject.image = imageObject;
+    }
+
+    themeObject.background = backgroundObject;
+    manifestObject.theme = themeObject;
+    proposal.manifest = manifestObject;
   }
 
   return proposal;

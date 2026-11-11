@@ -9,6 +9,7 @@ import type {
   ThemeMode,
 } from './schema';
 import { resolveThemeAssetUrl } from '../catalog/api';
+import { normalizeBackgroundNumerics } from './normalize';
 
 export const DEFAULT_SFX_NAMES = [
   'activation',
@@ -568,6 +569,7 @@ export function draftFromCatalogRecord(record: ThemeCatalogRecord, options: { pr
     imageFit: backgroundImageFit(background),
     image: toCatalogAsset(record, backgroundImagePath(background)),
   };
+  base.background = clampStudioBackground(base.background);
   base.fonts = {
     regular: toCatalogAsset(record, fonts?.regular),
     small: toCatalogAsset(record, fonts?.small),
@@ -619,30 +621,31 @@ function serializeColors(colors: StudioDraft['colors']): ThemeColorConfig {
 }
 
 function serializeBackground(draft: StudioDraft): ThemeBackgroundConfig {
+  const n = normalizeBackgroundNumerics(draft.background);
   const background: ThemeBackgroundConfig = {
     layout: draft.background.layout,
     shape: draft.background.shape,
     symmetry: draft.background.symmetry,
-    count: draft.background.count,
+    count: n.count,
     fixedOrientation: draft.background.fixedOrientation,
     orientation: draft.background.orientation,
-    roundness: draft.background.roundness,
+    roundness: n.roundness,
     grid: {
-      columns: draft.background.columns,
-      rows: draft.background.rows,
-      spacing: [draft.background.spacingX, draft.background.spacingY],
+      columns: n.columns,
+      rows: n.rows,
+      spacing: [n.spacingX, n.spacingY],
     },
-    size: [draft.background.sizeMin, draft.background.sizeMax],
-    speed: [draft.background.speedMin, draft.background.speedMax],
-    wobble: draft.background.wobble,
-    rotationSpeed: draft.background.rotationSpeed,
-    opacity: draft.background.opacity,
+    size: [n.sizeMin, n.sizeMax],
+    speed: [n.speedMin, n.speedMax],
+    wobble: n.wobble,
+    rotationSpeed: n.rotationSpeed,
+    opacity: n.opacity,
   };
 
   if (draft.background.image && (draft.proposalMode === 'update' || draft.background.image.proposalReady)) {
     background.image = {
       path: draft.background.image.relativePath,
-      opacity: draft.background.imageOpacity,
+      opacity: n.imageOpacity,
       fit: draft.background.imageFit,
     };
   }
@@ -748,6 +751,13 @@ export function buildManifestFromDraft(draft: StudioDraft): ThemeManifest {
   return manifest;
 }
 
+export function clampStudioBackground<T extends StudioDraft['background']>(background: T): T {
+  return {
+    ...background,
+    ...normalizeBackgroundNumerics(background),
+  };
+}
+
 export function cloneDraft(draft: StudioDraft): StudioDraft {
   return {
     ...draft,
@@ -758,7 +768,7 @@ export function cloneDraft(draft: StudioDraft): StudioDraft {
       backgroundAccent: { ...draft.colors.backgroundAccent },
       shapes: { ...draft.colors.shapes },
     },
-    background: { ...draft.background },
+    background: clampStudioBackground({ ...draft.background }),
     fonts: { ...draft.fonts },
     icons: draft.icons ? { ...draft.icons } : undefined,
     iconSource: inferIconSource(draft),

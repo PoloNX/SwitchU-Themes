@@ -1097,6 +1097,28 @@ select {
   line-height: 1.4;
 }
 
+.studio-slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 4px 0 2px;
+}
+
+.studio-slider__range {
+  flex: 1 1 auto;
+  min-width: 0;
+  accent-color: #4c8dff;
+}
+
+.studio-slider__value {
+  flex: 0 0 3.2rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
 .studio-input,
 .studio-textarea,
 .studio-field input[type='file'] {

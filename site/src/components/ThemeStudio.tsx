@@ -33,6 +33,7 @@ import { SwitchUPreview } from '../preview/SwitchUPreview';
 import { hexToHslTriplet, hslTripletToHex, hslTripletToRgb, rgbToHslTriplet } from '../theme/color';
 import {
   DEFAULT_SFX_NAMES,
+  clampStudioBackground,
   cloneDraft,
   createOptimizedBackgroundUploadAsset,
   createUploadAsset,
@@ -44,6 +45,7 @@ import {
   type StudioDraft,
   type StudioTriplet,
 } from '../theme/draft';
+import { BACKGROUND_BOUNDS, draftSubmitIssues, normalizeFinite, normalizeInt, normalizeUnitInterval } from '../theme/normalize';
 import { draftFromThemeZip } from '../theme/importZip';
 import type { IconPackRecord, ThemeCatalogRecord } from '../theme/schema';
 
@@ -188,6 +190,83 @@ function Field({
       {children}
       {hint ? <small className="studio-field__hint">{hint}</small> : null}
     </label>
+  );
+}
+
+function UnitSlider({
+  label,
+  value,
+  onChange,
+  hint,
+  disabled = false,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  hint?: string;
+  disabled?: boolean;
+}) {
+  const safe = normalizeUnitInterval(value, 0);
+  return (
+    <Field label={label} hint={hint}>
+      <div className="studio-slider">
+        <input
+          className="studio-slider__range"
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          disabled={disabled}
+          value={safe}
+          onChange={(event) => onChange(normalizeUnitInterval(Number(event.currentTarget.value), 0))}
+        />
+        <span className="studio-slider__value">{safe.toFixed(2)}</span>
+      </div>
+    </Field>
+  );
+}
+
+function BoundNumber({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
+  integer = false,
+  hint,
+  disabled = false,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  min: number;
+  max: number;
+  step?: number;
+  integer?: boolean;
+  hint?: string;
+  disabled?: boolean;
+}) {
+  const safe = integer
+    ? normalizeInt(value, min, max, min)
+    : normalizeFinite(value, min, max, min);
+  return (
+    <Field label={label} hint={hint ?? `${min}–${max}`}>
+      <input
+        className="studio-input"
+        type="number"
+        inputMode={integer ? 'numeric' : 'decimal'}
+        min={min}
+        max={max}
+        step={step}
+        disabled={disabled}
+        value={safe}
+        onChange={(event) => {
+          const raw = Number(event.currentTarget.value);
+          onChange(integer ? normalizeInt(raw, min, max, min) : normalizeFinite(raw, min, max, min));
+        }}
+      />
+    </Field>
   );
 }
 
@@ -612,10 +691,10 @@ export function ThemeStudio({
   function patchBackground<Key extends keyof StudioDraft['background']>(key: Key, value: StudioDraft['background'][Key]) {
     update({
       ...cloneDraft(draft),
-      background: {
+      background: clampStudioBackground({
         ...draft.background,
         [key]: value,
-      },
+      }),
     });
   }
 
@@ -807,6 +886,17 @@ export function ThemeStudio({
       return;
     }
 
+    const publishIssues = draftSubmitIssues(draft);
+    if (publishIssues.length > 0) {
+      setSubmitError(publishIssues[0] ?? 'Fix the theme details before submitting.');
+      return;
+    }
+
+    // Re-clamp numerics so zip/import leftovers never leave the browser unnormalized.
+    const publishDraft = cloneDraft(draft);
+    publishDraft.background = clampStudioBackground(publishDraft.background);
+    update(publishDraft);
+
     if (linkedProposal) {
       if (linkedProposal.proposalMode !== 'edit') {
         setSubmitError('This PR link is in preview mode only. Use the edit link from the PR to save changes.');
@@ -832,7 +922,7 @@ export function ThemeStudio({
       setSubmitError(null);
       setSubmitSuccess(null);
       try {
-        const result = await onUpdateProposal(draft, previewRef.current);
+        const result = await onUpdateProposal(publishDraft, previewRef.current);
         setSubmitSuccess({
           message: 'Linked proposal updated successfully.',
           href: result.editUrl ?? result.previewUrl,
@@ -855,8 +945,8 @@ export function ThemeStudio({
     setSubmitError(null);
     setSubmitSuccess(null);
     try {
-      const result = await submitThemeProposal(draft, previewRef.current);
-      onProposalCreated?.(result, draft);
+      const result = await submitThemeProposal(publishDraft, previewRef.current);
+      onProposalCreated?.(result, publishDraft);
       setSubmitSuccess({
         message: 'Pull request created.',
         href: result.editUrl ?? result.pullRequestUrl,
@@ -1133,48 +1223,122 @@ export function ThemeStudio({
                       <option value="quad">quad</option>
                     </select>
                   </Field>
-                  <Field label="Count">
-                    <input className="studio-input" type="number" value={draft.background.count} onChange={(event) => patchBackground('count', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Roundness">
-                    <input className="studio-input" type="number" min={0} max={1} step={0.01} value={draft.background.roundness} onChange={(event) => patchBackground('roundness', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Grid columns">
-                    <input className="studio-input" type="number" value={draft.background.columns} onChange={(event) => patchBackground('columns', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Grid rows">
-                    <input className="studio-input" type="number" value={draft.background.rows} onChange={(event) => patchBackground('rows', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Spacing X">
-                    <input className="studio-input" type="number" value={draft.background.spacingX} onChange={(event) => patchBackground('spacingX', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Spacing Y">
-                    <input className="studio-input" type="number" value={draft.background.spacingY} onChange={(event) => patchBackground('spacingY', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Size min">
-                    <input className="studio-input" type="number" value={draft.background.sizeMin} onChange={(event) => patchBackground('sizeMin', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Size max">
-                    <input className="studio-input" type="number" value={draft.background.sizeMax} onChange={(event) => patchBackground('sizeMax', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Speed min">
-                    <input className="studio-input" type="number" value={draft.background.speedMin} onChange={(event) => patchBackground('speedMin', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Speed max">
-                    <input className="studio-input" type="number" value={draft.background.speedMax} onChange={(event) => patchBackground('speedMax', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Wobble">
-                    <input className="studio-input" type="number" value={draft.background.wobble} onChange={(event) => patchBackground('wobble', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Rotation speed">
-                    <input className="studio-input" type="number" step={0.01} value={draft.background.rotationSpeed} onChange={(event) => patchBackground('rotationSpeed', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Opacity">
-                    <input className="studio-input" type="number" step={0.01} min={0} max={1} value={draft.background.opacity} onChange={(event) => patchBackground('opacity', Number(event.currentTarget.value))} />
-                  </Field>
-                  <Field label="Image opacity">
-                    <input className="studio-input" type="number" step={0.01} min={0} max={1} value={draft.background.imageOpacity} onChange={(event) => patchBackground('imageOpacity', Number(event.currentTarget.value))} />
-                  </Field>
+                  <BoundNumber
+                    label="Count"
+                    integer
+                    min={BACKGROUND_BOUNDS.count.min}
+                    max={BACKGROUND_BOUNDS.count.max}
+                    value={draft.background.count}
+                    onChange={(value) => patchBackground('count', value)}
+                    disabled={controlsLocked}
+                  />
+                  <UnitSlider
+                    label="Roundness"
+                    value={draft.background.roundness}
+                    onChange={(value) => patchBackground('roundness', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Grid columns"
+                    integer
+                    min={BACKGROUND_BOUNDS.columns.min}
+                    max={BACKGROUND_BOUNDS.columns.max}
+                    value={draft.background.columns}
+                    onChange={(value) => patchBackground('columns', value)}
+                    hint="At least 1 (0 breaks HOME layout)"
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Grid rows"
+                    integer
+                    min={BACKGROUND_BOUNDS.rows.min}
+                    max={BACKGROUND_BOUNDS.rows.max}
+                    value={draft.background.rows}
+                    onChange={(value) => patchBackground('rows', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Spacing X"
+                    min={BACKGROUND_BOUNDS.spacing.min}
+                    max={BACKGROUND_BOUNDS.spacing.max}
+                    value={draft.background.spacingX}
+                    onChange={(value) => patchBackground('spacingX', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Spacing Y"
+                    min={BACKGROUND_BOUNDS.spacing.min}
+                    max={BACKGROUND_BOUNDS.spacing.max}
+                    value={draft.background.spacingY}
+                    onChange={(value) => patchBackground('spacingY', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Size min"
+                    min={BACKGROUND_BOUNDS.size.min}
+                    max={BACKGROUND_BOUNDS.size.max}
+                    value={draft.background.sizeMin}
+                    onChange={(value) => patchBackground('sizeMin', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Size max"
+                    min={BACKGROUND_BOUNDS.size.min}
+                    max={BACKGROUND_BOUNDS.size.max}
+                    value={draft.background.sizeMax}
+                    onChange={(value) => patchBackground('sizeMax', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Speed min"
+                    min={BACKGROUND_BOUNDS.speed.min}
+                    max={BACKGROUND_BOUNDS.speed.max}
+                    step={0.05}
+                    value={draft.background.speedMin}
+                    onChange={(value) => patchBackground('speedMin', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Speed max"
+                    min={BACKGROUND_BOUNDS.speed.min}
+                    max={BACKGROUND_BOUNDS.speed.max}
+                    step={0.05}
+                    value={draft.background.speedMax}
+                    onChange={(value) => patchBackground('speedMax', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Wobble"
+                    min={BACKGROUND_BOUNDS.wobble.min}
+                    max={BACKGROUND_BOUNDS.wobble.max}
+                    step={0.1}
+                    value={draft.background.wobble}
+                    onChange={(value) => patchBackground('wobble', value)}
+                    disabled={controlsLocked}
+                  />
+                  <BoundNumber
+                    label="Rotation speed"
+                    min={BACKGROUND_BOUNDS.rotationSpeed.min}
+                    max={BACKGROUND_BOUNDS.rotationSpeed.max}
+                    step={0.01}
+                    value={draft.background.rotationSpeed}
+                    onChange={(value) => patchBackground('rotationSpeed', value)}
+                    disabled={controlsLocked}
+                  />
+                  <UnitSlider
+                    label="Opacity"
+                    value={draft.background.opacity}
+                    onChange={(value) => patchBackground('opacity', value)}
+                    hint="Shape fill (0–1)"
+                    disabled={controlsLocked}
+                  />
+                  <UnitSlider
+                    label="Image opacity"
+                    value={draft.background.imageOpacity}
+                    onChange={(value) => patchBackground('imageOpacity', value)}
+                    hint="Wallpaper strength (0–1)"
+                    disabled={controlsLocked}
+                  />
                   <Field label="Image fit">
                     <select className="studio-input" value={draft.background.imageFit} onChange={(event) => patchBackground('imageFit', event.currentTarget.value as 'cover' | 'contain')}>
                       <option value="cover">cover</option>
