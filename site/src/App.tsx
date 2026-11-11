@@ -301,7 +301,7 @@ export default function App() {
   const [previewThemeId, setPreviewThemeId] = useState<string | null>(null);
   const [draft, setDraft] = useState<StudioDraft>(() => createEmptyDraft());
   const [search, setSearch] = useState('');
-  const [catalogSort, setCatalogSort] = useState<CatalogSortMode>('name');
+  const [catalogSort, setCatalogSort] = useState<CatalogSortMode>('newest');
   const [downloadingThemeId, setDownloadingThemeId] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [linkedProposal, setLinkedProposal] = useState<ProposalRouteState | null>(initialProposalRoute);

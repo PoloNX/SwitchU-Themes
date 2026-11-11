@@ -18,7 +18,7 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
   const [error, setError] = useState('');
   const [downloading, setDownloading] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [catalogSort, setCatalogSort] = useState<CatalogSortMode>('name');
+  const [catalogSort, setCatalogSort] = useState<CatalogSortMode>('newest');
 
   const refresh = useMemo(
     () => async () => {
@@ -56,7 +56,8 @@ export function IconCatalog({ onCreatePack }: { onCreatePack?: () => void } = {}
       : records.slice();
 
     matched.sort((left, right) => {
-      if (left.entry.builtin !== right.entry.builtin) {
+      // A–Z keeps built-ins first; Newest is pure land-on-main date order.
+      if (catalogSort === 'name' && left.entry.builtin !== right.entry.builtin) {
         return left.entry.builtin ? -1 : 1;
       }
       return compareCatalogEntries(left.entry, right.entry, catalogSort);
