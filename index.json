@@ -479,6 +479,18 @@
       "hasSounds": false
     },
     {
+      "id": "violet-p5r",
+      "name": "Violet P5R",
+      "author": "Yukikuze",
+      "version": "1.0.0",
+      "path": "themes/violet-p5r",
+      "manifest": "themes/violet-p5r/theme.json",
+      "cover": "themes/violet-p5r/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": true
+    },
+    {
       "id": "wii-ish",
       "name": "Wii ish",
       "author": "Duckyboy33",
