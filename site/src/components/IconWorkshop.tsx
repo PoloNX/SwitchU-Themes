@@ -21,6 +21,7 @@ import {
   slugifyPackId,
   type IconPackGlyph,
 } from '../icons/pack';
+import type { AuthUser } from '../github/auth';
 import { submitIconPack, withMosaicPreview } from '../icons/submit';
 
 interface GlyphState {
@@ -50,7 +51,13 @@ function triggerDownload(blob: Blob, fileName: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export function IconWorkshop() {
+export function IconWorkshop({
+  authUser = null,
+  onLogin,
+}: {
+  authUser?: AuthUser | null;
+  onLogin?: () => void;
+} = {}) {
   const [packId, setPackId] = useState('my-icons');
   const [name, setName] = useState('My Icons');
   const [author, setAuthor] = useState('');
@@ -184,6 +191,12 @@ export function IconWorkshop() {
       return;
     }
 
+    if (!authUser) {
+      setFeedback({ kind: 'error', text: 'Sign in with GitHub to submit an icon pack.' });
+      onLogin?.();
+      return;
+    }
+
     setSubmitting(true);
     setPrUrl(null);
     setFeedback(null);
@@ -297,16 +310,26 @@ export function IconWorkshop() {
               <p>
                 Missing glyphs fall back to the built-in default pack on the console, so you only need to
                 upload the icons you want to override.
+                {authUser
+                  ? ` Submitting as @${authUser.login}.`
+                  : ' Sign in with GitHub to open a pull request.'}
               </p>
               <div className="submit-actions">
                 <button className="submit-button" type="button" disabled={building || submitting} onClick={() => { void handleDownload(); }}>
                   <Download size={18} />
                   <span>{building ? 'Building zip…' : 'Download icon pack'}</span>
                 </button>
-                <button className="submit-button submit-button--secondary" type="button" disabled={building || submitting} onClick={() => { void handleSubmit(); }}>
-                  <Upload size={18} />
-                  <span>{submitting ? 'Opening pull request…' : 'Submit to SwitchU'}</span>
-                </button>
+                {!authUser ? (
+                  <button className="submit-button submit-button--secondary" type="button" disabled={building || submitting} onClick={() => { onLogin?.(); }}>
+                    <Upload size={18} />
+                    <span>Sign in to submit</span>
+                  </button>
+                ) : (
+                  <button className="submit-button submit-button--secondary" type="button" disabled={building || submitting} onClick={() => { void handleSubmit(); }}>
+                    <Upload size={18} />
+                    <span>{submitting ? 'Opening pull request…' : 'Submit to SwitchU'}</span>
+                  </button>
+                )}
               </div>
               {feedback ? (
                 <div className={`submit-feedback submit-feedback--${feedback.kind}`}>

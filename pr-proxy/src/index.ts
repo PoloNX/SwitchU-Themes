@@ -1750,6 +1750,11 @@ async function handleUpdateProposal(request: Request, env: Env, url: URL): Promi
 }
 
 async function handleCreateIconPack(request: Request, env: Env): Promise<Response> {
+  const session = await readSession(request, env);
+  if (!session) {
+    return jsonResponse({ error: 'Authentication required. Sign in with GitHub to submit an icon pack.' }, 401, corsHeaders(request, env));
+  }
+
   const formData = await request.formData();
   const id = (formData.get('id') as string | null)?.trim() ?? '';
   const name = (formData.get('name') as string | null)?.trim() ?? id;
@@ -1837,26 +1842,52 @@ async function handleCreateIconPack(request: Request, env: Env): Promise<Respons
     });
   });
 
+  // Same studio metadata themes use — merge notify + review @mentions key off authorLogin.
+  const iconStudioMetadata = {
+    schemaVersion: 1,
+    kind: 'icon-pack',
+    authorLogin: session.login,
+    draftSnapshot: {
+      name,
+      contributor: session.login,
+      author: packManifest.author,
+    },
+  };
+  await putFile(
+    env,
+    token,
+    branch,
+    `icons/${id}/.switchu-studio.json`,
+    `icon pack ${id}: store submitter metadata`,
+    textToBase64(`${JSON.stringify(iconStudioMetadata, null, 2)}\n`),
+  );
+
   // Embed the mosaic (or fallback cover) from this PR branch so reviewers can
   // see the pack before merge without checking out locally.
-  const previewRawUrl =
-    `https://raw.githubusercontent.com/${env.GITHUB_REPO_OWNER}/${env.GITHUB_REPO_NAME}/${branch}/icons/${id}/${coverName}`;
-  const prBody = [
+  const previewPath = `icons/${id}/${coverName}`;
+  const basePrBody = [
     'Icon pack submitted from SwitchU Themes Studio.',
     '',
     `Pack: **${name}** (\`${id}\`)`,
     author ? `Author: ${author}` : '',
     '',
-    '### Preview',
-    '',
-    `![${name} icon pack](${previewRawUrl})`,
-    '',
-    `<sub>Source: \`icons/${id}/${coverName}\` on branch \`${branch}\`</sub>`,
-    '',
     `Published under \`icons/${id}/\` and listed in \`index.json\` so the console shop can install it.`,
   ].filter(Boolean).join('\n');
 
-  const pullRequestUrl = await openPullRequest(env, token, base, branch, `Add icon pack ${id}`, prBody);
+  const pullRequestUrl = await openPullRequest(
+    env,
+    token,
+    base,
+    branch,
+    `Add icon pack ${id}`,
+    buildPullRequestBody(basePrBody, undefined, {
+      owner: env.GITHUB_REPO_OWNER,
+      repo: env.GITHUB_REPO_NAME,
+      branch,
+      path: previewPath,
+      alt: `${name} icon pack`,
+    }, session.login),
+  );
 
   return jsonResponse({ ok: true, branchName: branch, pullRequestUrl }, 200, corsHeaders(request, env));
 }
@@ -1966,6 +1997,20 @@ async function handleListIconPacks(request: Request, env: Env): Promise<Response
           return undefined;
         }
 
+        let authorLogin = '';
+        try {
+          const meta = await getContent(env, token, `icons/${packId}/.switchu-studio.json`, pull.head.ref);
+          if (meta.content) {
+            const parsed = JSON.parse(decodeContent(meta.content)) as {
+              authorLogin?: string;
+              draftSnapshot?: { contributor?: string };
+            };
+            authorLogin = String(parsed.authorLogin || parsed.draftSnapshot?.contributor || '').trim().replace(/^@+/, '');
+          }
+        } catch {
+          // Older icon-pack PRs may not have studio metadata.
+        }
+
         const glyphs = Array.isArray(manifest.glyphs)
           ? manifest.glyphs.filter((item): item is string => typeof item === 'string' && ICON_PACK_GLYPH_FILE.test(item))
           : [];
@@ -1984,7 +2029,7 @@ async function handleListIconPacks(request: Request, env: Env): Promise<Response
           author: typeof manifest.author === 'string' && manifest.author.trim() ? manifest.author.trim() : 'Community',
           version: typeof manifest.version === 'string' && manifest.version.trim() ? manifest.version.trim() : '1.0.0',
           colour: manifest.colour !== false,
-          contributor: pull.user?.login || '',
+          contributor: authorLogin || pull.user?.login || '',
           createdAt: pull.created_at,
           updatedAt: pull.updated_at,
           coverUrl: previewName ? buildIconPackAssetUrl(request, pull.head.ref, packId, previewName) : '',

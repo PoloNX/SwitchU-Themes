@@ -1,3 +1,4 @@
+import { authHeaders } from '../github/auth';
 import { buildIconPackMosaicPng } from './mosaic';
 import type { PackGlyphFile } from './pack';
 
@@ -74,12 +75,22 @@ export async function submitIconPack(
 
   const response = await fetch(`${iconPackProxyBaseUrl()}/api/icon-packs`, {
     method: 'POST',
+    headers: authHeaders(),
     body: formData,
   });
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || `Icon pack submission failed with status ${response.status}`);
+    let message = text || `Icon pack submission failed with status ${response.status}`;
+    try {
+      const parsed = JSON.parse(text) as { error?: string };
+      if (parsed.error) {
+        message = parsed.error;
+      }
+    } catch {
+      // keep raw text
+    }
+    throw new Error(message);
   }
 
   return response.json() as Promise<IconPackSubmitResult>;

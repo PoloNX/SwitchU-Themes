@@ -1,8 +1,8 @@
 name: Notify theme submitter on merge
 
-# Theme PRs are opened by switchu-themes-pr-proxy[bot], so GitHub never mails
+# Theme/icon PRs are opened by switchu-themes-pr-proxy[bot], so GitHub never mails
 # the human who signed in. Studio stores their login in .switchu-studio.json
-# (authorLogin). On merge, @mention them so they see the theme is in the shop.
+# (authorLogin). On merge, @mention them so they see the item is in the shop.
 
 on:
   pull_request:
@@ -57,10 +57,14 @@ jobs:
               if f.get("filename", "").endswith("/.switchu-studio.json")
           ]
           if not paths:
-              paths = [str(p) for p in Path("themes").glob("*/.switchu-studio.json")]
+              paths = (
+                  [str(p) for p in Path("themes").glob("*/.switchu-studio.json")]
+                  + [str(p) for p in Path("icons").glob("*/.switchu-studio.json")]
+              )
 
           mentions = []
-          names = []
+          theme_names = []
+          icon_names = []
           seen = set()
           for path in paths:
               p = Path(path)
@@ -73,24 +77,47 @@ jobs:
                   or ""
               ).strip().lstrip("@")
               name = ((data.get("draftSnapshot") or {}).get("name") or "").strip()
+              kind = (data.get("kind") or "").strip().lower()
+              is_icon = kind == "icon-pack" or path.replace("\\", "/").startswith("icons/")
+              if name:
+                  (icon_names if is_icon else theme_names).append(name)
               key = login.lower()
               if not login or key in seen:
                   continue
               seen.add(key)
               mentions.append(f"@{login}")
-              if name:
-                  names.append(name)
 
           if not mentions:
               print("No authorLogin found; skipping notify.")
               raise SystemExit(0)
 
-          theme_line = f"Themes: {', '.join(names)}\n\n" if names else ""
+          lines = []
+          if theme_names:
+              lines.append(f"Themes: {', '.join(theme_names)}")
+          if icon_names:
+              lines.append(f"Icon packs: {', '.join(icon_names)}")
+          items_block = ("\n".join(lines) + "\n\n") if lines else ""
+
+          if theme_names and icon_names:
+              shop_line = (
+                  "Your proposal was merged and should show up in the Theme Shop "
+                  "shortly (catalog refresh / next app pull)."
+              )
+          elif icon_names:
+              shop_line = (
+                  "Your icon pack proposal was merged and should show up in the Theme Shop "
+                  "shortly (catalog refresh / next app pull)."
+              )
+          else:
+              shop_line = (
+                  "Your theme proposal was merged and should show up in the Theme Shop "
+                  "shortly (catalog refresh / next app pull)."
+              )
+
           body = (
               f"{' '.join(mentions)}\n\n"
-              "Your theme proposal was merged and should show up in the Theme Shop "
-              "shortly (catalog refresh / next app pull).\n\n"
-              f"{theme_line}"
+              f"{shop_line}\n\n"
+              f"{items_block}"
               f"PR: #{pr} — {title}\n\n"
               "Thanks for contributing to SwitchU Themes!\n"
           )

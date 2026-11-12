@@ -1010,7 +1010,7 @@ export default function App() {
         ) : activeTab === 'explore-icons' ? (
           <IconCatalog onCreatePack={() => setActiveTab('icon-workshop')} />
         ) : activeTab === 'icon-workshop' ? (
-          <IconWorkshop />
+          <IconWorkshop authUser={authUser} onLogin={handleLogin} />
         ) : (
           <>
             <section className="panel panel--spotlight">
