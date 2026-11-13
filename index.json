@@ -142,6 +142,15 @@
       "updatedAt": "2026-10-30T16:34:02+01:00"
     },
     {
+      "id": "bowsette-variant",
+      "name": "Bowsette Variant",
+      "author": "CrisUllon",
+      "version": "1.0.0",
+      "path": "themes/bowsette-variant",
+      "manifest": "themes/bowsette-variant/theme.json",
+      "cover": "themes/bowsette-variant/media/screenshots/00.png"
+    },
+    {
       "id": "cammy-minimalist",
       "name": "cammy Minimalist",
       "author": "iiSU Team",
