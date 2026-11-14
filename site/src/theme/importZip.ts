@@ -219,6 +219,11 @@ export async function draftFromThemeZip(file: File): Promise<StudioDraft> {
       imageOpacity: backgroundImageOpacity(background),
       imageFit: backgroundImageFit(background),
       image: await resolveAsset(backgroundImagePath(background)),
+      imagePortrait: await resolveAsset((() => {
+        const portrait = background?.imagePortrait ?? background?.backgroundPortrait;
+        if (!portrait) return undefined;
+        return typeof portrait === 'string' ? portrait : portrait.path;
+      })()),
     },
     fonts: {
       regular: await resolveAsset(fonts?.regular),
