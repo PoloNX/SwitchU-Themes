@@ -116,7 +116,7 @@
     {
       "id": "botw-forest",
       "name": "BOTW Forest",
-      "author": "Caløhtk",
+      "author": "CalÃ¸htk",
       "version": "0.5",
       "path": "themes/botw-forest",
       "manifest": "themes/botw-forest/theme.json",
@@ -683,10 +683,24 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
       "theme": "iisu",
       "addedAt": "2026-10-24T22:15:31+02:00",
       "updatedAt": "2026-11-09T12:28:41-05:00"
+    },
+    {
+      "id": "iisuc",
+      "name": "iiSU Complete",
+      "author": "Community",
+      "version": "1.0.0",
+      "description": "Community icon pack submitted from SwitchU Themes Studio.",
+      "path": "icons/iisuc",
+      "manifest": "icons/iisuc/pack.json",
+      "cover": "icons/iisuc/preview.png",
+      "builtin": false,
+      "colour": true,
+      "addedAt": "2026-11-14T03:50:56.933Z",
+      "updatedAt": "2026-11-14T03:50:56.933Z"
     }
   ]
 }
