@@ -739,18 +739,21 @@ export function ThemeStudio({
     });
   }
 
-  async function onAssetUpload(field: 'background' | 'music' | 'regularFont' | 'smallFont', file: File | undefined) {
+  async function onAssetUpload(
+    field: 'background' | 'backgroundPortrait' | 'music' | 'regularFont' | 'smallFont',
+    file: File | undefined,
+  ) {
     if (!file) {
       return;
     }
 
     const safeName = file.name.replace(/\s+/g, '-');
-    if (field === 'background') {
+    if (field === 'background' || field === 'backgroundPortrait') {
       setBackgroundOptimizing(true);
       setAssetError(null);
       try {
         const optimizedAsset = await createOptimizedBackgroundUploadAsset(file, 'media/backgrounds');
-        patchBackground('image', optimizedAsset);
+        patchBackground(field === 'background' ? 'image' : 'imagePortrait', optimizedAsset);
       } catch (cause) {
         setAssetError(cause instanceof Error ? cause.message : 'Unknown background conversion error');
       } finally {
@@ -1405,6 +1408,24 @@ export function ThemeStudio({
                     }
                     disabled={backgroundOptimizing}
                     onFile={(file) => { void onAssetUpload('background', file); }}
+                  />
+                  <StudioDropField
+                    label="Portrait / Flip-Grip background"
+                    accept=".png,.jpg,.jpeg,.webp"
+                    icon={ImageIcon}
+                    dropHint="Drop tall image"
+                    buttonLabel={backgroundOptimizing ? 'Optimizing…' : draft.background.imagePortrait?.proposalReady ? 'Replace' : 'Upload'}
+                    fileName={draft.background.imagePortrait?.proposalReady ? draft.background.imagePortrait.name : undefined}
+                    previewUrl={draft.background.imagePortrait?.url}
+                    hint={
+                      draft.background.imagePortrait?.proposalReady
+                        ? (backgroundOptimizing ? 'Optimizing…' : 'Used in Flip-Grip / Rot90–270')
+                        : backgroundOptimizing
+                          ? 'Optimizing…'
+                          : 'Optional tall wallpaper'
+                    }
+                    disabled={backgroundOptimizing}
+                    onFile={(file) => { void onAssetUpload('backgroundPortrait', file); }}
                   />
                   <StudioDropField
                     label="Regular font"
