@@ -116,7 +116,7 @@
     {
       "id": "botw-forest",
       "name": "BOTW Forest",
-      "author": "Caløhtk",
+      "author": "CalÃ¸htk",
       "version": "0.5",
       "path": "themes/botw-forest",
       "manifest": "themes/botw-forest/theme.json",
@@ -601,6 +601,20 @@
       "updatedAt": "2026-10-30T16:34:02+01:00"
     },
     {
+      "id": "wii-u",
+      "name": "Wii U",
+      "author": "MoyIan",
+      "version": "1.0.0",
+      "path": "themes/wii-u",
+      "manifest": "themes/wii-u/theme.json",
+      "cover": "themes/wii-u/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-14T03:54:23.971Z",
+      "updatedAt": "2026-11-14T03:54:23.971Z"
+    },
+    {
       "id": "zelda-botw-theme",
       "name": "Zelda BOTW theme",
       "author": "Adan",
@@ -683,7 +697,7 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
       "theme": "iisu",
       "addedAt": "2026-10-24T22:15:31+02:00",
       "updatedAt": "2026-11-09T12:28:41-05:00"
