@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/iisu-variant-1794628753529",
+  "draftSnapshot": {
+    "basedOnThemeId": "iisu",
+    "proposalMode": "create",
+    "id": "iisu-variant",
+    "name": "iiSU Variant",
+    "author": "iiSU Team",
+    "version": "1.1.2",
+    "summary": "Add theme iiSU Variant",
+    "notes": "",
+    "contributor": "MoyIan2090",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.21948737108771144,
+        "s": 0.5936553007919677,
+        "l": 0.56
+      },
+      "accent": {
+        "h": 0.4068475470537898,
+        "s": 0.7651036345727974,
+        "l": 0.56
+      },
+      "background": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+      },
+      "backgroundAccent": {
+        "h": 0.6152574254109444,
+        "s": 0.991587031182966,
+        "l": 0.08235294117647059
+      },
+      "shapes": {
+        "h": 0.6537256575054021,
+        "s": 0.6991805455138921,
+        "l": 0.07450980392156863
+      }
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "none",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.42,
+      "columns": 28,
+      "rows": 15,
+      "spacingX": 45,
+      "spacingY": 45,
+      "sizeMin": 4,
+      "sizeMax": 6,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0,
+      "opacity": 0.5,
+      "imageOpacity": 0.48,
+      "imageFit": "cover",
+      "image": {
+        "name": "273874.png",
+        "relativePath": "media/backgrounds/273874.png"
+      }
+    },
+    "fonts": {
+      "regular": {
+        "name": "Digital-Serial-Bold.ttf",
+        "relativePath": "fonts/Digital-Serial-Bold.ttf"
+      },
+      "small": {
+        "name": "Digital-Serial-Regular.ttf",
+        "relativePath": "fonts/Digital-Serial-Regular.ttf"
+      }
+    },
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "home.mp3",
+        "relativePath": "sounds/music/home.mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "activation.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "confirm.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "show_modal": {
+          "name": "show_modal.wav",
+          "relativePath": "sounds/sfx/show_modal.wav"
+        },
+        "hide_modal": {
+          "name": "hide_modal.wav",
+          "relativePath": "sounds/sfx/hide_modal.wav"
+        },
+        "navigation": {
+          "name": "navigation.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        }
+      }
+    }
+  },
+  "authorLogin": "MoyIan2090"
+}
