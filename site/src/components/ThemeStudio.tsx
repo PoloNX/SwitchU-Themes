@@ -1413,16 +1413,16 @@ export function ThemeStudio({
                     label="Portrait / Flip-Grip background"
                     accept=".png,.jpg,.jpeg,.webp"
                     icon={ImageIcon}
-                    dropHint="Drop tall image"
+                    dropHint="Drop image"
                     buttonLabel={backgroundOptimizing ? 'Optimizing…' : draft.background.imagePortrait?.proposalReady ? 'Replace' : 'Upload'}
                     fileName={draft.background.imagePortrait?.proposalReady ? draft.background.imagePortrait.name : undefined}
                     previewUrl={draft.background.imagePortrait?.url}
                     hint={
                       draft.background.imagePortrait?.proposalReady
-                        ? (backgroundOptimizing ? 'Optimizing…' : 'Used in Flip-Grip / Rot90–270')
+                        ? (backgroundOptimizing ? 'Optimizing…' : 'Used in Flip-Grip')
                         : backgroundOptimizing
                           ? 'Optimizing…'
-                          : 'Optional tall wallpaper'
+                          : '(Optional)'
                     }
                     disabled={backgroundOptimizing}
                     onFile={(file) => { void onAssetUpload('backgroundPortrait', file); }}
