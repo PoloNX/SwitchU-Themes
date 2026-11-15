@@ -2,7 +2,7 @@
   "id": "twilight-princess",
   "name": "Twilight Princess",
   "author": "Snaoke",
-  "version": "1.0.0",
+  "version": "1.1",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png"
@@ -47,7 +47,7 @@
       "roundness": 0,
       "grid": {
         "columns": 20,
-        "rows": 20,
+        "rows": 18,
         "spacing": [
           100,
           100
@@ -58,11 +58,11 @@
         15
       ],
       "speed": [
-        80,
-        220
+        20,
+        20
       ],
       "wobble": 0,
-      "rotationSpeed": 3,
+      "rotationSpeed": 2,
       "opacity": 0.3,
       "image": {
         "path": "media/backgrounds/9696f0358e3c18e6a1af602db5959103.png",
@@ -71,8 +71,8 @@
       }
     },
     "fonts": {
-      "regular": "fonts/Ravenna.ttf",
-      "small": "fonts/Ravenna.ttf"
+      "regular": "fonts/TheWildBreathOfZelda-15Lv.ttf",
+      "small": "fonts/TheWildBreathOfZelda-15Lv.ttf"
     }
   },
   "audio": {
