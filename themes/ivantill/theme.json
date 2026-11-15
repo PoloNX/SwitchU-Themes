@@ -1,0 +1,81 @@
+{
+  "id": "ivantill",
+  "name": "Ivantill",
+  "author": "remiin",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.58,
+        0.9,
+        0.62
+      ],
+      "accent": [
+        0.53,
+        0.8,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.49030775510624025,
+        1,
+        0.17450980392156862
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "horizontal",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 1,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        1,
+        22
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": -0.22,
+      "opacity": 0,
+      "image": {
+        "path": "media/backgrounds/725b02874de3cc694c795db67cdbef1a.png",
+        "opacity": 0.67,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/karma-vivinos-alnst-original-soundtrack-part10_PjODAKSR.mp3"
+    ]
+  }
+}

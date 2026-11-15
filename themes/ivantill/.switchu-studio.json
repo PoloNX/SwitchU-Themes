@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/ivantill-1794712143497",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "ivantill",
+    "name": "Ivantill",
+    "author": "remiin",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "reminnn",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.58,
+        "s": 0.9,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.53,
+        "s": 0.8,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.49030775510624025,
+        "s": 1,
+        "l": 0.17450980392156862
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "horizontal",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 1,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 1,
+      "sizeMax": 22,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": -0.22,
+      "opacity": 0,
+      "imageOpacity": 0.67,
+      "imageFit": "cover",
+      "image": {
+        "name": "725b02874de3cc694c795db67cdbef1a.png",
+        "relativePath": "media/backgrounds/725b02874de3cc694c795db67cdbef1a.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "karma-vivinos-alnst-original-soundtrack-part10_PjODAKSR.mp3",
+        "relativePath": "sounds/music/karma-vivinos-alnst-original-soundtrack-part10_PjODAKSR.mp3"
+      },
+      "sfx": {}
+    }
+  },
+  "authorLogin": "reminnn"
+}
