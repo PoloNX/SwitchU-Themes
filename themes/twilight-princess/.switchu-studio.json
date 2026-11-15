@@ -1,14 +1,15 @@
 {
   "schemaVersion": 3,
-  "branchName": "theme-studio/twilight-princess-1793832367482",
+  "branchName": "theme-studio/update-twilight-princess-1794707792580",
   "draftSnapshot": {
-    "proposalMode": "create",
+    "basedOnThemeId": "twilight-princess",
+    "proposalMode": "update",
     "id": "twilight-princess",
     "name": "Twilight Princess",
     "author": "Snaoke",
-    "version": "1.0.0",
-    "summary": "Twilight Princess",
-    "notes": "",
+    "version": "1.1",
+    "summary": "Update theme Twilight Princess",
+    "notes": "Changed font",
     "contributor": "Snaoke",
     "mode": "dark",
     "colors": {
@@ -47,15 +48,15 @@
       "orientation": 0,
       "roundness": 0,
       "columns": 20,
-      "rows": 20,
+      "rows": 18,
       "spacingX": 100,
       "spacingY": 100,
       "sizeMin": 15,
       "sizeMax": 15,
-      "speedMin": 80,
-      "speedMax": 220,
+      "speedMin": 20,
+      "speedMax": 20,
       "wobble": 0,
-      "rotationSpeed": 3,
+      "rotationSpeed": 2,
       "opacity": 0.3,
       "imageOpacity": 0.5,
       "imageFit": "cover",
@@ -66,10 +67,16 @@
     },
     "fonts": {
       "regular": {
-        "name": "Ravenna.ttf",
-        "relativePath": "fonts/Ravenna.ttf"
+        "name": "TheWildBreathOfZelda-15Lv.ttf",
+        "relativePath": "fonts/TheWildBreathOfZelda-15Lv.ttf"
+      },
+      "small": {
+        "name": "TheWildBreathOfZelda-15Lv.ttf",
+        "relativePath": "fonts/TheWildBreathOfZelda-15Lv.ttf"
       }
     },
+    "iconSource": "none",
+    "iconGlyphs": [],
     "audio": {
       "bundled": true,
       "music": {
@@ -82,15 +89,15 @@
           "relativePath": "sounds/sfx/activation.wav"
         },
         "confirm": {
-          "name": "TP_Options_Confirm.wav",
+          "name": "confirm.wav",
           "relativePath": "sounds/sfx/confirm.wav"
         },
         "show_modal": {
-          "name": "TP_Portals_On.wav",
+          "name": "show_modal.wav",
           "relativePath": "sounds/sfx/show_modal.wav"
         },
         "hide_modal": {
-          "name": "TP_Portals_Off.wav",
+          "name": "hide_modal.wav",
           "relativePath": "sounds/sfx/hide_modal.wav"
         },
         "navigation": {
@@ -98,7 +105,7 @@
           "relativePath": "sounds/sfx/navigation.wav"
         },
         "launch_game": {
-          "name": "TP_Collections_Open.wav",
+          "name": "launch_game.wav",
           "relativePath": "sounds/sfx/launch_game.wav"
         },
         "slider_up": {
