@@ -116,7 +116,7 @@
     {
       "id": "botw-forest",
       "name": "BOTW Forest",
-      "author": "Caløhtk",
+      "author": "CalÃ¸htk",
       "version": "0.5",
       "path": "themes/botw-forest",
       "manifest": "themes/botw-forest/theme.json",
@@ -627,6 +627,20 @@
       "hasIcons": false,
       "addedAt": "2026-06-19T12:27:55+02:00",
       "updatedAt": "2026-06-19T19:26:49+02:00"
+    },
+    {
+      "id": "zzz-angels-of-delusion",
+      "name": "zzz-angels-of-delusion",
+      "author": "yingixang",
+      "version": "1.0.0",
+      "path": "themes/zzz-angels-of-delusion",
+      "manifest": "themes/zzz-angels-of-delusion/theme.json",
+      "cover": "themes/zzz-angels-of-delusion/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-23T04:30:49.006Z",
+      "updatedAt": "2026-11-23T04:30:49.006Z"
     }
   ],
   "icons": [
@@ -683,7 +697,7 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack — missing glyphs (album, settings, power, …) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
       "theme": "iisu",
       "addedAt": "2026-10-24T22:15:31+02:00",
       "updatedAt": "2026-11-09T12:28:41-05:00"
