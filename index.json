@@ -122,7 +122,11 @@
 <<<<<<< HEAD
       "author": "CalÃ¸htk",
 =======
+<<<<<<< HEAD
+      "author": "CalÃ¸htk",
+=======
       "author": "Cal\u00c3\u00b8htk",
+>>>>>>> origin/main
 >>>>>>> origin/main
 >>>>>>> origin/main
       "version": "0.5",
@@ -276,6 +280,20 @@
       "updatedAt": "2026-10-30T12:22:30-04:00"
     },
     {
+<<<<<<< HEAD
+      "id": "ivantill",
+      "name": "Ivantill",
+      "author": "remiin",
+      "version": "1.0.0",
+      "path": "themes/ivantill",
+      "manifest": "themes/ivantill/theme.json",
+      "cover": "themes/ivantill/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": false,
+      "addedAt": "2026-11-15T03:11:59.079Z",
+      "updatedAt": "2026-11-15T03:11:59.079Z"
+=======
       "id": "iisu-variant",
       "name": "iiSU Variant",
       "author": "iiSU Team",
@@ -288,6 +306,7 @@
       "hasSounds": false,
       "addedAt": "2026-11-14T03:59:20.062Z",
       "updatedAt": "2026-11-14T03:59:20.062Z"
+>>>>>>> origin/main
     },
     {
       "id": "kasaneteto",
@@ -799,7 +818,11 @@
 <<<<<<< HEAD
       "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
 =======
+<<<<<<< HEAD
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
+=======
       "description": "Sidebar glyphs for the iiSU theme. Partial pack \u00e2\u0080\u0094 missing glyphs (album, settings, power, \u00e2\u0080\u00a6) fall back to Default.",
+>>>>>>> origin/main
 >>>>>>> origin/main
 >>>>>>> origin/main
       "theme": "iisu",
