@@ -1,0 +1,78 @@
+{
+  "id": "wii-u",
+  "name": "Wii U",
+  "author": "MoyIan",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.58,
+        0.9,
+        0.62
+      ],
+      "accent": [
+        0.53,
+        0.8,
+        0.55
+      ],
+      "background": [
+        0.30843824511403817,
+        0.08526133093240726,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.6508835638903057,
+        0.030676347490311534,
+        0.14
+      ],
+      "shapes": [
+        0.9473526274189015,
+        0.026110641464349063,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.02,
+      "image": {
+        "path": "media/backgrounds/273708.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}

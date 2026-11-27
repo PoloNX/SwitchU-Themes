@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/yoshikaru-1794710802060",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "yoshikaru",
+    "name": "Yoshikaru",
+    "author": "remiin",
+    "version": "1.0.0",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "reminnn",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.9003471445527232,
+        "s": 0.021596921729414232,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.3936609247887368,
+        "s": 0.13694795092808518,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.7756086927486749,
+        "s": 0.29648589414034965,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.33224684109539804,
+        "s": 0.3592557467756619,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "vertical",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 1,
+      "columns": 17,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 2,
+      "opacity": 0.9,
+      "imageOpacity": 0.89,
+      "imageFit": "cover",
+      "image": {
+        "name": "3831f4a430a4d516e8088a8bddb6fa31.png",
+        "relativePath": "media/backgrounds/3831f4a430a4d516e8088a8bddb6fa31.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "18QqiVr1.mp3",
+        "relativePath": "sounds/music/18QqiVr1.mp3"
+      },
+      "sfx": {}
+    }
+  },
+  "authorLogin": "reminnn"
+}

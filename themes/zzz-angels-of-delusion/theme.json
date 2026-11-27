@@ -1,0 +1,78 @@
+{
+  "id": "zzz-angels-of-delusion",
+  "name": "zzz-angels-of-delusion",
+  "author": "yingixang",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "light",
+    "colors": {
+      "cursor": [
+        0.9362736497148844,
+        0.6080983525796265,
+        0.62
+      ],
+      "accent": [
+        0.9140993400261824,
+        0.5828541189883852,
+        0.55
+      ],
+      "background": [
+        0.8663891008247776,
+        1,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.8381106780534635,
+        0.9605026602914544,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 1,
+      "grid": {
+        "columns": 9,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 5.8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.62,
+      "image": {
+        "path": "media/backgrounds/_140830123.png",
+        "opacity": 1,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "wiiu",
+    "bundled": false
+  }
+}
