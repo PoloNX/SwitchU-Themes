@@ -703,6 +703,20 @@
       "updatedAt": "2026-11-09T12:28:41-05:00"
     },
     {
+      "id": "iisuc",
+      "name": "iiSU Complete",
+      "author": "Community",
+      "version": "1.0.0",
+      "description": "Community icon pack submitted from SwitchU Themes Studio.",
+      "path": "icons/iisuc",
+      "manifest": "icons/iisuc/pack.json",
+      "cover": "icons/iisuc/preview.png",
+      "builtin": false,
+      "colour": true,
+      "addedAt": "2026-11-14T03:50:56.933Z",
+      "updatedAt": "2026-11-14T03:50:56.933Z"
+    },
+    {
       "id": "wii-u",
       "name": "Wii U",
       "author": "Community",
