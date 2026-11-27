@@ -324,6 +324,15 @@
       "updatedAt": "2026-06-29T17:35:31+02:00"
     },
     {
+      "id": "my-theme",
+      "name": "My Theme",
+      "author": "priri",
+      "version": "1.0.0",
+      "path": "themes/my-theme",
+      "manifest": "themes/my-theme/theme.json",
+      "cover": "themes/my-theme/media/screenshots/00.png"
+    },
+    {
       "id": "nier-minimalist",
       "name": "Nier Minimalist",
       "author": "iiSU Team",
