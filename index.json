@@ -282,6 +282,20 @@
       "updatedAt": "2026-07-29T11:41:06+02:00"
     },
     {
+      "id": "lifetime-showtime-fwmc",
+      "name": "Lifetime Showtime (FWMC)",
+      "author": "Sam_Wowee",
+      "version": "1.0.0",
+      "path": "themes/lifetime-showtime-fwmc",
+      "manifest": "themes/lifetime-showtime-fwmc/theme.json",
+      "cover": "themes/lifetime-showtime-fwmc/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": true,
+      "addedAt": "2026-11-16T23:45:55.402Z",
+      "updatedAt": "2026-11-16T23:45:55.402Z"
+    },
+    {
       "id": "lusamine",
       "name": "Lusamine",
       "author": "CrisUllon",
