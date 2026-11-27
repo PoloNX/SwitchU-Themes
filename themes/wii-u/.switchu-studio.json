@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/wii-u-1794628456483",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "wii-u",
+    "name": "Wii U",
+    "author": "MoyIan",
+    "version": "1.0.0",
+    "summary": "Imported Wii U",
+    "notes": "",
+    "contributor": "MoyIan2090",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.58,
+        "s": 0.9,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.53,
+        "s": 0.8,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.30843824511403817,
+        "s": 0.08526133093240726,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.6508835638903057,
+        "s": 0.030676347490311534,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.9473526274189015,
+        "s": 0.026110641464349063,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "none",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.02,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "273708.png",
+        "relativePath": "media/backgrounds/273708.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  },
+  "authorLogin": "MoyIan2090"
+}
