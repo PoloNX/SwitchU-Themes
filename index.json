@@ -338,6 +338,20 @@
       "updatedAt": "2026-06-29T17:35:31+02:00"
     },
     {
+      "id": "nejire-theme",
+      "name": "Nejire theme",
+      "author": "NejireLover08",
+      "version": "1.0.0",
+      "path": "themes/nejire-theme",
+      "manifest": "themes/nejire-theme/theme.json",
+      "cover": "themes/nejire-theme/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": false,
+      "addedAt": "2026-11-16T00:42:54.018Z",
+      "updatedAt": "2026-11-16T00:42:54.018Z"
+    },
+    {
       "id": "nier-minimalist",
       "name": "Nier Minimalist",
       "author": "iiSU Team",
