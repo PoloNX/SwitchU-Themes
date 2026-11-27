@@ -644,6 +644,20 @@
       "hasIcons": false,
       "addedAt": "2026-06-19T12:27:55+02:00",
       "updatedAt": "2026-06-19T19:26:49+02:00"
+    },
+    {
+      "id": "zzz-angels-of-delusion",
+      "name": "zzz-angels-of-delusion",
+      "author": "yingixang",
+      "version": "1.0.0",
+      "path": "themes/zzz-angels-of-delusion",
+      "manifest": "themes/zzz-angels-of-delusion/theme.json",
+      "cover": "themes/zzz-angels-of-delusion/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-23T04:30:49.006Z",
+      "updatedAt": "2026-11-23T04:30:49.006Z"
     }
   ],
   "icons": [
