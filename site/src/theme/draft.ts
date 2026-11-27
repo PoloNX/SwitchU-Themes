@@ -1,6 +1,7 @@
 import type {
   ThemeAudioConfig,
   ThemeBackgroundConfig,
+  ThemeBackgroundImageConfig,
   ThemeCatalogRecord,
   ThemeColorConfig,
   ThemeFontsConfig,
@@ -88,6 +89,8 @@ export interface StudioDraft {
     imageOpacity: number;
     imageFit: 'cover' | 'contain';
     image?: StudioAsset;
+    /** Flip-Grip / portrait HOME wallpaper (optional). */
+    imagePortrait?: StudioAsset;
   };
   fonts: {
     regular?: StudioAsset;
@@ -121,8 +124,9 @@ export interface StudioDraftSnapshot {
   contributor: string;
   mode: ThemeMode;
   colors: StudioDraft['colors'];
-  background: Omit<StudioDraft['background'], 'image'> & {
+  background: Omit<StudioDraft['background'], 'image' | 'imagePortrait'> & {
     image?: StudioAssetSnapshot;
+    imagePortrait?: StudioAssetSnapshot;
   };
   fonts: {
     regular?: StudioAssetSnapshot;
@@ -387,6 +391,13 @@ export function createEmptyDraft(): StudioDraft {
   };
 }
 
+function backgroundPortraitImage(
+  background: ThemeBackgroundConfig | undefined,
+): string | ThemeBackgroundImageConfig | undefined {
+  if (!background) return undefined;
+  return background.imagePortrait ?? background.backgroundPortrait;
+}
+
 export function createUploadAsset(file: File, relativePath: string): StudioAsset {
   return {
     source: 'upload',
@@ -447,6 +458,7 @@ export function draftSnapshotFromDraft(draft: StudioDraft): StudioDraftSnapshot 
     background: {
       ...draft.background,
       image: snapshotAsset(draft.background.image),
+      imagePortrait: snapshotAsset(draft.background.imagePortrait),
     },
     fonts: {
       regular: snapshotAsset(draft.fonts.regular),
@@ -500,6 +512,11 @@ export function draftFromSnapshot(
       ...base.background,
       ...snapshot.background,
       image: hydrateAsset(snapshot.background.image, resolveAssetUrl, proposalReadyAssets),
+      imagePortrait: hydrateAsset(
+        snapshot.background.imagePortrait,
+        resolveAssetUrl,
+        proposalReadyAssets,
+      ),
     },
     fonts: {
       regular: hydrateAsset(snapshot.fonts.regular, resolveAssetUrl, proposalReadyAssets),
@@ -568,6 +585,11 @@ export function draftFromCatalogRecord(record: ThemeCatalogRecord, options: { pr
     imageOpacity: backgroundImageOpacity(background),
     imageFit: backgroundImageFit(background),
     image: toCatalogAsset(record, backgroundImagePath(background)),
+    imagePortrait: toCatalogAsset(record, (() => {
+      const portrait = backgroundPortraitImage(background);
+      if (!portrait) return undefined;
+      return typeof portrait === 'string' ? portrait : portrait.path;
+    })()),
   };
   base.background = clampStudioBackground(base.background);
   base.fonts = {
@@ -645,6 +667,17 @@ function serializeBackground(draft: StudioDraft): ThemeBackgroundConfig {
   if (draft.background.image && (draft.proposalMode === 'update' || draft.background.image.proposalReady)) {
     background.image = {
       path: draft.background.image.relativePath,
+      opacity: n.imageOpacity,
+      fit: draft.background.imageFit,
+    };
+  }
+
+  if (
+    draft.background.imagePortrait
+    && (draft.proposalMode === 'update' || draft.background.imagePortrait.proposalReady)
+  ) {
+    background.imagePortrait = {
+      path: draft.background.imagePortrait.relativePath,
       opacity: n.imageOpacity,
       fit: draft.background.imageFit,
     };
