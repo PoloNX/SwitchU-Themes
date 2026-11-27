@@ -116,7 +116,11 @@
     {
       "id": "botw-forest",
       "name": "BOTW Forest",
+<<<<<<< HEAD
+      "author": "CalÃ¸htk",
+=======
       "author": "Cal\u00c3\u00b8htk",
+>>>>>>> origin/main
       "version": "0.5",
       "path": "themes/botw-forest",
       "manifest": "themes/botw-forest/theme.json",
@@ -266,6 +270,20 @@
       "hasIcons": true,
       "addedAt": "2026-05-02T22:15:20+02:00",
       "updatedAt": "2026-10-30T12:22:30-04:00"
+    },
+    {
+      "id": "iisu-variant",
+      "name": "iiSU Variant",
+      "author": "iiSU Team",
+      "version": "1.1.2",
+      "path": "themes/iisu-variant",
+      "manifest": "themes/iisu-variant/theme.json",
+      "cover": "themes/iisu-variant/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-14T03:59:20.062Z",
+      "updatedAt": "2026-11-14T03:59:20.062Z"
     },
     {
       "id": "kasaneteto",
@@ -756,7 +774,11 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
+<<<<<<< HEAD
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
+=======
       "description": "Sidebar glyphs for the iiSU theme. Partial pack \u00e2\u0080\u0094 missing glyphs (album, settings, power, \u00e2\u0080\u00a6) fall back to Default.",
+>>>>>>> origin/main
       "theme": "iisu",
       "addedAt": "2026-10-24T22:15:31+02:00",
       "updatedAt": "2026-11-09T12:28:41-05:00"
