@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "branchName": "theme-studio/cammy-minimalist-variant-1790378485358",
+  "draftSnapshot": {
+    "basedOnThemeId": "cammy-minimalist",
+    "proposalMode": "create",
+    "id": "cammy-minimalist-variant",
+    "name": "cammy Minimalist Variant",
+    "author": "iiSU Team",
+    "version": "1.1.0",
+    "summary": "Add theme cammy Minimalist Variant",
+    "notes": "",
+    "contributor": "",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.06052939948030511,
+        "s": 1,
+        "l": 0.56
+      },
+      "accent": {
+        "h": 0.42624159901289294,
+        "s": 1,
+        "l": 0.56
+      },
+      "background": {
+        "h": 0.8283853244282687,
+        "s": 1,
+        "l": 0.94
+      },
+      "backgroundAccent": {
+        "h": 0.588684459536133,
+        "s": 0.3379367545507502,
+        "l": 0.89
+      },
+      "shapes": {
+        "h": 0.08255818731920517,
+        "s": 1,
+        "l": 0.8176470588235294
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 25,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.24,
+      "columns": 26,
+      "rows": 20,
+      "spacingX": 47,
+      "spacingY": 58,
+      "sizeMin": 8,
+      "sizeMax": 15,
+      "speedMin": 62,
+      "speedMax": 10,
+      "wobble": 8,
+      "rotationSpeed": 0.38,
+      "opacity": 0.53,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "ChatGPT-Image-25-de-set.-de-2026-20_06_30.png",
+        "relativePath": "media/backgrounds/ChatGPT-Image-25-de-set.-de-2026-20_06_30.png"
+      }
+    },
+    "fonts": {},
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  }
+}
