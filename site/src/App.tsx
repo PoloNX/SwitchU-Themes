@@ -38,6 +38,7 @@ function isPristineDraft(draft: StudioDraft): boolean {
     && !draft.notes.trim()
     && !draft.contributor.trim()
     && !draft.background.image
+    && !draft.background.imagePortrait
     && !draft.fonts.regular
     && !draft.fonts.small
     && !draft.audio.music

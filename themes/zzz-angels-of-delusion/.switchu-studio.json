@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/zzz-angels-of-delusion-1795408240246",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "zzz-angels-of-delusion",
+    "name": "zzz-angels-of-delusion",
+    "author": "yingixang",
+    "version": "1.0.0",
+    "summary": "Imported zzz-angels-of-delusion",
+    "notes": "",
+    "contributor": "yxldblbl",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.9362736497148844,
+        "s": 0.6080983525796265,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.9140993400261824,
+        "s": 0.5828541189883852,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.8663891008247776,
+        "s": 1,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.8381106780534635,
+        "s": 0.9605026602914544,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 1,
+      "columns": 9,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 5.8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.62,
+      "imageOpacity": 1,
+      "imageFit": "cover",
+      "image": {
+        "name": "_140830123.png",
+        "relativePath": "media/backgrounds/_140830123.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": false,
+      "sfx": {}
+    }
+  },
+  "authorLogin": "yxldblbl"
+}

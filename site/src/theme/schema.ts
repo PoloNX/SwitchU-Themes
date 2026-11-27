@@ -79,6 +79,9 @@ export interface ThemeBackgroundGridConfig {
 
 export interface ThemeBackgroundConfig {
   image?: string | ThemeBackgroundImageConfig;
+  /** Optional Flip-Grip / Rot90–270 wallpaper (console falls back to `image`). */
+  imagePortrait?: string | ThemeBackgroundImageConfig;
+  backgroundPortrait?: string | ThemeBackgroundImageConfig;
   layout?: 'floating' | 'grid';
   shape?: 'mixed' | 'circle' | 'triangle' | 'square' | 'diamond' | 'hexagon';
   symmetry?: 'none' | 'horizontal' | 'vertical' | 'quad';

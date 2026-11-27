@@ -1,0 +1,78 @@
+{
+  "id": "iisu-variant",
+  "name": "iiSU Variant",
+  "author": "iiSU Team",
+  "version": "1.1.2",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.21948737108771144,
+        0.5936553007919677,
+        0.56
+      ],
+      "accent": [
+        0.4068475470537898,
+        0.7651036345727974,
+        0.56
+      ],
+      "background": [
+        0,
+        0,
+        0
+      ],
+      "backgroundAccent": [
+        0.6152574254109444,
+        0.991587031182966,
+        0.08235294117647059
+      ],
+      "shapes": [
+        0.6537256575054021,
+        0.6991805455138921,
+        0.07450980392156863
+      ]
+    },
+    "background": {
+      "layout": "grid",
+      "shape": "square",
+      "symmetry": "none",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.42,
+      "grid": {
+        "columns": 28,
+        "rows": 15,
+        "spacing": [
+          45,
+          45
+        ]
+      },
+      "size": [
+        4,
+        6
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0,
+      "opacity": 0.5,
+      "image": {
+        "path": "media/backgrounds/273874.png",
+        "opacity": 0.48,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true
+  }
+}
