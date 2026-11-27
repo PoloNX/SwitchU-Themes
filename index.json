@@ -116,7 +116,7 @@
     {
       "id": "botw-forest",
       "name": "BOTW Forest",
-      "author": "CalÃ¸htk",
+      "author": "Cal\u00c3\u00b8htk",
       "version": "0.5",
       "path": "themes/botw-forest",
       "manifest": "themes/botw-forest/theme.json",
@@ -282,6 +282,20 @@
       "updatedAt": "2026-07-29T11:41:06+02:00"
     },
     {
+      "id": "lifetime-showtime-fwmc",
+      "name": "Lifetime Showtime (FWMC)",
+      "author": "Sam_Wowee",
+      "version": "1.0.0",
+      "path": "themes/lifetime-showtime-fwmc",
+      "manifest": "themes/lifetime-showtime-fwmc/theme.json",
+      "cover": "themes/lifetime-showtime-fwmc/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": true,
+      "addedAt": "2026-11-16T23:45:55.402Z",
+      "updatedAt": "2026-11-16T23:45:55.402Z"
+    },
+    {
       "id": "lusamine",
       "name": "Lusamine",
       "author": "CrisUllon",
@@ -322,6 +336,20 @@
       "hasIcons": false,
       "addedAt": "2026-06-29T17:35:31+02:00",
       "updatedAt": "2026-06-29T17:35:31+02:00"
+    },
+    {
+      "id": "nejire-theme",
+      "name": "Nejire theme",
+      "author": "NejireLover08",
+      "version": "1.0.0",
+      "path": "themes/nejire-theme",
+      "manifest": "themes/nejire-theme/theme.json",
+      "cover": "themes/nejire-theme/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": false,
+      "addedAt": "2026-11-16T00:42:54.018Z",
+      "updatedAt": "2026-11-16T00:42:54.018Z"
     },
     {
       "id": "nier-minimalist",
@@ -551,12 +579,15 @@
       "id": "twilight-princess",
       "name": "Twilight Princess",
       "author": "Snaoke",
-      "version": "1.0.0",
+      "version": "1.1",
       "path": "themes/twilight-princess",
       "manifest": "themes/twilight-princess/theme.json",
       "cover": "themes/twilight-princess/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": true,
       "addedAt": "2026-11-11T14:30:23-05:00",
-      "updatedAt": "2026-11-11T14:30:23-05:00"
+      "updatedAt": "2026-11-15T01:56:39.796Z"
     },
     {
       "id": "undertale",
@@ -601,18 +632,18 @@
       "updatedAt": "2026-10-30T16:34:02+01:00"
     },
     {
-      "id": "yoshikaru",
-      "name": "Yoshikaru",
-      "author": "remiin",
+      "id": "wii-ish-variant",
+      "name": "Wii ish Variant",
+      "author": "Duckyboy33",
       "version": "1.0.0",
-      "path": "themes/yoshikaru",
-      "manifest": "themes/yoshikaru/theme.json",
-      "cover": "themes/yoshikaru/media/screenshots/00.png",
+      "path": "themes/wii-ish-variant",
+      "manifest": "themes/wii-ish-variant/theme.json",
+      "cover": "themes/wii-ish-variant/media/screenshots/00.png",
       "hasIcons": false,
       "hasMusic": true,
       "hasSounds": false,
-      "addedAt": "2026-11-15T02:46:59.979Z",
-      "updatedAt": "2026-11-15T02:46:59.979Z"
+      "addedAt": "2026-11-15T12:51:35.265Z",
+      "updatedAt": "2026-11-15T12:51:35.265Z"
     },
     {
       "id": "zelda-botw-theme",
@@ -641,6 +672,20 @@
       "hasIcons": false,
       "addedAt": "2026-06-19T12:27:55+02:00",
       "updatedAt": "2026-06-19T19:26:49+02:00"
+    },
+    {
+      "id": "zzz-angels-of-delusion",
+      "name": "zzz-angels-of-delusion",
+      "author": "yingixang",
+      "version": "1.0.0",
+      "path": "themes/zzz-angels-of-delusion",
+      "manifest": "themes/zzz-angels-of-delusion/theme.json",
+      "cover": "themes/zzz-angels-of-delusion/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-23T04:30:49.006Z",
+      "updatedAt": "2026-11-23T04:30:49.006Z"
     }
   ],
   "icons": [
@@ -674,6 +719,20 @@
       "updatedAt": "2026-10-30T16:34:02+01:00"
     },
     {
+      "id": "3ds",
+      "name": "3ds",
+      "author": "Community",
+      "version": "1.0.0",
+      "description": "Community icon pack submitted from SwitchU Themes Studio.",
+      "path": "icons/3ds",
+      "manifest": "icons/3ds/pack.json",
+      "cover": "icons/3ds/preview.png",
+      "builtin": false,
+      "colour": true,
+      "addedAt": "2026-11-14T03:45:53.889Z",
+      "updatedAt": "2026-11-14T03:45:53.889Z"
+    },
+    {
       "id": "hallows-eve",
       "name": "Hallows Eve",
       "author": "bshurikan",
@@ -697,10 +756,38 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack \u00e2\u0080\u0094 missing glyphs (album, settings, power, \u00e2\u0080\u00a6) fall back to Default.",
       "theme": "iisu",
       "addedAt": "2026-10-24T22:15:31+02:00",
       "updatedAt": "2026-11-09T12:28:41-05:00"
+    },
+    {
+      "id": "iisuc",
+      "name": "iiSU Complete",
+      "author": "Community",
+      "version": "1.0.0",
+      "description": "Community icon pack submitted from SwitchU Themes Studio.",
+      "path": "icons/iisuc",
+      "manifest": "icons/iisuc/pack.json",
+      "cover": "icons/iisuc/preview.png",
+      "builtin": false,
+      "colour": true,
+      "addedAt": "2026-11-14T03:50:56.933Z",
+      "updatedAt": "2026-11-14T03:50:56.933Z"
+    },
+    {
+      "id": "wii-u",
+      "name": "Wii U",
+      "author": "Community",
+      "version": "1.0.0",
+      "description": "Community icon pack submitted from SwitchU Themes Studio.",
+      "path": "icons/wii-u",
+      "manifest": "icons/wii-u/pack.json",
+      "cover": "icons/wii-u/preview.png",
+      "builtin": false,
+      "colour": true,
+      "addedAt": "2026-11-14T03:48:22.984Z",
+      "updatedAt": "2026-11-14T03:48:22.984Z"
     }
   ]
 }

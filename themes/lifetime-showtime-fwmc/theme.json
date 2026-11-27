@@ -1,0 +1,85 @@
+{
+  "id": "lifetime-showtime-fwmc",
+  "name": "Lifetime Showtime (FWMC)",
+  "author": "Sam_Wowee",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.5469944589745777,
+        0.7316648574493981,
+        0.62
+      ],
+      "accent": [
+        0.8409782221521638,
+        1,
+        0.55
+      ],
+      "background": [
+        0.8941908863702286,
+        1,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.5294428530851472,
+        1,
+        0.14
+      ],
+      "shapes": [
+        0.6004200243896332,
+        1,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "vertical",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "image": {
+        "path": "media/backgrounds/lifetime_showtime_upscaled.png",
+        "opacity": 0.24,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/Y2Mate.is---Lifetime-Showtime-Instrumental.mp3"
+    ],
+    "sfx": {
+      "confirm": "sounds/sfx/confirm.wav",
+      "volume": "sounds/sfx/volume.wav"
+    }
+  }
+}

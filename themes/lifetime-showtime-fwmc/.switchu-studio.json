@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/lifetime-showtime-fwmc-1794872740216",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "lifetime-showtime-fwmc",
+    "name": "Lifetime Showtime (FWMC)",
+    "author": "Sam_Wowee",
+    "version": "1.0.0",
+    "summary": "A FUWAMOCO inspired HomeNX theme.",
+    "notes": "",
+    "contributor": "SamWowee",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.5469944589745777,
+        "s": 0.7316648574493981,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.8409782221521638,
+        "s": 1,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.8941908863702286,
+        "s": 1,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.5294428530851472,
+        "s": 1,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.6004200243896332,
+        "s": 1,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "diamond",
+      "symmetry": "vertical",
+      "count": 64,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "imageOpacity": 0.24,
+      "imageFit": "cover",
+      "image": {
+        "name": "lifetime_showtime_upscaled.png",
+        "relativePath": "media/backgrounds/lifetime_showtime_upscaled.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "Y2Mate.is - Lifetime Showtime Instrumental.mp3",
+        "relativePath": "sounds/music/Y2Mate.is---Lifetime-Showtime-Instrumental.mp3"
+      },
+      "sfx": {
+        "confirm": {
+          "name": "bau!-made-with-Voicemod.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "volume": {
+          "name": "bau!-made-with-Voicemod.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  },
+  "authorLogin": "SamWowee"
+}

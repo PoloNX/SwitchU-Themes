@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/wii-ish-variant-1794747079208",
+  "draftSnapshot": {
+    "basedOnThemeId": "wii-ish",
+    "proposalMode": "create",
+    "id": "wii-ish-variant",
+    "name": "Wii ish Variant",
+    "author": "Duckyboy33",
+    "version": "1.0.0",
+    "summary": "Add theme Wii ish Variant",
+    "notes": "",
+    "contributor": "yogiakihabara48-afk",
+    "mode": "light",
+    "colors": {
+      "cursor": {
+        "h": 0.5515587529976019,
+        "s": 0.8034682080924856,
+        "l": 0.6607843137254902
+      },
+      "accent": {
+        "h": 0.5518018018018017,
+        "s": 0.654867256637168,
+        "l": 0.44313725490196076
+      },
+      "background": {
+        "h": 0.43333333333333374,
+        "s": 0.2380952380952388,
+        "l": 0.9588235294117646
+      },
+      "backgroundAccent": {
+        "h": 0.43589743589743607,
+        "s": 0.2280701754385961,
+        "l": 0.888235294117647
+      },
+      "shapes": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "circle",
+      "symmetry": "quad",
+      "count": 12,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "columns": 12,
+      "rows": 3,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 8,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0,
+      "imageOpacity": 0.92,
+      "imageFit": "contain",
+      "image": {
+        "name": "1001118470.png",
+        "relativePath": "media/backgrounds/1001118470.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "AKB48【Everyday,カチューシャ】ピアノ（Piano）～ Everyday, Kachuusha (1).mp3",
+        "relativePath": "sounds/music/AKB48【Everyday,カチューシャ】ピアノ（Piano）～-Everyday,-Kachuusha-(1).mp3"
+      },
+      "sfx": {
+        "activation": {
+          "name": "activation.wav",
+          "relativePath": "sounds/sfx/activation.wav"
+        },
+        "confirm": {
+          "name": "confirm.wav",
+          "relativePath": "sounds/sfx/confirm.wav"
+        },
+        "navigation": {
+          "name": "navigation.wav",
+          "relativePath": "sounds/sfx/navigation.wav"
+        },
+        "launch_game": {
+          "name": "launch_game.wav",
+          "relativePath": "sounds/sfx/launch_game.wav"
+        },
+        "slider_up": {
+          "name": "slider_up.wav",
+          "relativePath": "sounds/sfx/slider_up.wav"
+        },
+        "slider_down": {
+          "name": "slider_down.wav",
+          "relativePath": "sounds/sfx/slider_down.wav"
+        },
+        "toggle_on": {
+          "name": "toggle_on.wav",
+          "relativePath": "sounds/sfx/toggle_on.wav"
+        },
+        "toggle_off": {
+          "name": "toggle_off.wav",
+          "relativePath": "sounds/sfx/toggle_off.wav"
+        },
+        "volume": {
+          "name": "volume.wav",
+          "relativePath": "sounds/sfx/volume.wav"
+        }
+      }
+    }
+  },
+  "authorLogin": "yogiakihabara48-afk"
+}
