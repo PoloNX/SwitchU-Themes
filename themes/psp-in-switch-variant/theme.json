@@ -67,7 +67,7 @@
     }
   },
   "audio": {
-    "preset": "bundled",
-    "bundled": true
+    "preset": "none",
+    "bundled": false
   }
 }
