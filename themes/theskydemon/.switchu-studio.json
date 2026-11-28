@@ -6,20 +6,20 @@
     "id": "theskydemon",
     "name": "theskydemon",
     "author": "m.cannaerts",
-    "version": "1.0.0",
+    "version": "1.2.5",
     "summary": "Add a new SwitchU theme",
     "notes": "",
     "contributor": "theskydemon230-hue",
     "mode": "dark",
     "colors": {
       "cursor": {
-        "h": 0.58,
-        "s": 0.9,
+        "h": 0.8859600423094711,
+        "s": 1,
         "l": 0.62
       },
       "accent": {
-        "h": 0.53,
-        "s": 0.8,
+        "h": 0.8686333356769087,
+        "s": 1,
         "l": 0.55
       },
       "background": {
@@ -41,7 +41,7 @@
     "background": {
       "layout": "floating",
       "shape": "mixed",
-      "symmetry": "vertical",
+      "symmetry": "none",
       "count": 1,
       "fixedOrientation": true,
       "orientation": 0,
@@ -55,13 +55,13 @@
       "speedMin": 0,
       "speedMax": 0,
       "wobble": 8,
-      "rotationSpeed": 2,
-      "opacity": 1,
+      "rotationSpeed": -2,
+      "opacity": 0,
       "imageOpacity": 1,
-      "imageFit": "cover",
+      "imageFit": "contain",
       "image": {
-        "name": "wp13583960.png",
-        "relativePath": "media/backgrounds/wp13583960.png"
+        "name": "OIF.png",
+        "relativePath": "media/backgrounds/OIF.png"
       }
     },
     "fonts": {},
@@ -70,8 +70,8 @@
     "audio": {
       "bundled": true,
       "music": {
-        "name": "Download (1).mp3",
-        "relativePath": "sounds/music/Download-(1).mp3"
+        "name": "gta 6.mp3",
+        "relativePath": "sounds/music/gta-6.mp3"
       },
       "sfx": {}
     }
