@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 3,
+  "branchName": "theme-studio/theskydemon-1795878786115",
+  "draftSnapshot": {
+    "proposalMode": "create",
+    "id": "theskydemon",
+    "name": "theskydemon",
+    "author": "m.cannaerts",
+    "version": "1.2.5",
+    "summary": "Add a new SwitchU theme",
+    "notes": "",
+    "contributor": "theskydemon230-hue",
+    "mode": "dark",
+    "colors": {
+      "cursor": {
+        "h": 0.8859600423094711,
+        "s": 1,
+        "l": 0.62
+      },
+      "accent": {
+        "h": 0.8686333356769087,
+        "s": 1,
+        "l": 0.55
+      },
+      "background": {
+        "h": 0.58,
+        "s": 0.5,
+        "l": 0.08
+      },
+      "backgroundAccent": {
+        "h": 0.56,
+        "s": 0.55,
+        "l": 0.14
+      },
+      "shapes": {
+        "h": 0.56,
+        "s": 0.4,
+        "l": 0.3
+      }
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "none",
+      "count": 1,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.31,
+      "columns": 16,
+      "rows": 9,
+      "spacingX": 74,
+      "spacingY": 74,
+      "sizeMin": 7,
+      "sizeMax": 12,
+      "speedMin": 0,
+      "speedMax": 0,
+      "wobble": 8,
+      "rotationSpeed": -2,
+      "opacity": 0,
+      "imageOpacity": 1,
+      "imageFit": "contain",
+      "image": {
+        "name": "OIF.png",
+        "relativePath": "media/backgrounds/OIF.png"
+      }
+    },
+    "fonts": {},
+    "iconSource": "none",
+    "iconGlyphs": [],
+    "audio": {
+      "bundled": true,
+      "music": {
+        "name": "gta 6.mp3",
+        "relativePath": "sounds/music/gta-6.mp3"
+      },
+      "sfx": {}
+    }
+  },
+  "authorLogin": "theskydemon230-hue"
+}

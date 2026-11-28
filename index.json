@@ -116,7 +116,7 @@
     {
       "id": "botw-forest",
       "name": "BOTW Forest",
-      "author": "CalÃ¸htk",
+      "author": "CalÃÂÃÂ¸htk",
       "version": "0.5",
       "path": "themes/botw-forest",
       "manifest": "themes/botw-forest/theme.json",
@@ -154,6 +154,20 @@
       "hasIcons": false,
       "addedAt": "2026-06-19T14:23:50+02:00",
       "updatedAt": "2026-06-19T19:26:49+02:00"
+    },
+    {
+      "id": "cammy-minimalist-variant",
+      "name": "cammy Minimalist Variant",
+      "author": "iiSU Team",
+      "version": "1.1.0",
+      "path": "themes/cammy-minimalist-variant",
+      "manifest": "themes/cammy-minimalist-variant/theme.json",
+      "cover": "themes/cammy-minimalist-variant/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-27T23:56:35.000Z",
+      "updatedAt": "2026-11-27T23:56:35.000Z"
     },
     {
       "id": "ch4r1z4rd-th3m3",
@@ -266,6 +280,34 @@
       "hasIcons": true,
       "addedAt": "2026-05-02T22:15:20+02:00",
       "updatedAt": "2026-10-30T12:22:30-04:00"
+    },
+    {
+      "id": "iisu-variant",
+      "name": "iiSU Variant",
+      "author": "iiSU Team",
+      "version": "1.1.2",
+      "path": "themes/iisu-variant",
+      "manifest": "themes/iisu-variant/theme.json",
+      "cover": "themes/iisu-variant/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-27T23:56:35.000Z",
+      "updatedAt": "2026-11-27T23:56:35.000Z"
+    },
+    {
+      "id": "ivantill",
+      "name": "Ivantill",
+      "author": "remiin",
+      "version": "1.0.0",
+      "path": "themes/ivantill",
+      "manifest": "themes/ivantill/theme.json",
+      "cover": "themes/ivantill/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": false,
+      "addedAt": "2026-11-27T23:56:35.000Z",
+      "updatedAt": "2026-11-27T23:56:35.000Z"
     },
     {
       "id": "kasaneteto",
@@ -576,6 +618,20 @@
       "updatedAt": "2026-10-25T12:00:39+01:00"
     },
     {
+      "id": "theskydemon",
+      "name": "theskydemon",
+      "author": "m.cannaerts",
+      "version": "1.2.5",
+      "path": "themes/theskydemon",
+      "manifest": "themes/theskydemon/theme.json",
+      "cover": "themes/theskydemon/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": false,
+      "addedAt": "2026-11-28T15:13:19.770Z",
+      "updatedAt": "2026-11-28T15:22:24.208Z"
+    },
+    {
       "id": "twilight-princess",
       "name": "Twilight Princess",
       "author": "Snaoke",
@@ -646,6 +702,34 @@
       "updatedAt": "2026-11-15T12:51:35.265Z"
     },
     {
+      "id": "wii-u",
+      "name": "Wii U",
+      "author": "MoyIan",
+      "version": "1.0.0",
+      "path": "themes/wii-u",
+      "manifest": "themes/wii-u/theme.json",
+      "cover": "themes/wii-u/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": false,
+      "hasSounds": false,
+      "addedAt": "2026-11-27T23:56:35.000Z",
+      "updatedAt": "2026-11-27T23:56:35.000Z"
+    },
+    {
+      "id": "yoshikaru",
+      "name": "Yoshikaru",
+      "author": "remiin",
+      "version": "1.0.0",
+      "path": "themes/yoshikaru",
+      "manifest": "themes/yoshikaru/theme.json",
+      "cover": "themes/yoshikaru/media/screenshots/00.png",
+      "hasIcons": false,
+      "hasMusic": true,
+      "hasSounds": false,
+      "addedAt": "2026-11-15T02:47:01.000Z",
+      "updatedAt": "2026-11-15T02:47:01.000Z"
+    },
+    {
       "id": "zelda-botw-theme",
       "name": "Zelda BOTW theme",
       "author": "Adan",
@@ -686,76 +770,6 @@
       "hasSounds": false,
       "addedAt": "2026-11-23T04:30:49.006Z",
       "updatedAt": "2026-11-23T04:30:49.006Z"
-    },
-    {
-      "id": "iisu-variant",
-      "name": "iiSU Variant",
-      "author": "iiSU Team",
-      "version": "1.1.2",
-      "path": "themes/iisu-variant",
-      "manifest": "themes/iisu-variant/theme.json",
-      "cover": "themes/iisu-variant/media/screenshots/00.png",
-      "hasIcons": false,
-      "hasMusic": false,
-      "hasSounds": false,
-      "addedAt": "2026-11-27T23:56:35.000Z",
-      "updatedAt": "2026-11-27T23:56:35.000Z"
-    },
-    {
-      "id": "wii-u",
-      "name": "Wii U",
-      "author": "MoyIan",
-      "version": "1.0.0",
-      "path": "themes/wii-u",
-      "manifest": "themes/wii-u/theme.json",
-      "cover": "themes/wii-u/media/screenshots/00.png",
-      "hasIcons": false,
-      "hasMusic": false,
-      "hasSounds": false,
-      "addedAt": "2026-11-27T23:56:35.000Z",
-      "updatedAt": "2026-11-27T23:56:35.000Z"
-    },
-    {
-      "id": "ivantill",
-      "name": "Ivantill",
-      "author": "remiin",
-      "version": "1.0.0",
-      "path": "themes/ivantill",
-      "manifest": "themes/ivantill/theme.json",
-      "cover": "themes/ivantill/media/screenshots/00.png",
-      "hasIcons": false,
-      "hasMusic": true,
-      "hasSounds": false,
-      "addedAt": "2026-11-27T23:56:35.000Z",
-      "updatedAt": "2026-11-27T23:56:35.000Z"
-    },
-    {
-      "id": "cammy-minimalist-variant",
-      "name": "cammy Minimalist Variant",
-      "author": "iiSU Team",
-      "version": "1.1.0",
-      "path": "themes/cammy-minimalist-variant",
-      "manifest": "themes/cammy-minimalist-variant/theme.json",
-      "cover": "themes/cammy-minimalist-variant/media/screenshots/00.png",
-      "hasIcons": false,
-      "hasMusic": false,
-      "hasSounds": false,
-      "addedAt": "2026-11-27T23:56:35.000Z",
-      "updatedAt": "2026-11-27T23:56:35.000Z"
-    },
-    {
-      "id": "yoshikaru",
-      "name": "Yoshikaru",
-      "author": "remiin",
-      "version": "1.0.0",
-      "path": "themes/yoshikaru",
-      "manifest": "themes/yoshikaru/theme.json",
-      "cover": "themes/yoshikaru/media/screenshots/00.png",
-      "hasIcons": false,
-      "hasMusic": true,
-      "hasSounds": false,
-      "addedAt": "2026-11-15T02:47:01.000Z",
-      "updatedAt": "2026-11-15T02:47:01.000Z"
     }
   ],
   "icons": [
@@ -826,7 +840,7 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack â missing glyphs (album, settings, power, â¦) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack ÃÂ¢ÃÂÃÂ missing glyphs (album, settings, power, ÃÂ¢ÃÂÃÂ¦) fall back to Default.",
       "theme": "iisu",
       "addedAt": "2026-10-24T22:15:31+02:00",
       "updatedAt": "2026-11-09T12:28:41-05:00"
