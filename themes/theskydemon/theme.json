@@ -1,0 +1,81 @@
+{
+  "id": "theskydemon",
+  "name": "theskydemon",
+  "author": "moi",
+  "version": "1.0.0",
+  "preview": {
+    "screenshots": [
+      "media/screenshots/00.png"
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "colors": {
+      "cursor": [
+        0.58,
+        0.9,
+        0.62
+      ],
+      "accent": [
+        0.53,
+        0.8,
+        0.55
+      ],
+      "background": [
+        0.58,
+        0.5,
+        0.08
+      ],
+      "backgroundAccent": [
+        0.56,
+        0.55,
+        0.14
+      ],
+      "shapes": [
+        0.56,
+        0.4,
+        0.3
+      ]
+    },
+    "background": {
+      "layout": "floating",
+      "shape": "mixed",
+      "symmetry": "quad",
+      "count": 1,
+      "fixedOrientation": true,
+      "orientation": 0,
+      "roundness": 0.18,
+      "grid": {
+        "columns": 16,
+        "rows": 9,
+        "spacing": [
+          74,
+          74
+        ]
+      },
+      "size": [
+        7,
+        12
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "wobble": 8,
+      "rotationSpeed": 0.04,
+      "opacity": 0.82,
+      "image": {
+        "path": "media/backgrounds/7fd52c93-0e13-4e33-baa2-bde0690bd721.png",
+        "opacity": 0.59,
+        "fit": "cover"
+      }
+    }
+  },
+  "audio": {
+    "preset": "bundled",
+    "bundled": true,
+    "music": [
+      "sounds/music/gta-6.mp3"
+    ]
+  }
+}
