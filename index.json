@@ -116,7 +116,7 @@
     {
       "id": "botw-forest",
       "name": "BOTW Forest",
-      "author": "CalÃÂ¸htk",
+      "author": "CalÃÂÃÂ¸htk",
       "version": "0.5",
       "path": "themes/botw-forest",
       "manifest": "themes/botw-forest/theme.json",
@@ -621,7 +621,7 @@
       "id": "theskydemon",
       "name": "theskydemon",
       "author": "m.cannaerts",
-      "version": "1.0.0",
+      "version": "1.2.5",
       "path": "themes/theskydemon",
       "manifest": "themes/theskydemon/theme.json",
       "cover": "themes/theskydemon/media/screenshots/00.png",
@@ -629,7 +629,7 @@
       "hasMusic": true,
       "hasSounds": false,
       "addedAt": "2026-11-28T15:13:19.770Z",
-      "updatedAt": "2026-11-28T15:13:19.770Z"
+      "updatedAt": "2026-11-28T15:22:24.208Z"
     },
     {
       "id": "twilight-princess",
@@ -840,7 +840,7 @@
       "cover": "icons/iisu/preview.png",
       "builtin": false,
       "colour": true,
-      "description": "Sidebar glyphs for the iiSU theme. Partial pack Ã¢ÂÂ missing glyphs (album, settings, power, Ã¢ÂÂ¦) fall back to Default.",
+      "description": "Sidebar glyphs for the iiSU theme. Partial pack ÃÂ¢ÃÂÃÂ missing glyphs (album, settings, power, ÃÂ¢ÃÂÃÂ¦) fall back to Default.",
       "theme": "iisu",
       "addedAt": "2026-10-24T22:15:31+02:00",
       "updatedAt": "2026-11-09T12:28:41-05:00"
