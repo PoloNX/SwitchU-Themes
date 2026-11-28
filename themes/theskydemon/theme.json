@@ -2,7 +2,7 @@
   "id": "theskydemon",
   "name": "theskydemon",
   "author": "m.cannaerts",
-  "version": "1.0.0",
+  "version": "1.2.5",
   "preview": {
     "screenshots": [
       "media/screenshots/00.png"
@@ -12,13 +12,13 @@
     "mode": "dark",
     "colors": {
       "cursor": [
-        0.58,
-        0.9,
+        0.8859600423094711,
+        1,
         0.62
       ],
       "accent": [
-        0.53,
-        0.8,
+        0.8686333356769087,
+        1,
         0.55
       ],
       "background": [
@@ -40,7 +40,7 @@
     "background": {
       "layout": "floating",
       "shape": "mixed",
-      "symmetry": "vertical",
+      "symmetry": "none",
       "count": 1,
       "fixedOrientation": true,
       "orientation": 0,
@@ -62,12 +62,12 @@
         0
       ],
       "wobble": 8,
-      "rotationSpeed": 2,
-      "opacity": 1,
+      "rotationSpeed": -2,
+      "opacity": 0,
       "image": {
-        "path": "media/backgrounds/wp13583960.png",
+        "path": "media/backgrounds/OIF.png",
         "opacity": 1,
-        "fit": "cover"
+        "fit": "contain"
       }
     }
   },
@@ -75,7 +75,7 @@
     "preset": "bundled",
     "bundled": true,
     "music": [
-      "sounds/music/Download-(1).mp3"
+      "sounds/music/gta-6.mp3"
     ]
   }
 }
